@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบสรุปสถิติและประเมินผลรวม 5 มิติ</title>
+    <title>สรุปสถิติและประเมินผลการอบรม</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts (Sarabun) -->
@@ -699,8 +699,50 @@
                     </div>
                 </div>
 
+                <!-- Daily evaluation calendar (shown only when opened from the "ความเป็นอยู่" tab) -->
+                <div id="modal-section-calendar" class="hidden border-t border-slate-100 pt-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-bold text-indigo-950 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-calendar-days text-indigo-600"></i> ปฏิทินการประเมินความเป็นอยู่รายวัน
+                        </h4>
+                        <div class="flex items-center gap-1">
+                            <button onclick="changeModalCalendarMonth(-1)" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                            </button>
+                            <span id="modal-calendar-month-label" class="text-xs font-bold text-slate-700 w-28 text-center">-</span>
+                            <button onclick="changeModalCalendarMonth(1)" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="flex flex-wrap gap-2.5 text-[10px] font-semibold text-slate-500">
+                        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-indigo-600 inline-block"></span> จุดจำวัด</span>
+                        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-600 inline-block"></span> ตะกร้า</span>
+                        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-cyan-600 inline-block"></span> วิมาน</span>
+                        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-600 inline-block"></span> ราวตาก</span>
+                        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-600 inline-block"></span> ห่มดอง</span>
+                    </div>
+
+                    <!-- Weekday header -->
+                    <div class="grid grid-cols-7 gap-1 text-[10px] font-bold text-slate-400 text-center">
+                        <span>อา</span><span>จ</span><span>อ</span><span>พ</span><span>พฤ</span><span>ศ</span><span>ส</span>
+                    </div>
+
+                    <!-- Day grid -->
+                    <div id="modal-calendar-grid" class="grid grid-cols-7 gap-1">
+                        <!-- Injected dynamically -->
+                    </div>
+
+                    <!-- Selected date score panel -->
+                    <div id="modal-calendar-score-panel" class="bg-slate-50 p-3 rounded-lg border border-slate-100 text-xs text-slate-500 leading-relaxed">
+                        แตะวันที่ในปฏิทินเพื่อดูคะแนนของวันนั้น
+                    </div>
+                </div>
+
                 <!-- Attendance breakdown -->
-                <div class="border-t border-slate-100 pt-4 space-y-3">
+                <div id="modal-section-attendance" class="border-t border-slate-100 pt-4 space-y-3">
                     <h4 class="text-sm font-bold text-indigo-950 uppercase tracking-wider">รายละเอียดสถิติการเช็คชื่อเข้าเรียน</h4>
                     <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 grid grid-cols-5 gap-2 text-center text-sm">
                         <div class="bg-white p-2 rounded border border-slate-100">
@@ -727,7 +769,7 @@
                 </div>
 
                 <!-- Training-period evaluation summary (appended after attendance history) -->
-                <div class="border-t border-slate-100 pt-4 space-y-3">
+                <div id="modal-section-trainingeval" class="border-t border-slate-100 pt-4 space-y-3">
                     <h4 class="text-sm font-bold text-indigo-950 uppercase tracking-wider flex items-center gap-1.5">
                         <i class="fa-solid fa-scroll text-indigo-600"></i> ผลการประเมินช่วงอบรม
                     </h4>
@@ -748,7 +790,7 @@
                 </div>
 
                 <!-- Term1 grades summary -->
-                <div class="border-t border-slate-100 pt-4 space-y-3">
+                <div id="modal-section-term1" class="border-t border-slate-100 pt-4 space-y-3">
                     <h4 class="text-sm font-bold text-sky-900 uppercase tracking-wider flex items-center gap-1.5">
                         <i class="fa-solid fa-graduation-cap text-sky-600"></i> ผลการเรียน เทอมแรก
                     </h4>
@@ -762,7 +804,7 @@
                 </div>
 
                 <!-- Term2 grades summary -->
-                <div class="border-t border-slate-100 pt-4 space-y-3">
+                <div id="modal-section-term2" class="border-t border-slate-100 pt-4 space-y-3">
                     <h4 class="text-sm font-bold text-sky-900 uppercase tracking-wider flex items-center gap-1.5">
                         <i class="fa-solid fa-graduation-cap text-sky-600"></i> ผลการเรียน เทอมหลัง
                     </h4>
@@ -1107,6 +1149,7 @@
         let personnelFilteredIds = []; // Ordered list of ids matching Tab 3's currently applied filters
         let personnelCurrentIndex = -1; // Index of the currently open person within personnelFilteredIds
         let personnelModalOpenId = null; // id of the person currently displayed in the detail modal, or null when closed
+        let personnelModalContext = 'full'; // 'full' or 'analytics' — remembers which tab opened the modal so prev/next arrows keep the right layout
 
         let gradesActiveTerm = 'term2'; // 'term1' or 'term2' — which term's grades tab is currently showing
 
@@ -2243,7 +2286,7 @@
                 `;
 
                 const tr = `
-                    <tr class="hover:bg-indigo-50/30 transition cursor-pointer text-center border-b border-slate-100" onclick="openPersonnelProfile(${p.id})">
+                    <tr class="hover:bg-indigo-50/30 transition cursor-pointer text-center border-b border-slate-100" onclick="openPersonnelProfile(${p.id}, 'analytics')">
                         <td class="px-4 py-3 font-semibold text-slate-500">#${p.id}</td>
                         <td class="px-4 py-3 text-left font-bold text-slate-900">${p.name}</td>
                         <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-semibold">หมู่ ${p.village}</span></td>
@@ -2340,9 +2383,11 @@
             });
         }
 
-        function openPersonnelProfile(id) {
+        function openPersonnelProfile(id, context = 'full') {
             const p = compiledPersonnel.find(x => x.id === id);
             if (!p) return;
+
+            personnelModalContext = context;
 
             // Track which record is open and where it sits within the currently filtered list,
             // so the left/right nav arrows always move relative to what's shown in the Tab 3 table.
@@ -2438,7 +2483,161 @@
                 }
             }
 
+            // Toggle which sections show depending on where the modal was opened from:
+            // the "ความเป็นอยู่" (analytics) tab shows the daily calendar instead of
+            // attendance/training-eval/grades details, while every other tab keeps showing them.
+            const calendarSection = document.getElementById('modal-section-calendar');
+            const attendanceSection = document.getElementById('modal-section-attendance');
+            const trainingevalSection = document.getElementById('modal-section-trainingeval');
+            const term1Section = document.getElementById('modal-section-term1');
+            const term2Section = document.getElementById('modal-section-term2');
+            const isAnalyticsContext = context === 'analytics';
+
+            if (calendarSection) calendarSection.classList.toggle('hidden', !isAnalyticsContext);
+            if (attendanceSection) attendanceSection.classList.toggle('hidden', isAnalyticsContext);
+            if (trainingevalSection) trainingevalSection.classList.toggle('hidden', isAnalyticsContext);
+            if (term1Section) term1Section.classList.toggle('hidden', isAnalyticsContext);
+            if (term2Section) term2Section.classList.toggle('hidden', isAnalyticsContext);
+
+            if (isAnalyticsContext) {
+                initModalCalendar(p.id);
+            }
+
             toggleDetailModal(true);
+        }
+
+        // ==================== DAILY EVALUATION CALENDAR (ความเป็นอยู่ tab popup) ====================
+
+        let modalCalendarPersonId = null;
+        let modalCalendarMonth = 6; // 0-indexed: 6 = July
+        let modalCalendarYear = 2026;
+        let modalCalendarSelectedDate = null;
+
+        const THAI_MONTH_NAMES = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+        function formatCalendarDateStr(day, month, year) {
+            // month is 0-indexed here; output matches the 'DD/MM/YYYY' format used in datesScores keys
+            const dd = String(day).padStart(2, '0');
+            const mm = String(month + 1).padStart(2, '0');
+            return `${dd}/${mm}/${year}`;
+        }
+
+        function initModalCalendar(personId) {
+            modalCalendarPersonId = personId;
+            modalCalendarMonth = 6; // Always default back to July when opening a new profile
+            modalCalendarYear = 2026;
+            modalCalendarSelectedDate = null;
+            renderModalCalendar();
+            renderModalCalendarScorePanel(null);
+        }
+
+        function changeModalCalendarMonth(delta) {
+            modalCalendarMonth += delta;
+            if (modalCalendarMonth > 11) { modalCalendarMonth = 0; modalCalendarYear++; }
+            if (modalCalendarMonth < 0) { modalCalendarMonth = 11; modalCalendarYear--; }
+            modalCalendarSelectedDate = null;
+            renderModalCalendar();
+            renderModalCalendarScorePanel(null);
+        }
+
+        function renderModalCalendar() {
+            const label = document.getElementById('modal-calendar-month-label');
+            const grid = document.getElementById('modal-calendar-grid');
+            if (!grid) return;
+
+            if (label) label.innerText = `${THAI_MONTH_NAMES[modalCalendarMonth]} ${modalCalendarYear}`;
+
+            const p = compiledPersonnel.find(x => x.id === modalCalendarPersonId);
+            const datesScores = (p && p.datesScores) ? p.datesScores : {};
+
+            const firstDayOfWeek = new Date(modalCalendarYear, modalCalendarMonth, 1).getDay(); // 0=Sun
+            const daysInMonth = new Date(modalCalendarYear, modalCalendarMonth + 1, 0).getDate();
+
+            const topicColors = {
+                jumwat: 'bg-indigo-600',
+                takra: 'bg-blue-600',
+                wiman: 'bg-cyan-600',
+                raotak: 'bg-amber-600',
+                homdong: 'bg-emerald-600'
+            };
+            const topicOrder = ['jumwat', 'takra', 'wiman', 'raotak', 'homdong'];
+
+            let html = '';
+            // Leading blank cells so day 1 lands on the correct weekday column
+            for (let i = 0; i < firstDayOfWeek; i++) {
+                html += `<div></div>`;
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = formatCalendarDateStr(day, modalCalendarMonth, modalCalendarYear);
+                const entry = datesScores[dateStr];
+                const hasEntry = entry && entry.hasRealEntry;
+                const isSelected = modalCalendarSelectedDate === dateStr;
+
+                const dots = hasEntry
+                    ? topicOrder.filter(t => entry.evaluatedTopics && entry.evaluatedTopics[t])
+                        .map(t => `<span class="w-1.5 h-1.5 rounded-full ${topicColors[t]} inline-block"></span>`).join('')
+                    : '';
+
+                const cellBg = isSelected ? 'bg-indigo-600 text-white' : (hasEntry ? 'bg-indigo-50 text-slate-800 hover:bg-indigo-100' : 'bg-slate-50 text-slate-300');
+                const cursor = hasEntry ? 'cursor-pointer' : 'cursor-default';
+
+                html += `
+                    <button onclick="${hasEntry ? `selectModalCalendarDate('${dateStr}')` : ''}" class="${cellBg} ${cursor} rounded-lg py-1.5 flex flex-col items-center justify-center gap-0.5 border border-slate-100 transition" ${hasEntry ? '' : 'disabled'}>
+                        <span class="text-[11px] font-bold">${day}</span>
+                        <span class="flex gap-0.5 flex-wrap justify-center px-0.5">${dots}</span>
+                    </button>
+                `;
+            }
+
+            grid.innerHTML = html;
+        }
+
+        function selectModalCalendarDate(dateStr) {
+            modalCalendarSelectedDate = dateStr;
+            renderModalCalendar();
+            renderModalCalendarScorePanel(dateStr);
+        }
+
+        function renderModalCalendarScorePanel(dateStr) {
+            const panel = document.getElementById('modal-calendar-score-panel');
+            if (!panel) return;
+
+            if (!dateStr) {
+                panel.innerHTML = `แตะวันที่ในปฏิทินเพื่อดูคะแนนของวันนั้น`;
+                return;
+            }
+
+            const p = compiledPersonnel.find(x => x.id === modalCalendarPersonId);
+            const entry = p && p.datesScores ? p.datesScores[dateStr] : null;
+
+            if (!entry || !entry.hasRealEntry) {
+                panel.innerHTML = `<span class="text-slate-400">ไม่มีการประเมินในวันที่ ${dateStr}</span>`;
+                return;
+            }
+
+            const topics = [
+                { key: 'jumwat', label: '⛺ จุดจำวัด', color: 'text-indigo-700' },
+                { key: 'takra', label: '🧺 ตะกร้า', color: 'text-blue-600' },
+                { key: 'wiman', label: '🏰 วิมาน', color: 'text-cyan-600' },
+                { key: 'raotak', label: '🧣 ราวตาก', color: 'text-amber-600' },
+                { key: 'homdong', label: '🧥 ห่มดอง', color: 'text-emerald-600' }
+            ];
+
+            const rows = topics.map(t => {
+                const evaluated = entry.evaluatedTopics && entry.evaluatedTopics[t.key];
+                const valueText = evaluated ? `${entry[t.key]}` : `<span class="text-slate-300">ไม่ได้ประเมิน</span>`;
+                return `<div class="flex items-center justify-between"><span class="${t.color} font-semibold">${t.label}</span><span class="font-bold">${valueText}</span></div>`;
+            }).join('');
+
+            panel.innerHTML = `
+                <div class="font-bold text-slate-700 mb-1.5">คะแนนวันที่ ${dateStr}</div>
+                <div class="space-y-1">${rows}</div>
+                <div class="flex items-center justify-between border-t border-slate-200 mt-2 pt-2">
+                    <span class="font-bold text-indigo-800">รวมของวันนี้</span>
+                    <span class="font-black text-indigo-800">${entry.total} / ${entry.maxPossible}</span>
+                </div>
+            `;
         }
 
         // ==================== TRAINING-PERIOD EVALUATION ====================
@@ -2774,7 +2973,7 @@
             if (newIndex < 0 || newIndex >= personnelFilteredIds.length) return; // already at an edge
             const nextId = personnelFilteredIds[newIndex];
             if (nextId == null) return;
-            openPersonnelProfile(nextId);
+            openPersonnelProfile(nextId, personnelModalContext);
         }
 
         // Enable/disable the prev/next arrows based on position within the filtered list.
