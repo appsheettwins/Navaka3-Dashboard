@@ -458,23 +458,23 @@
         <!-- ==================== TAB 4: TRAINING-PERIOD EVALUATION (แบบประเมินพระนวกะช่วงอบรม) ==================== -->
         <div id="tab-trainingeval" class="hidden space-y-6">
 
-            <!-- Filter / search panel (Labels Removed & Placed in 1 Row as requested) -->
+            <!-- Filter / search panel (Rearranged: Status Toggle on Left, Villages in Middle, Search on Far Right) -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-center">
-                    <!-- Search Input -->
-                    <div class="relative w-full">
-                        <input type="text" id="trainingeval-search-input" oninput="renderTrainingEvalDirectory()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:ring-2 focus:ring-indigo-500 outline-none bg-white font-bold">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-4 text-slate-400 text-base"></i>
+                    <!-- Training Eval Status Filter with counts (Left) -->
+                    <div id="trainingeval-status-container" class="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar w-full">
+                        <!-- Injected dynamically (All, Pass, Fail with count) -->
                     </div>
 
-                    <!-- Village buttons -->
-                    <div id="trainingeval-village-container" class="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth w-full">
+                    <!-- Village buttons (Middle) -->
+                    <div id="trainingeval-village-container" class="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth w-full justify-start lg:justify-center">
                         <!-- Injected dynamically -->
                     </div>
 
-                    <!-- Training Eval Status Filter with counts -->
-                    <div id="trainingeval-status-container" class="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar w-full">
-                        <!-- Injected dynamically (All, Pass, Fail with count) -->
+                    <!-- Search Input (Far Right) -->
+                    <div class="relative w-full">
+                        <input type="text" id="trainingeval-search-input" oninput="renderTrainingEvalDirectory()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:ring-2 focus:ring-indigo-500 outline-none bg-white font-bold">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-4 text-slate-400 text-base"></i>
                     </div>
                 </div>
             </div>
@@ -959,9 +959,9 @@
         </div>
     </div>
 
-    <!-- Footer of System -->
+    <!-- Footer of System with custom developer credits -->
     <footer class="bg-white border-t border-slate-200 py-5 text-center mt-auto print:hidden">
-        <p class="text-xs md:text-sm text-slate-400 font-semibold">© 2026 ระบบสรุปสถิติและประเมินผลพฤติกรรมคู่ระบบเช็คชื่อรายวัน. พัฒนาร่วมกันผ่าน Google Apps Script & Visualization API.</p>
+        <p class="text-xs md:text-sm text-slate-400 font-semibold">© 2026 สรุปสถิติและประเมินผลการอบรม โครงการอบรมพระนวกะ 3 เส้นทางวิสามัญสาขาและพุทธบุตรอาสา . พัฒนาโดยพระบริพัตร ฐิ托ภาโส </p>
     </footer>
 
     <script>
