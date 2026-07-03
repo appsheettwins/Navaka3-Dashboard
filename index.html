@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบสรุปสถิติและประเมินผล</title>
+    <title>ระบบสรุปสถิติและประเมินผลรวม</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts (Sarabun) -->
@@ -341,11 +341,6 @@
                         <p class="text-sm text-slate-500 mt-0.5 font-medium">รวมคะแนนสะสม 5 มิติดิบและอัตราการเช็คชื่อเข้าชั้นเรียน 4 รอบหลักเป็นหนึ่งเดียว</p>
                     </div>
                     
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 text-sm font-semibold">
-                            <i class="fa-solid fa-list"></i> มุมมองตารางคะแนนรวม
-                        </span>
-                    </div>
                 </div>
 
                 <!-- Filters specifically inside Tab 3 -->
@@ -406,17 +401,6 @@
 
         <!-- ==================== TAB 4: TRAINING-PERIOD EVALUATION (แบบประเมินพระนวกะช่วงอบรม) ==================== -->
         <div id="tab-trainingeval" class="hidden space-y-6">
-
-            <!-- Info banner -->
-            <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 flex items-start gap-3">
-                <div class="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-circle-info"></i>
-                </div>
-                <div>
-                    <h4 class="text-sm md:text-base font-bold text-indigo-950">แบบประเมินพระนวกะช่วงอบรม</h4>
-                    <p class="text-xs text-indigo-800/80 mt-0.5">ดึงข้อมูลคะแนนแยกวิทยฐานะ คัดตามรายหัวข้อ และดึงรูปภาพของพระนวกะแต่ละรูปจากทะเบียนประวัติหลัก (DATA1) และประเมินผลออนไลน์จากตารางชีต Estimate (คอลัมน์ E ถึง S) ของ Google Sheets อัตโนมัติ</p>
-                </div>
-            </div>
 
             <!-- Filter / search panel -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
@@ -702,27 +686,30 @@
 
 
             <!-- Printable Form Body -->
-            <div id="trainingeval-print-area" class="overflow-y-auto custom-scrollbar p-6 space-y-4 text-slate-800 bg-white flex justify-center items-start">
-                <div id="trainingeval-print-wrapper" class="transition-transform duration-200 w-full max-w-2xl" style="transform: translateX(0px);">
+            <div id="trainingeval-print-area" class="overflow-y-auto custom-scrollbar p-6 space-y-3 text-slate-800 bg-white flex flex-col items-center">
+
+                <!-- Identity row: photo + name fields — locked to the top while scrolling -->
+                <div id="trainingeval-identity-sticky" class="sticky top-0 z-10 bg-white w-full max-w-2xl pb-3 border-b border-slate-200">
+                    <div class="flex items-start gap-4 border border-slate-200 rounded-lg p-3 bg-white">
+                        <div class="w-20 h-24 rounded-md overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
+                            <img id="trainingeval-modal-img" src="" alt="avatar" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 grid grid-cols-2 gap-x-3 gap-y-1.5 text-sm md:text-base">
+                            <div class="col-span-2"><span class="font-semibold text-slate-500">ชื่อ</span> <span id="trainingeval-field-firstname" class="font-bold text-base md:text-lg">-</span></div>
+                            <div><span class="font-semibold text-slate-500">ฉายา</span> <span id="trainingeval-field-honorific" class="font-bold text-base md:text-lg">-</span></div>
+                            <div><span class="font-semibold text-slate-500">นามสกุล</span> <span id="trainingeval-field-lastname" class="font-bold text-base md:text-lg">-</span></div>
+                            <div><span class="font-semibold text-slate-500">กลุ่ม (หมู่)</span> <span id="trainingeval-field-village" class="font-bold text-base md:text-lg">-</span></div>
+                            <div><span class="font-semibold text-slate-500">เลขที่</span> <span id="trainingeval-field-id" class="font-bold text-base md:text-lg">-</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="trainingeval-print-wrapper" class="transition-transform duration-200 w-full max-w-2xl space-y-4" style="transform: translateX(0px);">
                     <!-- Form Header -->
                     <div class="text-center space-y-0.5 pb-1">
                         <h3 class="text-base font-bold">แบบประเมินพระนวกะช่วงอบรม</h3>
                         <p class="text-sm font-bold">โครงการอบรมพระนวกะ3 วิสามัญสาขาและพุทธบุตรอาสาประจำปี 2569</p>
                         <p class="text-xs text-slate-600">ระหว่าง 8 มิถุนายน พ.ศ. 2569 - 30 เมษายน พ.ศ. 2570</p>
-                    </div>
-
-                    <!-- Identity row: photo + name fields -->
-                    <div class="flex items-start gap-4 border border-slate-200 rounded-lg p-3">
-                        <div class="w-20 h-24 rounded-md overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
-                            <img id="trainingeval-modal-img" src="" alt="avatar" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-1 grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
-                            <div class="col-span-2"><span class="font-semibold text-slate-500">ชื่อ</span> <span id="trainingeval-field-firstname" class="font-bold">-</span></div>
-                            <div><span class="font-semibold text-slate-500">ฉายา</span> <span id="trainingeval-field-honorific" class="font-bold">-</span></div>
-                            <div><span class="font-semibold text-slate-500">นามสกุล</span> <span id="trainingeval-field-lastname" class="font-bold">-</span></div>
-                            <div><span class="font-semibold text-slate-500">กลุ่ม (หมู่)</span> <span id="trainingeval-field-village" class="font-bold">-</span></div>
-                            <div><span class="font-semibold text-slate-500">เลขที่</span> <span id="trainingeval-field-id" class="font-bold">-</span></div>
-                        </div>
                     </div>
 
                     <!-- Score table matching original PDF layout -->
@@ -976,6 +963,7 @@
         };
 
         window.onload = function() {
+            switchTab('personnel');
             fetchAllData();
         };
 
@@ -2050,15 +2038,15 @@
                             <span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-medium">หมู่ ${p.village}</span>
                         </td>
                         <td class="px-4 py-3 text-center font-semibold text-slate-700 bg-amber-50/20">
-                            <div class="font-black text-indigo-800 text-2xl leading-tight">${scoreSummary}</div>
+                            <div class="font-black text-indigo-800 text-xl leading-tight">${scoreSummary}</div>
                             <div class="text-[11px] font-mono mt-0.5">${scoreBreakdown}</div>
                         </td>
                         <td class="px-4 py-3 text-center bg-indigo-50/10">
-                            <div class="font-black text-indigo-700 text-lg leading-tight">${at.rate.toFixed(0)}%</div>
+                            <div class="font-black text-indigo-700 text-xl leading-tight">${at.rate.toFixed(0)}%</div>
                             <div class="text-[11px] font-semibold space-x-1 mt-0.5">${attendSummary}</div>
                         </td>
                         <td class="px-4 py-3 text-center bg-emerald-50/20">
-                            <div class="font-bold text-indigo-700">${trainingScoreText}</div>
+                            <div class="font-black text-indigo-700 text-xl leading-tight">${trainingScoreText}</div>
                             <div class="mt-1">${trainingResultBadge}</div>
                         </td>
                     </tr>
