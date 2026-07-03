@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบสรุปสถิติและประเมินผล</title>
+    <title>ระบบสรุปสถิติและประเมินผลรวม 5 มิติ</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts (Sarabun) -->
@@ -657,6 +657,20 @@
                         <div id="modal-trainingeval-notes" class="border-2 border-indigo-200 p-3 bg-slate-50 rounded-lg min-h-[40px] text-sm leading-relaxed text-slate-800">-</div>
                     </div>
                 </div>
+
+                <!-- Term1 grades summary -->
+                <div class="border-t border-slate-100 pt-4 space-y-3">
+                    <h4 class="text-sm font-bold text-sky-900 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-graduation-cap text-sky-600"></i> ผลการเรียน เทอมแรก
+                    </h4>
+                    <div id="modal-term1-subjects" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                        <!-- Injected dynamically -->
+                    </div>
+                    <div class="bg-sky-50 p-3 rounded-lg border border-sky-100 flex items-center justify-between">
+                        <span class="text-xs font-semibold text-sky-800">เกรดเฉลี่ยเทอมแรก</span>
+                        <span id="modal-term1-gpa" class="text-lg font-black text-sky-700">-</span>
+                    </div>
+                </div>
             </div>
             
             <div class="pt-4 mt-4 border-t border-slate-100 flex justify-end">
@@ -824,6 +838,28 @@
         const SPREADSHEET_PERSONAL_ID = '1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous';
         const TARGET_SHEET_NAME_PERSONAL = 'DATA1';
         const TARGET_SHEET_NAME_ESTIMATE = 'Estimate';
+        const TARGET_SHEET_NAME_TERM1 = 'Term1';
+
+        // Term1 subject columns E-I in the Term1 sheet (index 4-8), in order
+        const TERM1_SUBJECTS = [
+            { key: 'karma', label: 'กฎแห่งกรรม' },
+            { key: 'meditation', label: 'สมาธิเบื้องต้น' },
+            { key: 'health', label: 'การรักษาสุขภาพตามพุทธวิธี' },
+            { key: 'buddhascience', label: 'ศาสตร์การเป็นพระสัมมาสัมพุทธเจ้า' },
+            { key: 'thai', label: 'ภาษาไทยเพื่อการสื่อสาร' }
+        ];
+
+        // Standard Thai 8-level score-to-grade-point conversion (0-100 score scale)
+        function scoreToGradePoint(score) {
+            if (score >= 80) return 4.0;
+            if (score >= 75) return 3.5;
+            if (score >= 70) return 3.0;
+            if (score >= 65) return 2.5;
+            if (score >= 60) return 2.0;
+            if (score >= 55) return 1.5;
+            if (score >= 50) return 1.0;
+            return 0.0;
+        }
         
         const SPREADSHEET_EVAL_ID = '1IEUWnX0dZo1wwN2gwHMVavECEKV9B7auBbnPA4bzusg';
         const EVAL_TABS = ['จุดจำวัด', 'ตะกร้า', 'วิมาน', 'ราวตาก', 'ห่มดอง'];
@@ -1078,6 +1114,7 @@
 
             const urlPersonnel = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_PERSONAL}`;
             const urlEstimate = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_ESTIMATE}`;
+            const urlTerm1 = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_TERM1}`;
             
             const evalPromises = EVAL_TABS.map(tabName => {
                 const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_EVAL_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tabName)}`;
@@ -1096,9 +1133,10 @@
             });
 
             try {
-                const [personnelRes, estimateRes, ...allOtherResults] = await Promise.all([
+                const [personnelRes, estimateRes, term1Res, ...allOtherResults] = await Promise.all([
                     fetch(urlPersonnel).then(r => r.ok ? r.text() : null).catch(() => null),
                     fetch(urlEstimate).then(r => r.ok ? r.text() : null).catch(() => null),
+                    fetch(urlTerm1).then(r => r.ok ? r.text() : null).catch(() => null),
                     ...evalPromises,
                     ...attendancePromises
                 ]);
@@ -1110,6 +1148,11 @@
                 let estimateMap = {};
                 if (estimateRes) {
                     estimateMap = parseEstimateJSON(estimateRes);
+                }
+
+                let term1Map = {};
+                if (term1Res) {
+                    term1Map = parseTerm1JSON(term1Res);
                 }
 
                 const evalMaps = {};
@@ -1133,7 +1176,7 @@
                     }
                 });
 
-                compileData(rawPersonnel, evalMaps, rawAttendance, estimateMap, false);
+                compileData(rawPersonnel, evalMaps, rawAttendance, estimateMap, term1Map, false);
 
                 statusEl.innerHTML = `<span class="w-2 h-2 mr-1.5 bg-emerald-500 rounded-full"></span> ดึงข้อมูลสดสำเร็จ`;
                 statusEl.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800";
@@ -1142,7 +1185,7 @@
                 console.warn("API direct linking failed. Deploying beautiful simulated sandbox database.", err);
                 rawPersonnel = [...mockPersonnel];
                 rawAttendance = [...mockAttendanceRecords];
-                compileData(mockPersonnel, mockEvalSheets, mockAttendanceRecords, {}, true);
+                compileData(mockPersonnel, mockEvalSheets, mockAttendanceRecords, {}, {}, true);
 
                 statusEl.innerHTML = `<span class="w-2 h-2 mr-1.5 bg-amber-500 rounded-full"></span> โหมดออฟไลน์จำลอง`;
                 statusEl.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800";
@@ -1247,6 +1290,36 @@
             });
 
             return estimateMap;
+        }
+
+        // Term1 sheet columns: A=รหัส B=หมู่ C=ชื่อ D=ฉายา E-I=5 subject scores (0-100 each)
+        function parseTerm1JSON(responseText) {
+            const jsonString = responseText.substring(responseText.indexOf('{'), responseText.lastIndexOf('}') + 1);
+            const json = JSON.parse(jsonString);
+            const rows = json.table.rows;
+            const term1Map = {};
+
+            rows.forEach(r => {
+                if (!r || !r.c) return;
+                const valOf = (idx) => {
+                    if (r.c && r.c[idx]) {
+                        return r.c[idx].v !== null && r.c[idx].v !== undefined ? r.c[idx].v : (r.c[idx].f || '');
+                    }
+                    return '';
+                };
+
+                const idVal = parseInt(valOf(0));
+                if (!isNaN(idVal) && idVal) {
+                    const scores = TERM1_SUBJECTS.map((subj, i) => parseFloat(valOf(4 + i)) || 0);
+                    const hasData = scores.some(s => s > 0);
+                    const gradePoints = scores.map(scoreToGradePoint);
+                    const gpa = hasData ? (gradePoints.reduce((s, x) => s + x, 0) / gradePoints.length) : null;
+
+                    term1Map[idVal] = { scores, gradePoints, gpa, hasData };
+                }
+            });
+
+            return term1Map;
         }
 
         function parseEvaluationJSON(responseText, tabName) {
@@ -1409,7 +1482,7 @@
             return records;
         }
 
-        function compileData(personnelList, evalMaps, attendanceList, estimateMap, isMock = false) {
+        function compileData(personnelList, evalMaps, attendanceList, estimateMap, term1Map, isMock = false) {
             if (isMock) {
                 availableDates = new Set(['25/06/2026', '26/06/2026', '27/06/2026', '28/06/2026', '29/06/2026', '01/07/2026']);
             } else {
@@ -1553,6 +1626,19 @@
                     };
                 }
 
+                // Bind Term1 (เทอมแรก) subject grades
+                let term1Obj = {};
+                if (term1Map && term1Map[person.id] && term1Map[person.id].hasData) {
+                    term1Obj = term1Map[person.id];
+                } else {
+                    // Deterministic mock scores from person.id so sandbox mode still shows a GPA
+                    const base = 55 + ((person.id * 7) % 40);
+                    const mockScores = TERM1_SUBJECTS.map((s, i) => Math.min(100, Math.max(40, base + ((person.id + i * 3) % 15) - 7)));
+                    const mockGradePoints = mockScores.map(scoreToGradePoint);
+                    const mockGpa = mockGradePoints.reduce((s, x) => s + x, 0) / mockGradePoints.length;
+                    term1Obj = { scores: mockScores, gradePoints: mockGradePoints, gpa: mockGpa, hasData: true };
+                }
+
                 return {
                     ...person,
                     datesScores,
@@ -1577,7 +1663,8 @@
                         total: totalRoundsChecked,
                         rate: attendRate
                     },
-                    trainingScores: trainingScoresObj
+                    trainingScores: trainingScoresObj,
+                    term1Scores: term1Obj
                 };
             });
         }
@@ -2038,6 +2125,11 @@
                         : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700"><i class="fa-solid fa-triangle-exclamation"></i> ไม่ผ่านเกณฑ์</span>`)
                     : `<span class="text-slate-400 text-[11px]">ยังไม่มีข้อมูล</span>`;
 
+                const t1 = p.term1Scores || null;
+                const term1Cell = (t1 && t1.hasData)
+                    ? `<div class="font-black text-sky-700 text-xl leading-tight">${t1.gpa.toFixed(2)}</div>`
+                    : `<span class="text-slate-400 text-xs">ยังไม่มีข้อมูล</span>`;
+
                 const tr = `
                     <tr class="hover:bg-slate-50 transition cursor-pointer text-center" onclick="openPersonnelProfile(${p.id})">
                         <td class="px-4 py-3 whitespace-nowrap text-slate-500 font-semibold text-left">${p.id}</td>
@@ -2062,8 +2154,8 @@
                             <div class="font-black text-indigo-700 text-xl leading-tight">${trainingScoreText}</div>
                             <div class="mt-1">${trainingResultBadge}</div>
                         </td>
-                        <td class="px-4 py-3 text-center bg-sky-50/20 text-slate-400 text-xs">
-                            ยังไม่มีข้อมูล
+                        <td class="px-4 py-3 text-center bg-sky-50/20">
+                            ${term1Cell}
                         </td>
                         <td class="px-4 py-3 text-center bg-sky-50/20 text-slate-400 text-xs">
                             ยังไม่มีข้อมูล
@@ -2134,6 +2226,24 @@
                 resultEl.innerText = 'ยังไม่มีข้อมูล';
                 resultEl.className = 'font-bold text-slate-400';
                 if (notesEl) notesEl.innerText = 'ยังไม่มีข้อมูล';
+            }
+
+            const term1 = p.term1Scores || null;
+            const term1Container = document.getElementById('modal-term1-subjects');
+            const term1GpaEl = document.getElementById('modal-term1-gpa');
+            if (term1Container) {
+                if (term1 && term1.hasData) {
+                    term1Container.innerHTML = TERM1_SUBJECTS.map((subj, i) => `
+                        <div class="bg-white p-2 rounded border border-slate-100 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-500 font-semibold">${subj.label}</span>
+                            <span class="font-bold text-slate-700">${term1.scores[i]} <span class="text-[10px] text-slate-400 font-normal">(${term1.gradePoints[i].toFixed(1)})</span></span>
+                        </div>
+                    `).join('');
+                    term1GpaEl.innerText = term1.gpa.toFixed(2);
+                } else {
+                    term1Container.innerHTML = `<span class="text-slate-400 text-xs sm:col-span-2">ยังไม่มีข้อมูล</span>`;
+                    term1GpaEl.innerText = '-';
+                }
             }
 
             toggleDetailModal(true);
