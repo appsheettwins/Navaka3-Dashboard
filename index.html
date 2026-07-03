@@ -742,6 +742,34 @@
                 </div>
 
                 <!-- Daily attendance calendar (shown only when opened from the "เช็คชื่อ" tab) -->
+                <!-- Attendance breakdown -->
+                <div id="modal-section-attendance" class="border-t border-slate-100 pt-4 space-y-3">
+                    <h4 class="text-sm font-bold text-indigo-950 uppercase tracking-wider">รายละเอียดสถิติการเช็คชื่อเข้าเรียน</h4>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 grid grid-cols-5 gap-2 text-center text-sm">
+                        <div class="bg-white p-2 rounded border border-slate-100">
+                            <span class="block text-[11px] text-emerald-500">มา</span>
+                            <span id="modal-attend-present" class="font-bold text-emerald-600">- ครั้ง</span>
+                        </div>
+                        <div class="bg-white p-2 rounded border border-slate-100">
+                            <span class="block text-[11px] text-amber-500">สาย</span>
+                            <span id="modal-attend-late" class="font-bold text-amber-600">- ครั้ง</span>
+                        </div>
+                        <div class="bg-white p-2 rounded border border-slate-100">
+                            <span class="block text-[11px] text-blue-500">ลาป่วย</span>
+                            <span id="modal-attend-sick" class="font-bold text-blue-600">- ครั้ง</span>
+                        </div>
+                        <div class="bg-white p-2 rounded border border-slate-100">
+                            <span class="block text-[11px] text-violet-500">ลากิจ</span>
+                            <span id="modal-attend-leave" class="font-bold text-violet-600">- ครั้ง</span>
+                        </div>
+                        <div class="bg-white p-2 rounded border border-slate-200 bg-indigo-50/40">
+                            <span class="block text-[11px] text-indigo-700 font-bold">รวมเช็คชื่อ</span>
+                            <span id="modal-attend-total" class="font-bold text-slate-950">- ครั้ง</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily attendance calendar (shown only when opened from the "เช็คชื่อ" tab) -->
                 <div id="modal-section-attendance-calendar" class="hidden border-t border-slate-100 pt-4 space-y-3">
                     <div class="flex items-center justify-between">
                         <h4 class="text-sm font-bold text-indigo-950 uppercase tracking-wider flex items-center gap-1.5">
@@ -779,33 +807,6 @@
                     <!-- Day grid -->
                     <div id="modal-attendance-calendar-grid" class="grid grid-cols-7 gap-1">
                         <!-- Injected dynamically -->
-                    </div>
-                </div>
-
-                <!-- Attendance breakdown -->
-                <div id="modal-section-attendance" class="border-t border-slate-100 pt-4 space-y-3">
-                    <h4 class="text-sm font-bold text-indigo-950 uppercase tracking-wider">รายละเอียดสถิติการเช็คชื่อเข้าเรียน</h4>
-                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 grid grid-cols-5 gap-2 text-center text-sm">
-                        <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-[11px] text-emerald-500">มา</span>
-                            <span id="modal-attend-present" class="font-bold text-emerald-600">- ครั้ง</span>
-                        </div>
-                        <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-[11px] text-amber-500">สาย</span>
-                            <span id="modal-attend-late" class="font-bold text-amber-600">- ครั้ง</span>
-                        </div>
-                        <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-[11px] text-blue-500">ลาป่วย</span>
-                            <span id="modal-attend-sick" class="font-bold text-blue-600">- ครั้ง</span>
-                        </div>
-                        <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-[11px] text-violet-500">ลากิจ</span>
-                            <span id="modal-attend-leave" class="font-bold text-violet-600">- ครั้ง</span>
-                        </div>
-                        <div class="bg-white p-2 rounded border border-slate-200 bg-indigo-50/40">
-                            <span class="block text-[11px] text-indigo-700 font-bold">รวมเช็คชื่อ</span>
-                            <span id="modal-attend-total" class="font-bold text-slate-950">- ครั้ง</span>
-                        </div>
                     </div>
                 </div>
 
@@ -1190,7 +1191,7 @@
         let personnelFilteredIds = []; // Ordered list of ids matching Tab 3's currently applied filters
         let personnelCurrentIndex = -1; // Index of the currently open person within personnelFilteredIds
         let personnelModalOpenId = null; // id of the person currently displayed in the detail modal, or null when closed
-        let personnelModalContext = 'full'; // 'full', 'analytics', or 'attendance' — remembers which tab opened the modal so prev/next arrows keep the right layout
+        let personnelModalContext = 'full'; // 'full', 'analytics', 'attendance', or 'grades' — remembers which tab opened the modal so prev/next arrows keep the right layout
 
         let gradesActiveTerm = 'term2'; // 'term1' or 'term2' — which term's grades tab is currently showing
 
@@ -2527,6 +2528,7 @@
             // Toggle which sections show depending on where the modal was opened from:
             // - "ความเป็นอยู่" (analytics) tab: shows only the daily wellbeing-score calendar
             // - "เช็คชื่อ" (attendance) tab: shows only attendance data (summary + daily attendance calendar)
+            // - "ผลการเรียน" (grades) tab: shows only term1/term2 grade data
             // - every other tab ('full'): shows the complete profile (scores, attendance, training eval, grades)
             const scorebreakdownSection = document.getElementById('modal-section-scorebreakdown');
             const calendarSection = document.getElementById('modal-section-calendar');
@@ -2536,17 +2538,20 @@
             const term1Section = document.getElementById('modal-section-term1');
             const term2Section = document.getElementById('modal-section-term2');
             const badgeScoreEl = document.getElementById('modal-badge-score');
+            const badgeAttendEl = document.getElementById('modal-badge-attend');
             const isAnalyticsContext = context === 'analytics';
             const isAttendanceContext = context === 'attendance';
+            const isGradesContext = context === 'grades';
 
-            if (scorebreakdownSection) scorebreakdownSection.classList.toggle('hidden', isAttendanceContext);
+            if (scorebreakdownSection) scorebreakdownSection.classList.toggle('hidden', isAttendanceContext || isGradesContext);
             if (calendarSection) calendarSection.classList.toggle('hidden', !isAnalyticsContext);
             if (attendanceCalendarSection) attendanceCalendarSection.classList.toggle('hidden', !isAttendanceContext);
-            if (attendanceSection) attendanceSection.classList.toggle('hidden', isAnalyticsContext);
-            if (trainingevalSection) trainingevalSection.classList.toggle('hidden', isAnalyticsContext || isAttendanceContext);
+            if (attendanceSection) attendanceSection.classList.toggle('hidden', isAnalyticsContext || isGradesContext);
+            if (trainingevalSection) trainingevalSection.classList.toggle('hidden', isAnalyticsContext || isAttendanceContext || isGradesContext);
             if (term1Section) term1Section.classList.toggle('hidden', isAnalyticsContext || isAttendanceContext);
             if (term2Section) term2Section.classList.toggle('hidden', isAnalyticsContext || isAttendanceContext);
-            if (badgeScoreEl) badgeScoreEl.classList.toggle('hidden', isAttendanceContext);
+            if (badgeScoreEl) badgeScoreEl.classList.toggle('hidden', isAttendanceContext || isGradesContext);
+            if (badgeAttendEl) badgeAttendEl.classList.toggle('hidden', isGradesContext);
 
             if (isAnalyticsContext) {
                 initModalCalendar(p.id);
@@ -2699,7 +2704,7 @@
 
             panel.innerHTML = `
                 <div class="font-bold text-slate-700 mb-2">คะแนนวันที่ ${dateStr}</div>
-                <div class="space-y-2">${rows}</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${rows}</div>
                 <div class="flex items-center justify-between border-t border-slate-200 mt-2 pt-2">
                     <span class="font-bold text-indigo-800">รวมของวันนี้</span>
                     <span class="font-black text-indigo-800">${entry.total} / ${entry.maxPossible}</span>
@@ -3412,7 +3417,7 @@
                     : '';
 
                 const tr = `
-                    <tr class="hover:bg-slate-50 transition cursor-pointer text-center" onclick="openPersonnelProfile(${p.id})">
+                    <tr class="hover:bg-slate-50 transition cursor-pointer text-center" onclick="openPersonnelProfile(${p.id}, 'grades')">
                         <td class="px-4 py-3 whitespace-nowrap text-slate-500 font-semibold text-left">${p.id}</td>
                         <td class="px-4 py-3 whitespace-nowrap">
                             <span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-medium">หมู่ ${p.village}</span>
