@@ -122,19 +122,19 @@
     <div class="sticky-tabs-locked bg-slate-100/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex space-x-2 overflow-x-auto no-scrollbar">
             <button onclick="switchTab('personnel')" id="tab-personnel-btn" class="text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-sm md:text-base font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
-                <i class="fa-solid fa-address-book"></i> ผลรวมการประเมิน
+                <i class="fa-solid fa-address-book"></i> สรุปประเมิน
             </button>
             <button onclick="switchTab('analytics')" id="tab-analytics-btn" class="bg-indigo-600 text-white shadow-sm px-4 py-2.5 rounded-lg text-sm md:text-base font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
-                <i class="fa-solid fa-chart-pie"></i> สถิติคะแนนความเป็นอยู่
+                <i class="fa-solid fa-chart-pie"></i> ความเป็นอยู่
             </button>
             <button onclick="switchTab('attendance')" id="tab-attendance-btn" class="text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-sm md:text-base font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
-                <i class="fa-solid fa-clipboard-user"></i> สถิติการเช็คชื่อ
+                <i class="fa-solid fa-clipboard-user"></i> เช็คชื่อ
             </button>
             <button onclick="switchTab('grades')" id="tab-grades-btn" class="text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-sm md:text-base font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
                 <i class="fa-solid fa-graduation-cap"></i> ผลการเรียน
             </button>
             <button onclick="switchTab('trainingeval')" id="tab-trainingeval-btn" class="text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-sm md:text-base font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
-                <i class="fa-solid fa-scroll"></i> การประเมินช่วงอบรม
+                <i class="fa-solid fa-scroll"></i> คะแนนอบรม
             </button>
             <button onclick="switchTab('sources')" id="tab-sources-btn" class="text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-sm md:text-base font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
                 <i class="fa-solid fa-circle-nodes"></i> แหล่งข้อมูล
@@ -334,17 +334,6 @@
         <div id="tab-personnel" class="hidden space-y-6">
             
             <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-5">
-                
-                <!-- Header and Views controls -->
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-5 border-b border-slate-100">
-                    <div>
-                        <h3 class="text-base md:text-lg font-bold text-slate-900 flex items-center gap-1.5">
-                            <i class="fa-solid fa-address-book text-indigo-600"></i> ทำเนียบข้อมูลสรุปผลประเมินรวมและความเป็นอยู่สะสม
-                        </h3>
-                        <p class="text-sm text-slate-500 mt-0.5 font-medium">รวมคะแนนสะสม 5 มิติดิบและอัตราการเช็คชื่อเข้าชั้นเรียน 4 รอบหลักเป็นหนึ่งเดียว</p>
-                    </div>
-                    
-                </div>
 
                 <!-- Filters specifically inside Tab 3 -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4 mb-6">
@@ -2926,6 +2915,17 @@
             return gradesActiveTerm === 'term1' ? TERM1_SUBJECTS : TERM2_SUBJECTS;
         }
 
+        // Combined GPA across Term1 + Term2 — averages both terms when both exist,
+        // falls back to whichever single term has data, or null when neither does.
+        function computeCombinedGpa(p) {
+            const t1 = p.term1Scores && p.term1Scores.hasData ? p.term1Scores.gpa : null;
+            const t2 = p.term2Scores && p.term2Scores.hasData ? p.term2Scores.gpa : null;
+            if (t1 != null && t2 != null) return (t1 + t2) / 2;
+            if (t1 != null) return t1;
+            if (t2 != null) return t2;
+            return null;
+        }
+
         function renderGradesTableHead() {
             const row = document.getElementById('grades-table-head-row');
             if (!row) return;
@@ -2933,8 +2933,8 @@
             const subjectHeaders = subjects.map(s => `<th class="sticky top-0 z-10 bg-slate-50 px-3 py-3 text-center">${s.label}</th>`).join('');
             row.innerHTML = `
                 <th class="sticky top-0 z-10 bg-slate-50 px-4 py-3 text-left w-10">รหัส</th>
-                <th class="sticky top-0 z-10 bg-slate-50 px-4 py-3 text-left">ชื่อ - ฉายา</th>
                 <th class="sticky top-0 z-10 bg-slate-50 px-4 py-3 text-center w-12">หมู่</th>
+                <th class="sticky top-0 z-10 bg-slate-50 px-4 py-3 text-left">ชื่อ - ฉายา</th>
                 ${subjectHeaders}
                 <th class="sticky top-0 z-10 bg-sky-50 px-4 py-3 text-center">เกรดเฉลี่ย (GPA)</th>
             `;
@@ -3006,13 +3006,18 @@
                     gpaCell = `<span class="text-slate-400 text-xs">ยังไม่มีข้อมูล</span>`;
                 }
 
+                const combinedGpa = computeCombinedGpa(p);
+                const combinedGpaBadge = combinedGpa != null
+                    ? `<span class="ml-1.5 inline-flex items-center text-[11px] font-bold text-sky-600 whitespace-nowrap">(เกรดเฉลี่ยรวม: ${combinedGpa.toFixed(2)})</span>`
+                    : '';
+
                 const tr = `
                     <tr class="hover:bg-slate-50 transition cursor-pointer text-center" onclick="openPersonnelProfile(${p.id})">
                         <td class="px-4 py-3 whitespace-nowrap text-slate-500 font-semibold text-left">${p.id}</td>
-                        <td class="px-4 py-3 whitespace-nowrap font-bold text-slate-900 text-left">${p.name}</td>
                         <td class="px-4 py-3 whitespace-nowrap">
                             <span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-medium">หมู่ ${p.village}</span>
                         </td>
+                        <td class="px-4 py-3 whitespace-nowrap font-bold text-slate-900 text-left">${p.name}${combinedGpaBadge}</td>
                         ${scoreCells}
                         <td class="px-4 py-3 text-center bg-sky-50/20">
                             ${gpaCell}
