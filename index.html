@@ -393,7 +393,6 @@
                                 <th class="px-4 py-3 text-center bg-amber-50/40">ความเป็นอยู่<br><span class="font-normal text-[11px]">(% จากวันที่ประเมินจริง)</span></th>
                                 <th class="px-4 py-3 text-center bg-indigo-50/40">ประวัติเช็คชื่อ<br><span class="font-normal text-[11px]">(มา/สาย/ลาป่วย/ลากิจ)</span></th>
                                 <th class="px-4 py-3 text-center bg-emerald-50/40">คะแนนรวม<br><span class="font-normal text-[11px]">(ประเมินช่วงอบรม)</span></th>
-                                <th class="px-4 py-3 text-center bg-emerald-50/40">การประเมิน</th>
                             </tr>
                         </thead>
                         <tbody id="table-body" class="bg-white divide-y divide-slate-200 text-slate-700">
@@ -688,18 +687,12 @@
                     <i class="fa-solid fa-scroll text-indigo-600"></i> แบบประเมินพระนวกะช่วงอบรม
                 </span>
                 <div class="flex items-center gap-2">
-                    <!-- Offset adjustment buttons -->
-                    <div class="inline-flex items-center gap-1 bg-slate-100 p-1 rounded-lg mr-2">
-                        <span class="text-[11px] text-slate-500 font-bold px-1">จัดตำแหน่ง:</span>
-                        <button onclick="adjustTrainingEvalOffset(-15)" class="px-2 py-1 bg-white hover:bg-slate-200 border border-slate-200 text-[11px] rounded font-bold" title="ขยับซ้าย"><i class="fa-solid fa-arrow-left"></i> ซ้าย</button>
-                        <button onclick="adjustTrainingEvalOffset(0)" class="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-[11px] rounded text-indigo-700 font-bold" title="จัดกลาง">จัดกึ่งกลาง</button>
-                        <button onclick="adjustTrainingEvalOffset(15)" class="px-2 py-1 bg-white hover:bg-slate-200 border border-slate-200 text-[11px] rounded font-bold" title="ขยับขวา">ขวา <i class="fa-solid fa-arrow-right"></i></button>
-                    </div>
                     <button onclick="toggleTrainingEvalModal(false)" class="text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-1.5 w-8 h-8 flex items-center justify-center">
                         <i class="fa-solid fa-xmark text-xl"></i>
                     </button>
                 </div>
             </div>
+
 
             <!-- Printable Form Body -->
             <div id="trainingeval-print-area" class="overflow-y-auto custom-scrollbar p-6 space-y-4 text-slate-800 bg-white flex justify-center items-start">
@@ -772,7 +765,7 @@
                     <div class="space-y-3 text-xs pt-1">
                         <div>
                             <span class="font-semibold text-slate-500">รายละเอียดความประพฤติ</span>
-                            <div id="trainingeval-notes-display" class="border border-slate-100 p-2 bg-slate-50 rounded min-h-[40px] text-slate-700"></div>
+                            <div id="trainingeval-notes-display" class="border-2 border-indigo-200 p-3 bg-slate-50 rounded-lg min-h-[40px] text-sm md:text-base leading-relaxed text-slate-800"></div>
                         </div>
                         <div class="flex flex-col items-end gap-1 pt-2">
                             <div class="text-center">
@@ -1428,7 +1421,24 @@
                     const raotak = evalMaps['ราวตาก']?.[person.id]?.[date];
                     const homdong = evalMaps['ห่มดอง']?.[person.id]?.[date];
 
-                    const hasRecord = (jumwat !== undefined || takra !== undefined || wiman !== undefined || raotak !== undefined || homdong !== undefined);
+                    const evaluatedTopics = {
+                        jumwat: jumwat !== undefined,
+                        takra: takra !== undefined,
+                        wiman: wiman !== undefined,
+                        raotak: raotak !== undefined,
+                        homdong: homdong !== undefined
+                    };
+
+                    // Only topics that actually have an entry for this day count toward that day's max —
+                    // days/topics with no evaluation are simply excluded, not scored as 0 out of the full total.
+                    const dayMaxPossible =
+                        (evaluatedTopics.jumwat ? TOPIC_METRIC_MAP.jumwat.max : 0) +
+                        (evaluatedTopics.takra ? TOPIC_METRIC_MAP.takra.max : 0) +
+                        (evaluatedTopics.wiman ? TOPIC_METRIC_MAP.wiman.max : 0) +
+                        (evaluatedTopics.raotak ? TOPIC_METRIC_MAP.raotak.max : 0) +
+                        (evaluatedTopics.homdong ? TOPIC_METRIC_MAP.homdong.max : 0);
+
+                    const hasRecord = dayMaxPossible > 0;
 
                     if (hasRecord) {
                         datesScores[date] = {
@@ -1438,11 +1448,15 @@
                             raotak: raotak !== undefined ? raotak : 0,
                             homdong: homdong !== undefined ? homdong : 0,
                             total: (jumwat || 0) + (takra || 0) + (wiman || 0) + (raotak || 0) + (homdong || 0),
+                            maxPossible: dayMaxPossible,
+                            evaluatedTopics,
                             hasRealEntry: true
                         };
                     } else {
                         datesScores[date] = {
                             jumwat: 0, takra: 0, wiman: 0, raotak: 0, homdong: 0, total: 0,
+                            maxPossible: 0,
+                            evaluatedTopics,
                             hasRealEntry: false
                         };
                     }
@@ -1454,6 +1468,8 @@
                 let cumulativeRaotak = 0;
                 let cumulativeHomdong = 0;
                 let cumulativeTotal = 0;
+                let cumulativeMaxPossible = 0;
+                const cumulativeMaxByTopic = { jumwat: 0, takra: 0, wiman: 0, raotak: 0, homdong: 0 };
                 let activeDaysCount = 0;
 
                 datesArray.forEach(date => {
@@ -1466,6 +1482,12 @@
                         cumulativeRaotak += d.raotak;
                         cumulativeHomdong += d.homdong;
                         cumulativeTotal += d.total;
+                        cumulativeMaxPossible += d.maxPossible;
+                        if (d.evaluatedTopics.jumwat) cumulativeMaxByTopic.jumwat += TOPIC_METRIC_MAP.jumwat.max;
+                        if (d.evaluatedTopics.takra) cumulativeMaxByTopic.takra += TOPIC_METRIC_MAP.takra.max;
+                        if (d.evaluatedTopics.wiman) cumulativeMaxByTopic.wiman += TOPIC_METRIC_MAP.wiman.max;
+                        if (d.evaluatedTopics.raotak) cumulativeMaxByTopic.raotak += TOPIC_METRIC_MAP.raotak.max;
+                        if (d.evaluatedTopics.homdong) cumulativeMaxByTopic.homdong += TOPIC_METRIC_MAP.homdong.max;
                     }
                 });
 
@@ -1529,6 +1551,8 @@
                         raotak: cumulativeRaotak,
                         homdong: cumulativeHomdong,
                         total: cumulativeTotal,
+                        maxPossible: cumulativeMaxPossible,
+                        maxByTopic: cumulativeMaxByTopic,
                         activeDaysCount: activeDaysCount
                     },
                     attendanceRecords: individualAttend,
@@ -1709,21 +1733,25 @@
             filteredPersonnel = compiledPersonnel.map(item => {
                 let activeScores = {};
                 let activeTotal = 0;
+                let activeMaxPossible = 0;
                 let activeDaysCount = item.cumulativeScores.activeDaysCount;
 
                 if (dateVal === 'all') {
                     activeScores = { ...item.cumulativeScores };
                     activeTotal = item.cumulativeScores.total;
+                    activeMaxPossible = item.cumulativeScores.maxPossible || 0;
                 } else {
-                    const dayData = item.datesScores[dateVal] || { jumwat: 0, takra: 0, wiman: 0, raotak: 0, homdong: 0, total: 0 };
+                    const dayData = item.datesScores[dateVal] || { jumwat: 0, takra: 0, wiman: 0, raotak: 0, homdong: 0, total: 0, maxPossible: 0 };
                     activeScores = { ...dayData };
                     activeTotal = dayData.total;
+                    activeMaxPossible = dayData.maxPossible || 0;
                 }
 
                 return {
                     ...item,
                     activeScores,
                     activeTotal,
+                    activeMaxPossible,
                     activeDaysCount
                 };
             }).filter(item => {
@@ -1971,11 +1999,11 @@
             filteredPersonnel.forEach(p => {
                 const imgUrl = parseDriveImageUrl(p.image);
 
-                // Percentage based on days actually evaluated for this person (not the whole period)
-                const evaluatedDays = dateVal === 'all' ? (p.activeDaysCount || 0) : (p.activeTotal > 0 ? 1 : 0);
-                const personalMaxCap = 155 * (evaluatedDays || 1);
-                const livingPct = evaluatedDays > 0 ? Math.min((p.activeTotal / personalMaxCap) * 100, 100) : 0;
-                const scoreSummary = `${livingPct.toFixed(1)}%`;
+                // Percentage based only on topics that were actually evaluated (per day) —
+                // days/topics with no entry are excluded from both the score and the denominator.
+                const activeMaxPossible = p.activeMaxPossible || 0;
+                const livingPct = activeMaxPossible > 0 ? Math.min((p.activeTotal / activeMaxPossible) * 100, 100) : 0;
+                const scoreSummary = activeMaxPossible > 0 ? `${livingPct.toFixed(1)}%` : 'ไม่มีข้อมูล';
 
                 const sc = p.cumulativeScores;
                 const scoreBreakdown = `<span class="text-indigo-700">⛺${sc.jumwat}</span> <span class="text-blue-600">🧺${sc.takra}</span> <span class="text-cyan-600">🏰${sc.wiman}</span> <span class="text-amber-600">🧣${sc.raotak}</span> <span class="text-emerald-600">🧥${sc.homdong}</span>`;
@@ -2009,8 +2037,10 @@
                         <td class="px-4 py-3 text-center bg-indigo-50/10">
                             <div class="text-[11px] font-semibold space-x-1">${attendSummary}</div>
                         </td>
-                        <td class="px-4 py-3 text-center font-bold text-indigo-700 bg-emerald-50/20">${trainingScoreText}</td>
-                        <td class="px-4 py-3 text-center bg-emerald-50/20">${trainingResultBadge}</td>
+                        <td class="px-4 py-3 text-center bg-emerald-50/20">
+                            <div class="font-bold text-indigo-700">${trainingScoreText}</div>
+                            <div class="mt-1">${trainingResultBadge}</div>
+                        </td>
                     </tr>
                 `;
                 tbody.innerHTML += tr;
@@ -2021,10 +2051,11 @@
             const p = compiledPersonnel.find(x => x.id === id);
             if (!p) return;
 
-            const days = availableDates.size || 1;
-            const maxCap = 155 * days;
-            const limits = { jumwat: 50 * days, takra: 25 * days, wiman: 25 * days, raotak: 30 * days, homdong: 25 * days };
             const scores = p.cumulativeScores;
+            // Only count topics that were actually evaluated toward the max — days/topics
+            // with no entry are excluded from the denominator rather than assumed as 0/max.
+            const maxCap = scores.maxPossible || 0;
+            const limits = scores.maxByTopic || { jumwat: 0, takra: 0, wiman: 0, raotak: 0, homdong: 0 };
 
             document.getElementById('modal-img').src = parseDriveImageUrl(p.image);
             document.getElementById('modal-title-name').innerText = p.name;
@@ -2038,7 +2069,7 @@
             const items = ['jumwat', 'takra', 'wiman', 'raotak', 'homdong'];
             items.forEach(it => {
                 const score = scores[it] || 0;
-                const singleMax = limits[it];
+                const singleMax = limits[it] || 0;
                 document.getElementById(`score-${it}-val`).innerText = `${score} / ${singleMax}`;
                 const barPct = singleMax > 0 ? Math.min((score / singleMax) * 100, 100) : 0;
                 document.getElementById(`bar-${it}`).style.width = `${barPct}%`;
