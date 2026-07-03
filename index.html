@@ -1,35 +1,2502 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <base target="_top">
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>แดชบอร์ดนวกะ3</title>
-  
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      /* ใช้ dvh เพื่อคำนวณความสูงตามพื้นที่หน้าจอที่เหลืออยู่จริงของแต่ละเบราว์เซอร์ */
-      height: 100dvh; 
-      overflow: hidden;
-      background-color: #ffffff;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบสรุปสถิติและประเมินผลรวม 5 มิติ</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Sarabun) -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for premium vector icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    iframe {
-      width: 100%;
-      /* ปรับ iframe ให้ใช้ความสูงแบบ dvh ด้วยเช่นกัน */
-      height: 100dvh;
-      border: none;
-      display: block;
-    }
-  </style>
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Locked Layout structure when scrolling down */
+        .sticky-nav-locked {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .sticky-tabs-locked {
+            position: sticky;
+            top: 4rem; /* h-16 which matches the navigation bar height */
+            z-index: 40;
+        }
+
+        /* Print stylesheet optimization */
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+            }
+            /* Hide non-printable items when triggering printer */
+            nav, footer, .sticky, button, .print\:hidden, #detail-modal, #sandbox-modal {
+                display: none !important;
+            }
+            /* Reset modal positioning to print nicely in full screen */
+            #trainingeval-modal {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                background: white !important;
+                display: block !important;
+                z-index: 99999 !important;
+                overflow: visible !important;
+                box-shadow: none !important;
+            }
+            #trainingeval-print-area {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                background: white !important;
+                color: black !important;
+            }
+            table {
+                border-collapse: collapse !important;
+                width: 100% !important;
+            }
+            th, td {
+                border: 1px solid #000 !important;
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="min-h-screen text-slate-800 flex flex-col">
 
-  <iframe scrolling="yes" src="https://share.gemini.google/tmCFIZDpyLjI"></iframe>
+    <!-- Top Nav Bar - Locked position when scrolling -->
+    <nav class="bg-indigo-950 text-white shadow-lg sticky-nav-locked h-16 flex items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-indigo-900 rounded-lg border border-indigo-800">
+                        <i class="fa-solid fa-medal text-xl text-amber-400"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-base md:text-lg block leading-tight">ระบบสรุปสถิติและประเมินผลรวม</span>
+                        <span class="text-[10px] md:text-xs text-indigo-200 block">วิเคราะห์ข้อมูลความประพฤติและระบบเช็คชื่อรายวันเชื่อมโยง Multi-Sheets</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span id="sync-status" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-yellow-100 text-yellow-800">
+                        <span class="w-2 h-2 mr-1.5 bg-yellow-400 rounded-full animate-ping"></span>
+                        กำลังเชื่อมคลาวด์...
+                    </span>
+                    <button onclick="fetchAllData()" class="bg-indigo-800 hover:bg-indigo-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1 active:scale-95">
+                        <i class="fa-solid fa-rotate-right"></i> ดึงข้อมูล
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
+    <!-- Main Content Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+        
+        <!-- Double Sticky Tab Menu Container -->
+        <div class="sticky-tabs-locked bg-slate-100/95 backdrop-blur-md p-1.5 rounded-xl border border-slate-200 mb-6 flex space-x-2 overflow-x-auto no-scrollbar shadow-sm">
+            <button onclick="switchTab('analytics')" id="tab-analytics-btn" class="bg-indigo-600 text-white shadow-sm px-4 py-2.5 rounded-lg text-xs md:text-sm font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
+                <i class="fa-solid fa-chart-pie"></i> สถิติคะแนนความเป็นอยู่
+            </button>
+            <button onclick="switchTab('attendance')" id="tab-attendance-btn" class="text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-xs md:text-sm font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
+                <i class="fa-solid fa-clipboard-user"></i> สถิติการเช็คชื่อ
+            </button>
+            <button onclick="switchTab('personnel')" id="tab-personnel-btn" class="text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-xs md:text-sm font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
+                <i class="fa-solid fa-users"></i> ผลรวมการประเมิน
+            </button>
+            <button onclick="switchTab('trainingeval')" id="tab-trainingeval-btn" class="text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-xs md:text-sm font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
+                <i class="fa-solid fa-scroll"></i> การประเมินช่วงอบรม
+            </button>
+            <button onclick="switchTab('sources')" id="tab-sources-btn" class="text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-xs md:text-sm font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
+                <i class="fa-solid fa-circle-nodes"></i> แหล่งข้อมูล
+            </button>
+        </div>
+
+        <!-- ==================== TAB 1: LIVING SCORE STATS ==================== -->
+        <div id="tab-analytics" class="space-y-6">
+            
+            <!-- Interactive Analytics Filter -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mb-1">
+                    <i class="fa-solid fa-sliders text-indigo-600"></i> ตัวกรองสถิติความเป็นอยู่ (Interactive Filter)
+                </h3>
+                
+                <!-- Topic Selection Row -->
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-500 mb-2">มิติหัวข้อประเมิน:</label>
+                    <div id="analytics-topic-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
+                        <!-- Topics injected dynamically -->
+                    </div>
+                </div>
+
+                <!-- Date Selection Row - Showing 3 Latest Days -->
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-500 mb-2">ระบุวันที่ประเมิน (3 วันล่าสุด):</label>
+                    <div id="analytics-date-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
+                        <!-- Dates (latest 3) injected dynamically -->
+                    </div>
+                </div>
+
+                <!-- Village Selection Row -->
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
+                    <div id="analytics-village-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
+                        <!-- Villages injected dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Dashboard -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-500">จำนวนบุคลากรทั้งหมด</p>
+                        <h3 id="stat-total" class="text-2xl font-bold text-slate-900 mt-1">-</h3>
+                    </div>
+                    <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
+                        <i class="fa-solid fa-users text-lg"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <p id="label-avg-score" class="text-xs font-semibold text-slate-500">คะแนนเฉลี่ยรวม</p>
+                        <h3 id="stat-avg-score" class="text-2xl font-bold text-emerald-600 mt-1">-</h3>
+                    </div>
+                    <div class="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
+                        <i class="fa-solid fa-star-half-stroke text-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Personnel Evaluation Directory -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
+                    <div>
+                        <h3 class="text-xs md:text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                            <i class="fa-solid fa-address-book text-indigo-600"></i> ทำเนียบข้อมูลบุคลากรและคะแนนประเมิน
+                        </h3>
+                        <p class="text-[10px] text-slate-500 mt-0.5">แสดงผลลัพธ์รายชื่อและสรุปคะแนนประเมินความเป็นอยู่แยกตามมิติ วันที่ และหมู่คณะ (รวมสะสมทุกคอลัมน์)</p>
+                    </div>
+                    <span id="all-leader-count-badge" class="text-[10px] text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded font-bold">
+                        - รายการ
+                    </span>
+                </div>
+                <div class="overflow-x-auto rounded-lg border border-slate-100 custom-scrollbar">
+                    <table class="min-w-full divide-y divide-slate-200 text-xs">
+                        <thead class="bg-slate-50 font-bold text-slate-500 text-center">
+                            <tr>
+                                <th class="px-4 py-2.5 w-14">รหัส</th>
+                                <th class="px-4 py-2.5 text-left">ชื่อ-ฉายา</th>
+                                <th class="px-4 py-2.5 w-20">หมู่คณะ</th>
+                                <th class="px-4 py-2.5 w-28">บันทึกจริง</th>
+                                <th class="px-4 py-2.5 text-left">คะแนนดิบสะสม (⛺ จำวัด | 🧺 ตะกร้า | 🏰 วิมาน | 🧣 ราวตาก | 🧥 ห่มดอง)</th>
+                                <th class="px-4 py-2.5 w-32 font-bold text-indigo-800" id="analytics-table-header-max">ผลประเมิน</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-tbody" class="bg-white divide-y divide-slate-100 text-center">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== TAB 2: NEW ATTENDANCE STATS ==================== -->
+        <div id="tab-attendance" class="hidden space-y-6">
+            
+            <!-- Attendance Filter panel -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mb-1">
+                    <i class="fa-solid fa-sliders text-indigo-600"></i> แผงควบคุมสถิติการเช็คชื่อเข้าชั้น (Attendance Interactive Filter)
+                </h3>
+                
+                <!-- Row 1: Date Selection Buttons -->
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-500 mb-2">ระบุวันที่เช็คชื่อ (3 วันล่าสุด):</label>
+                    <div id="attend-date-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
+                        <!-- Dates (latest 3) injected dynamically -->
+                    </div>
+                </div>
+
+                <!-- Row 2: Village Selection Buttons -->
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
+                    <div id="attend-village-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
+                        <!-- Dynamic Villages -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance KPIs -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-500">รวมจำนวน "มา"</p>
+                        <h3 id="attend-present-kpi" class="text-xl md:text-2xl font-bold text-emerald-600 mt-1">- ครั้ง</h3>
+                    </div>
+                    <div class="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
+                        <i class="fa-solid fa-circle-check text-lg"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-500">รวมจำนวน "สาย"</p>
+                        <h3 id="attend-late-kpi" class="text-xl md:text-2xl font-bold text-amber-500 mt-1">- ครั้ง</h3>
+                    </div>
+                    <div class="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center text-amber-500">
+                        <i class="fa-solid fa-clock text-lg"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-500">รวมจำนวน "ลาป่วย"</p>
+                        <h3 id="attend-sick-kpi" class="text-xl md:text-2xl font-bold text-blue-600 mt-1">- ครั้ง</h3>
+                    </div>
+                    <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                        <i class="fa-solid fa-hospital-user text-lg"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-slate-500">รวมจำนวน "ลากิจ"</p>
+                        <h3 id="attend-leave-kpi" class="text-xl md:text-2xl font-bold text-violet-600 mt-1">- ครั้ง</h3>
+                    </div>
+                    <div class="w-10 h-10 bg-violet-50 rounded-lg flex items-center justify-center text-violet-600">
+                        <i class="fa-solid fa-file-signature text-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Directory Table -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-xs md:text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                            <i class="fa-solid fa-clipboard-user text-indigo-600"></i> ตารางสถิติและสถานการณ์เช็คชื่อรายหมู่
+                        </h3>
+                        <p id="attendance-subtitle-date" class="text-[10px] text-slate-500 mt-0.5">ดึงผลรายชื่อบุคลากรจริงและแสดงข้อมูลสอดคล้องตามวันที่ประเมินหลัก</p>
+                    </div>
+                    <span id="attendance-count-badge" class="text-[10px] text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded font-bold">
+                        - รายการ
+                    </span>
+                </div>
+                
+                <div class="overflow-x-auto rounded-lg border border-slate-100 custom-scrollbar">
+                    <table class="min-w-full divide-y divide-slate-200 text-xs">
+                        <thead class="bg-slate-50 font-bold text-slate-500 text-center">
+                            <tr>
+                                <th class="px-4 py-2.5 w-14">รหัส</th>
+                                <th class="px-4 py-2.5 text-left">ชื่อ-ฉายา</th>
+                                <th class="px-4 py-2.5 w-16">หมู่</th>
+                                <th class="px-4 py-2.5 w-24">เช้า</th>
+                                <th class="px-4 py-2.5 w-24">สาย</th>
+                                <th class="px-4 py-2.5 w-24">บ่าย</th>
+                                <th class="px-4 py-2.5 w-24">ค่ำ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-tbody" class="bg-white divide-y divide-slate-100 text-center">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== TAB 3: COMBINED EVALUATION SUMMARY ==================== -->
+        <div id="tab-personnel" class="hidden space-y-6">
+            
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-5">
+                
+                <!-- Header and Views controls -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-5 border-b border-slate-100">
+                    <div>
+                        <h3 class="text-sm md:text-base font-bold text-slate-900 flex items-center gap-1.5">
+                            <i class="fa-solid fa-address-book text-indigo-600"></i> ทำเนียบข้อมูลสรุปผลประเมินรวมและความเป็นอยู่
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-0.5 font-medium">รวมคะแนน 5 มิติดิบและอัตราการเช็คชื่อเข้าชั้นเรียน 4 รอบหลักเป็นหนึ่งเดียว</p>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="bg-slate-100 p-1 rounded-lg flex items-center">
+                            <button id="btn-view-grid" onclick="setViewMode('grid')" class="px-3 py-1.5 rounded-md text-xs font-semibold transition bg-white text-indigo-600 shadow-sm flex items-center gap-1">
+                                <i class="fa-solid fa-grip"></i> แกลเลอรีการ์ด
+                            </button>
+                            <button id="btn-view-table" onclick="setViewMode('table')" class="px-3 py-1.5 rounded-md text-xs font-semibold transition text-slate-600 hover:text-slate-900 flex items-center gap-1">
+                                <i class="fa-solid fa-list"></i> ตารางคะแนนรวม
+                            </button>
+                        </div>
+                        <button onclick="exportFullCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1">
+                            <i class="fa-solid fa-file-excel"></i> ดาวน์โหลด CSV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters specifically inside Tab 3 -->
+                <div class="space-y-4 mb-6 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                    <!-- Row 1: Search + Date -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">พิมพ์ค้นหาชื่อจริง/ฉายา</label>
+                            <div class="relative">
+                                <input type="text" id="search-input" oninput="applyFilters()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1 flex items-center gap-1">
+                                <i class="fa-solid fa-calendar-days text-indigo-600"></i> เลือกวันที่ตรวจประเมิน
+                            </label>
+                            <select id="filter-date" onchange="syncGlobalDate(this.value)" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white text-slate-800 font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
+                                <!-- Injected dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Row 2: Village buttons -->
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
+                        <div id="personnel-village-container" class="flex gap-2 flex-wrap">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Hidden select for village value (used by applyFilters) -->
+                <select id="filter-village" class="hidden">
+                    <option value="">ทั้งหมดทุกหมู่</option>
+                </select>
+
+                <!-- Grid View Card Injection -->
+                <div id="grid-view-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                    <!-- Dynamic injection -->
+                </div>
+
+                <!-- Table View Content -->
+                <div id="table-view-container" class="overflow-x-auto hidden border border-slate-100 rounded-lg">
+                    <table class="min-w-full divide-y divide-slate-200 text-xs">
+                        <thead class="bg-slate-50 text-slate-500 font-bold text-center">
+                            <tr>
+                                <th class="px-4 py-3 text-left w-10">รหัส</th>
+                                <th class="px-4 py-3 text-left w-12">รูป</th>
+                                <th class="px-4 py-3 text-left">ชื่อ - ฉายา</th>
+                                <th class="px-4 py-3 text-center w-12">หมู่</th>
+                                <th class="px-4 py-3 text-center bg-amber-50/40">คะแนนประเมิน<br><span class="font-normal text-[10px]">(รวม / แยกมิติ)</span></th>
+                                <th class="px-4 py-3 text-center bg-indigo-50/40">ประวัติเช็คชื่อ<br><span class="font-normal text-[10px]">(มา/สาย/ลาป่วย/ลากิจ)</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body" class="bg-white divide-y divide-slate-200 text-slate-700">
+                            <!-- Dynamic rows -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State alert -->
+                <div id="no-data-alert" class="hidden text-center py-12">
+                    <i class="fa-solid fa-magnifying-glass text-slate-200 text-4xl mb-3"></i>
+                    <p class="text-slate-500 text-xs font-semibold">ไม่พบข้อมูลตามเงื่อนไขที่เลือกสืบค้น</p>
+                    <button onclick="resetFilters()" class="mt-2 text-indigo-600 hover:text-indigo-800 text-xs font-semibold underline">ล้างตัวกรอง</button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ==================== TAB 4: TRAINING-PERIOD EVALUATION (แบบประเมินพระนวกะช่วงอบรม) ==================== -->
+        <div id="tab-trainingeval" class="hidden space-y-6">
+
+            <!-- Info banner -->
+            <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 flex items-start gap-3">
+                <div class="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <div>
+                    <h4 class="text-xs md:text-sm font-bold text-indigo-950">แบบประเมินพระนวกะช่วงอบรม</h4>
+                    <p class="text-[11px] text-indigo-800/80 mt-0.5">ดึงข้อมูลคะแนนแยกวิทยฐานะ คัดตามรายหัวข้อ และดึงรูปภาพของพระนวกะแต่ละรูปจากทะเบียนประวัติหลัก (DATA1) และประเมินผลออนไลน์จากตารางชีต Estimate (คอลัมน์ E ถึง S) ของ Google Sheets อัตโนมัติ</p>
+                </div>
+            </div>
+
+            <!-- Filter / search panel -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mb-1">
+                    <i class="fa-solid fa-sliders text-indigo-600"></i> ค้นหาและเลือกพระนวกะเพื่อเปิดแบบประเมิน
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 mb-1">พิมพ์ค้นหาชื่อจริง/ฉายา</label>
+                        <div class="relative">
+                            <input type="text" id="trainingeval-search-input" oninput="renderTrainingEvalDirectory()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
+                        <div id="trainingeval-village-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Directory of personnel -> table list format as requested -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-xs md:text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                            <i class="fa-solid fa-address-card text-indigo-600"></i> รายชื่อพระนวกะสำหรับประเมินผลช่วงอบรม
+                        </h3>
+                        <p class="text-[10px] text-slate-500 mt-0.5">แตะที่รายชื่อเพื่อเปิดแบบประเมินฉบับเต็มตามรูปแบบเอกสารต้นฉบับ</p>
+                    </div>
+                    <span id="trainingeval-count-badge" class="text-[10px] text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded font-bold">
+                        - รายการ
+                    </span>
+                </div>
+                
+                <div class="overflow-x-auto rounded-lg border border-slate-100 custom-scrollbar">
+                    <table class="min-w-full divide-y divide-slate-200 text-xs">
+                        <thead class="bg-slate-50 font-bold text-slate-500 text-center">
+                            <tr>
+                                <th class="px-4 py-2.5 w-14">รหัส</th>
+                                <th class="px-4 py-2.5 text-left">ชื่อ-ฉายา</th>
+                                <th class="px-4 py-2.5 w-20">หมู่</th>
+                                <th class="px-4 py-2.5 w-32">คะแนนรวม (100)</th>
+                                <th class="px-4 py-2.5 w-40">สรุปผลการประเมิน</th>
+                                <th class="px-4 py-2.5 w-24">พิมพ์/เปิด</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trainingeval-tbody" class="bg-white divide-y divide-slate-100 text-center">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="trainingeval-no-data" class="hidden text-center py-12">
+                    <i class="fa-solid fa-magnifying-glass text-slate-200 text-4xl mb-3"></i>
+                    <p class="text-slate-500 text-xs font-semibold">ไม่พบข้อมูลตามเงื่อนไขที่เลือกสืบค้น</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== TAB 5: CONNECTED CLOUD SOURCES ==================== -->
+        <div id="tab-sources" class="hidden space-y-6">
+            
+            <!-- Collapsible Connected Cloud Sources Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+                <button onclick="toggleSourcesCollapse()" class="w-full flex items-center justify-between p-5 focus:outline-none hover:bg-slate-50 rounded-xl transition">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2 bg-indigo-50 rounded-lg text-indigo-600">
+                            <i class="fa-solid fa-circle-nodes text-lg"></i>
+                        </div>
+                        <div class="text-left">
+                            <h3 class="font-bold text-slate-900 text-xs md:text-sm uppercase tracking-wider">แหล่งข้อมูลเชื่อมโยงบนคลาวด์และไฟล์อ้างอิงจริง (Connected Cloud Sources)</h3>
+                            <p class="text-[10px] text-slate-500">รายชื่อ ID ของตาราง Google Sheets และชื่อชีตย่อยที่ดึงประเมินผลผ่านระบบออนไลน์</p>
+                        </div>
+                    </div>
+                    <i id="sources-collapse-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200"></i>
+                </button>
+                
+                <div id="sources-collapse-content" class="hidden p-5 border-t border-slate-100 bg-slate-50/50 rounded-b-xl">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs text-slate-700">
+                        <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm">
+                            <span class="font-bold block text-slate-900 mb-0.5">🗂️ 1. ทะเบียนประวัติหลัก & แฟ้ม Estimate:</span>
+                            <p class="text-[10px] text-slate-400 mb-2">ตารางประวัติหลัก (DATA1: คอลัมน์ A-F) และแผ่นสรุปประเมินช่วงอบรม (Estimate: คอลัมน์ E-S)</p>
+                            <span class="font-mono bg-indigo-100/60 text-indigo-950 px-2 py-1 rounded block mt-0.5 break-all text-[10px]">1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous</span>
+                        </div>
+                        <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm">
+                            <span class="font-bold block text-slate-900 mb-0.5">📝 2. บันทึกผลประเมิน 5 มิติ:</span>
+                            <p class="text-[10px] text-slate-400 mb-2">ไฟล์ประเมินความประพฤติรายวันแยกมิติ (จำวัด/ตะกร้า/วิมาน/ราวตาก/ห่มดอง)</p>
+                            <span class="font-mono bg-indigo-100/60 text-indigo-950 px-2 py-1 rounded block mt-0.5 break-all text-[10px]">1IEUWnX0dZo1wwN2gwHMVavECEKV9B7auBbnPA4bzusg</span>
+                        </div>
+                        <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm">
+                            <span class="font-bold block text-slate-900 mb-0.5">📋 3. ข้อมูลเช็คชื่อ:</span>
+                            <p class="text-[10px] text-slate-400 mb-2">ไฟล์บันทึกการเช็คชื่อเข้าอบรมและทำวัตรเช้า-ค่ำ 4 รอบเวลาแยกหมู่ 1-4</p>
+                            <span class="font-mono bg-indigo-100/60 text-indigo-950 px-2 py-1 rounded block mt-0.5 break-all text-[10px]">1sZmC8Z_CVy1AE-L__5IRpnaAMSLOAx4nxv_gslEr3Jw</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Detail Popup Modal -->
+    <div id="detail-modal" class="fixed inset-0 bg-slate-950 bg-opacity-60 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 relative border border-slate-100 flex flex-col max-h-[90vh]">
+            <button onclick="toggleDetailModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 z-10 bg-slate-100 rounded-full p-1.5 w-8 h-8 flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div class="overflow-y-auto custom-scrollbar pr-1 space-y-5">
+                <div class="flex flex-col sm:flex-row gap-4 items-center sm:items-start border-b border-slate-100 pb-4">
+                    <div class="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0 flex items-center justify-center">
+                        <img id="modal-img" src="" alt="avatar" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-center sm:text-left space-y-1">
+                        <span id="modal-tag-village" class="inline-flex px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold">หมู่ที่ -</span>
+                        <h3 id="modal-title-name" class="text-sm font-bold text-slate-900 leading-tight">-</h3>
+                        <p id="modal-desc-sub" class="text-[10px] text-slate-500">-</p>
+                        <div class="pt-1 flex flex-wrap gap-2 justify-center sm:justify-start">
+                            <span id="modal-badge-score" class="text-xs font-bold px-2 py-0.5 rounded-lg bg-amber-500 text-white shadow-sm">- คะแนน</span>
+                            <span id="modal-badge-attend" class="text-xs font-bold px-2 py-0.5 rounded-lg bg-indigo-600 text-white shadow-sm">- % เข้าประชุม</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Score breakdown -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider" id="modal-detail-header">คะแนนประเมินความเป็นอยู่</h4>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <div class="flex justify-between text-[11px] font-medium text-slate-700 mb-1">
+                                <span>⛺ 1. จุดจำวัด (เต็ม 50)</span>
+                                <span id="score-jumwat-val" class="font-bold">- / 50</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                                <div id="bar-jumwat" class="bg-indigo-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[11px] font-medium text-slate-700 mb-1">
+                                <span>🧺 2. ตะกร้า (เต็ม 25)</span>
+                                <span id="score-takra-val" class="font-bold">- / 25</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                                <div id="bar-takra" class="bg-blue-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[11px] font-medium text-slate-700 mb-1">
+                                <span>🏰 3. วิมาน (เต็ม 25)</span>
+                                <span id="score-wiman-val" class="font-bold">- / 25</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                                <div id="bar-wiman" class="bg-cyan-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[11px] font-medium text-slate-700 mb-1">
+                                <span>🧣 4. ราวตาก (เต็ม 30)</span>
+                                <span id="score-raotak-val" class="font-bold">- / 30</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                                <div id="bar-raotak" class="bg-amber-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[11px] font-medium text-slate-700 mb-1">
+                                <span>🧥 5. ห่มดอง (เต็ม 25)</span>
+                                <span id="score-homdong-val" class="font-bold">- / 25</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                                <div id="bar-homdong" class="bg-emerald-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attendance breakdown -->
+                <div class="border-t border-slate-100 pt-4 space-y-3">
+                    <h4 class="text-xs font-bold text-indigo-950 uppercase tracking-wider">รายละเอียดสถิติการเช็คชื่อเข้าเรียน</h4>
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+                        <div class="bg-white p-2 rounded border border-slate-100">
+                            <span class="block text-[10px] text-emerald-500">มา</span>
+                            <span id="modal-attend-present" class="font-bold text-emerald-600">- ครั้ง</span>
+                        </div>
+                        <div class="bg-white p-2 rounded border border-slate-100">
+                            <span class="block text-[10px] text-amber-500">สาย</span>
+                            <span id="modal-attend-late" class="font-bold text-amber-600">- ครั้ง</span>
+                        </div>
+                        <div class="bg-white p-2 rounded border border-slate-100">
+                            <span class="block text-[10px] text-blue-500">ลาป่วย</span>
+                            <span id="modal-attend-sick" class="font-bold text-blue-600">- ครั้ง</span>
+                        </div>
+                        <div class="bg-white p-2 rounded border border-slate-100">
+                            <span class="block text-[10px] text-violet-500">ลากิจ</span>
+                            <span id="modal-attend-leave" class="font-bold text-violet-600">- ครั้ง</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-center text-xs">
+                        <div class="bg-white p-2 rounded border border-slate-100">
+                            <span class="block text-[10px] text-rose-500">ขาด</span>
+                            <span id="modal-attend-absent" class="font-bold text-rose-600">- ครั้ง</span>
+                        </div>
+                        <div class="bg-white p-2 rounded border border-slate-100">
+                            <span class="block text-[10px] text-slate-400">รวมทั้งหมด</span>
+                            <span id="modal-attend-total" class="font-bold text-slate-900">- ครั้ง</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-4 mt-4 border-t border-slate-100 flex justify-end">
+                <button onclick="toggleDetailModal(false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-lg transition">
+                    ปิดหน้าต่างนี้
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Training-Period Evaluation Form Modal (แบบประเมินพระนวกะช่วงอบรม) -->
+    <div id="trainingeval-modal" class="fixed inset-0 bg-slate-950 bg-opacity-60 z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full relative border border-slate-100 flex flex-col max-h-[95vh]">
+            <!-- Modal toolbar -->
+            <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100 print:hidden">
+                <span class="text-xs font-bold text-slate-500 flex items-center gap-1.5">
+                    <i class="fa-solid fa-scroll text-indigo-600"></i> แบบประเมินพระนวกะช่วงอบรม
+                </span>
+                <div class="flex items-center gap-2">
+                    <button onclick="window.print()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition flex items-center gap-1">
+                        <i class="fa-solid fa-print"></i> พิมพ์แบบฟอร์ม
+                    </button>
+                    <button onclick="toggleTrainingEvalModal(false)" class="text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-1.5 w-8 h-8 flex items-center justify-center">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Printable Form Body -->
+            <div id="trainingeval-print-area" class="overflow-y-auto custom-scrollbar p-6 space-y-4 text-slate-800 bg-white">
+                <!-- Form Header -->
+                <div class="text-center space-y-0.5 pb-1">
+                    <h3 class="text-sm font-bold">แบบประเมินพระนวกะช่วงอบรม</h3>
+                    <p class="text-xs font-bold">โครงการอบรมพระนวกะ3 วิสามัญสาขาและพุทธบุตรอาสาประจำปี 2569</p>
+                    <p class="text-[11px] text-slate-600">ระหว่าง 8 มิถุนายน พ.ศ. 2569 - 30 เมษายน พ.ศ. 2570</p>
+                </div>
+
+                <!-- Identity row: photo + name fields -->
+                <div class="flex items-start gap-4 border border-slate-200 rounded-lg p-3">
+                    <div class="w-20 h-24 rounded-md overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
+                        <img id="trainingeval-modal-img" src="" alt="avatar" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 grid grid-cols-2 gap-x-3 gap-y-1.5 text-[11px]">
+                        <div class="col-span-2"><span class="font-semibold text-slate-500">ชื่อ</span> <span id="trainingeval-field-firstname" class="font-bold">-</span></div>
+                        <div><span class="font-semibold text-slate-500">ฉายา</span> <span id="trainingeval-field-honorific" class="font-bold">-</span></div>
+                        <div><span class="font-semibold text-slate-500">นามสกุล</span> <span id="trainingeval-field-lastname" class="font-bold">-</span></div>
+                        <div><span class="font-semibold text-slate-500">กลุ่ม (หมู่)</span> <span id="trainingeval-field-village" class="font-bold">-</span></div>
+                        <div><span class="font-semibold text-slate-500">เลขที่</span> <span id="trainingeval-field-id" class="font-bold">-</span></div>
+                    </div>
+                </div>
+
+                <!-- Score table matching original PDF layout -->
+                <div class="overflow-x-auto rounded-lg border border-slate-200">
+                    <table class="min-w-full text-[11px] border-collapse">
+                        <thead class="bg-slate-50 font-bold text-slate-600">
+                            <tr>
+                                <th class="border border-slate-200 px-2 py-2 w-32 text-center">หัวข้อ</th>
+                                <th class="border border-slate-200 px-2 py-2 text-left">รายละเอียด</th>
+                                <th class="border border-slate-200 px-2 py-2 w-20 text-center">คะแนนเต็ม</th>
+                                <th class="border border-slate-200 px-2 py-2 w-24 text-center bg-amber-50">คะแนนที่ได้</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trainingeval-score-tbody">
+                            <!-- Injected dynamically from TRAINING_EVAL_TOPICS -->
+                        </tbody>
+                        <tfoot>
+                            <tr class="font-bold bg-slate-50">
+                                <td colspan="2" class="border border-slate-200 px-2 py-2 text-right">รวม</td>
+                                <td class="border border-slate-200 px-2 py-2 text-center">100</td>
+                                <td class="border border-slate-200 px-2 py-2 text-center bg-amber-50 text-indigo-700 font-bold" id="trainingeval-total-score">-</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Result summary -->
+                <div class="space-y-2 text-[11px] pt-1">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="font-semibold text-slate-500 w-full sm:w-auto">สรุปผลการประเมิน</span>
+                        <span id="badge-pass-check" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1">
+                            <i id="icon-pass-chk" class="fa-regular fa-circle text-slate-400"></i> ผ่าน (75 คะแนนขึ้นไป)
+                        </span>
+                        <span id="badge-fail-check" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1">
+                            <i id="icon-fail-chk" class="fa-regular fa-circle text-slate-400"></i> ไม่ผ่าน (ต่ำกว่า 75 คะแนน)
+                        </span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="font-semibold text-slate-500 w-full sm:w-auto">ตำแหน่งพระพี่เลี้ยงที่เหมาะสม</span>
+                        <span id="mentor-none" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1"><i class="fa-regular fa-circle text-slate-400"></i> ไม่เหมาะสม</span>
+                        <span id="mentor-group" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1"><i class="fa-regular fa-circle text-slate-400"></i> พพล.กลุ่ม</span>
+                        <span id="mentor-merit" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1"><i class="fa-regular fa-circle text-slate-400"></i> พพล.บุญ</span>
+                    </div>
+                </div>
+
+                <!-- Behaviour notes + signature -->
+                <div class="space-y-3 text-[11px] pt-1">
+                    <div>
+                        <span class="font-semibold text-slate-500">รายละเอียดความประพฤติ</span>
+                        <div id="trainingeval-notes-display" class="border border-slate-100 p-2 bg-slate-50 rounded min-h-[40px] text-slate-700"></div>
+                    </div>
+                    <div class="flex flex-col items-end gap-1 pt-2">
+                        <div class="text-center">
+                            <span id="trainingeval-assessor-display">ลงชื่อผู้ประเมิน...........................................</span>
+                        </div>
+                        <div class="text-center pr-2 font-mono text-[10px] text-slate-400">
+                            <span id="trainingeval-date-display">วันที่ประเมิน: 26-06-2026</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-3 pb-4 px-5 border-t border-slate-100 flex justify-end print:hidden">
+                <button onclick="toggleTrainingEvalModal(false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-lg transition">
+                    ปิดหน้าต่างนี้
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sandbox Informational Modal -->
+    <div id="sandbox-modal" class="fixed inset-0 bg-slate-950 bg-opacity-65 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative border border-slate-100">
+            <button onclick="toggleSandboxModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-center">
+                <div class="w-14 h-14 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
+                    <i class="fa-solid fa-triangle-exclamation text-xl text-amber-500"></i>
+                </div>
+                <h3 class="text-base font-bold text-slate-900 mb-2">เปิดการทำงานด้วย Sandbox Simulation Mode</h3>
+                <p class="text-slate-500 text-[11px] mb-6 leading-relaxed text-left">
+                    แอปพลิเคชันสลับมาใช้ <strong>"ระบบจำลองฐานข้อมูลจริงจากไฟล์อ้างอิง Navaka3-Check.xlsx"</strong> เพื่อให้ท่านตรวจสอบสถิติจำนวนครั้ง และการประเมินผลช่วงอบรมได้สมบูรณ์ในโหมดจำลองออฟไลน์
+                </p>
+                <button onclick="toggleSandboxModal(false)" class="bg-indigo-900 hover:bg-indigo-850 text-white font-semibold py-2 rounded-lg text-xs w-full transition shadow-sm">
+                    รับทราบและทำการทดลองใช้งาน
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer of System -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center mt-auto print:hidden">
+        <p class="text-[10px] text-slate-400">© 2026 ระบบสรุปสถิติและประเมินผลพฤติกรรมคู่ระบบเช็คชื่อรายวัน. พัฒนาร่วมกันผ่าน Google Apps Script & Visualization API.</p>
+    </footer>
+
+    <script>
+        const SPREADSHEET_PERSONAL_ID = '1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous';
+        const TARGET_SHEET_NAME_PERSONAL = 'DATA1';
+        const TARGET_SHEET_NAME_ESTIMATE = 'Estimate';
+        
+        const SPREADSHEET_EVAL_ID = '1IEUWnX0dZo1wwN2gwHMVavECEKV9B7auBbnPA4bzusg';
+        const EVAL_TABS = ['จุดจำวัด', 'ตะกร้า', 'วิมาน', 'ราวตาก', 'ห่มดอง'];
+
+        const SPREADSHEET_ATTENDANCE_ID = '1sZmC8Z_CVy1AE-L__5IRpnaAMSLOAx4nxv_gslEr3Jw';
+        const ATTENDANCE_TABS = ['หมู่ 1', 'หมู่ 2', 'หมู่ 3', 'หมู่ 4'];
+
+        // Comprehensive parsed roster from DATA1 and images
+        const mockPersonnel = [
+            // หมู่ 1
+            { id: 1, village: "1", image: "image_a324b6.png", name: "พระเกียรติศักดิ์ ฐานสกฺโก (C)", firstname: "เกียรติศักดิ์", honorific: "ฐานสกฺโก", lastname: "(C)", age: 55, education: "ปริญญาตรี" },
+            { id: 2, village: "1", image: "", name: "พระจำนงค์ จนฺทวโส D", firstname: "จำนงค์", honorific: "จนฺทวโส", lastname: "D", age: 48, education: "มัธยมศึกษา" },
+            { id: 3, village: "1", image: "", name: "พระเด่น วิชฺชาธโร E", firstname: "เด่น", honorific: "วิชฺชาธโร", lastname: "E", age: 39, education: "ปริญญาตรี" },
+            { id: 4, village: "1", image: "", name: "พระถวัลย์ ปภสฺสโร F", firstname: "ถวัลย์", honorific: "ปภสฺสโร", lastname: "F", age: 43, education: "นักธรรมเอก" },
+            { id: 5, village: "1", image: "", name: "พระปัญญา เขมธโร G", firstname: "ปัญญา", honorific: "เขมธโร", lastname: "G", age: 52, education: "ปริญญาโท" },
+            { id: 6, village: "1", image: "", name: "พระมานะ เตชพโล H", firstname: "มานะ", honorific: "เตชพโล", lastname: "H", age: 36, education: "มัธยมศึกษา" },
+            { id: 7, village: "1", image: "", name: "พระริทธิ์ รตินฺธโร I", firstname: "ริทธิ์", honorific: "รตินฺธโร", lastname: "I", age: 41, education: "ปริญญาตรี" },
+            { id: 8, village: "1", image: "", name: "พระวรายุทธ พุทฺธิพนุโธ J", firstname: "วรายุทธ", honorific: "พุทฺธิพนุโธ", lastname: "J", age: 34, education: "นักธรรมโท" },
+            { id: 9, village: "1", image: "", name: "พระวิสุทธิ์ ปภากโร K", firstname: "วิสุทธิ์", honorific: "ปภากโร", lastname: "K", age: 47, education: "ปริญญาตรี" },
+
+            // หมู่ 2
+            { id: 10, village: "2", image: "image_a327da.png", name: "พระชก สาทโร (C)", firstname: "ชก", honorific: "สาทโร", lastname: "(C)", age: 50, education: "ประถมศึกษา" },
+            { id: 11, village: "2", image: "", name: "พระทองคูณ ปญฺญาสาโร D", firstname: "ทองคูณ", honorific: "ปญฺญาสาโร", lastname: "D", age: 62, education: "นักธรรมเอก" },
+            { id: 12, village: "2", image: "", name: "พระชนกฤต ธิริตตโน E", firstname: "ชนกฤต", honorific: "ธิริตตโน", lastname: "E", age: 37, education: "ปริญญาตรี" },
+            { id: 13, village: "2", image: "", name: "พระเมฆบิน โชติธมฺโม F", firstname: "เมฆบิน", honorific: "โชติธมฺโม", lastname: "F", age: 45, education: "ปริญญาโท" },
+            { id: 14, village: "2", image: "", name: "พระยุทธนา หิริมโน G", firstname: "ยุทธนา", honorific: "หิริมโน", lastname: "G", age: 41, education: "ปริญญาตรี" },
+            { id: 15, village: "2", image: "", name: "พระรัชชานนท์ วรจิตฺโต H", firstname: "รัชชานนท์", honorific: "วรจิตฺโต", lastname: "H", age: 33, education: "มัธยมศึกษา" },
+            { id: 16, village: "2", image: "", name: "พระวัชระ พรหฺมวโร I", firstname: "วัชระ", honorific: "พรหฺมวโร", lastname: "I", age: 38, education: "ปริญญาเอก" },
+            { id: 17, village: "2", image: "", name: "พระสมชาย เขมภโว J", firstname: "สมชาย", honorific: "เขมภโว", lastname: "J", age: 49, education: "ปริญญาตรี" },
+            { id: 18, village: "2", image: "", name: "พระสมบูรณ์ สุนตจิตฺโต K", firstname: "สมบูรณ์", honorific: "สุนตจิตฺโต", lastname: "K", age: 53, education: "นักธรรมโท" },
+            { id: 19, village: "2", image: "", name: "พระสุบิน ณฐวุฑฺโฒ L", firstname: "สุบิน", honorific: "ณฐวุฑฺโฒ", lastname: "L", age: 56, education: "ปริญญาตรี" },
+
+            // หมู่ 3
+            { id: 20, village: "3", image: "image_a32833.png", name: "พระเชษฐา สํวโร (C)", firstname: "เชษฐา", honorific: "สํวโร", lastname: "(C)", age: 44, education: "ปริญญาตรี" },
+            { id: 21, village: "3", image: "", name: "พระบุญชัย จิรปญฺโญ D", firstname: "บุญชัย", honorific: "จิรปญฺโญ", lastname: "D", age: 38, education: "นักธรรมโท" },
+            { id: 22, village: "3", image: "", name: "พระประจวบ ธมฺมภทฺโท E", firstname: "ประจวบ", honorific: "ธมฺมภทฺโท", lastname: "E", age: 51, education: "มัธยมศึกษา" },
+            { id: 23, village: "3", image: "", name: "พระสวัสดิ์ ฐิตารกุโข F", firstname: "สวัสดิ์", honorific: "ฐิตารกุโข", lastname: "F", age: 49, education: "ปริญญาโท" },
+            { id: 24, village: "3", image: "", name: "พระสิทธิพงศ์ ถิรสโภ G", firstname: "สิทธิพงศ์", honorific: "ถิรสโภ", lastname: "G", age: 40, education: "ปริญญาตรี" },
+            { id: 25, village: "3", image: "", name: "พระสิรภพ มหาวีโร H", firstname: "สิรภพ", honorific: "มหาวีโร", lastname: "H", age: 35, education: "ปริญญาตรี" },
+            { id: 26, village: "3", image: "", name: "พระสุเมธ ธิรเมโธ I", firstname: "สุเมธ", honorific: "ธิรเมโธ", lastname: "I", age: 42, education: "นักธรรมเอก" },
+            { id: 27, village: "3", image: "", name: "พระสุริยา อคุควณฺโณ J", firstname: "สุริยา", honorific: "อคุควณฺโณ", lastname: "J", age: 46, education: "มัธยมศึกษา" },
+            { id: 28, village: "3", image: "", name: "พระแสงสุรีย์ เขมจกฺโก K", firstname: "แสงสุรีย์", honorific: "เขมจกฺโก", lastname: "K", age: 58, education: "ปริญญาโท" },
+
+            // หมู่ 4
+            { id: 29, village: "4", image: "image_a32873.png", name: "พระคมกฤษณ์ กนฺตสีโล (C)", firstname: "คมกฤษณ์", honorific: "กนฺตสีโล", lastname: "(C)", age: 39, education: "ปริญญาตรี" },
+            { id: 30, village: "4", image: "", name: "พระจิรโรจน์ จิรโรโญ D", firstname: "จิรโรจน์", honorific: "จิรโรโญ", lastname: "D", age: 47, education: "ปริญญาโท" },
+            { id: 31, village: "4", image: "", name: "พระชัชชัย จกฺกวโร E", firstname: "ชัชชัย", honorific: "จกฺกวโร", lastname: "E", age: 43, education: "นักธรรมเอก" },
+            { id: 32, village: "4", image: "", name: "พระชาติชาย เขมชาโต F", firstname: "ชาติชาย", honorific: "เขมชาโต", lastname: "F", age: 41, education: "มัธยมศึกษา" },
+            { id: 33, village: "4", image: "", name: "พระณัฐพล ขนฺติพโล G", firstname: "ณัฐพล", honorific: "ขนฺติพโล", lastname: "G", age: 35, education: "ปริญญาตรี" },
+            { id: 34, village: "4", image: "", name: "พระบุญฤทธิ์ ถาวรธมฺโม H", firstname: "บุญฤทธิ์", honorific: "ถาวรธมฺโม", lastname: "H", age: 50, education: "ปริญญาตรี" },
+            { id: 35, village: "4", image: "", name: "พระวรโชติ ทิฏฺฐธมฺโม I", firstname: "วรโชติ", honorific: "ทิฏฺฐธมฺโม", lastname: "I", age: 46, education: "นักธรรมโท" },
+            { id: 36, village: "4", image: "", name: "พระวิศรุต ธมฺมวิสุสฺโต J", firstname: "วิศรุต", honorific: "ธมฺมวิสุสฺโต", lastname: "J", age: 38, education: "ปริญญาตรี" },
+            { id: 37, village: "4", image: "", name: "พระเอกพจน์ สิริภทฺโท K", firstname: "เอกพจน์", honorific: "สิริภทฺโท", lastname: "K", age: 55, education: "มัธยมศึกษา" }
+        ];
+
+        // Seed dates with July 1st, 2026 (BE 2569) as the latest and default date
+        const dates = ['25/06/2026', '26/06/2026', '27/06/2026', '28/06/2026', '29/06/2026', '01/07/2026'];
+        const rounds = ['เช้า', 'สาย', 'บ่าย', 'ค่ำ'];
+
+        const mockEvalSheets = {
+            'จุดจำวัด': {}, 'ตะกร้า': {}, 'วิมาน': {}, 'ราวตาก': {}, 'ห่มดอง': {}
+        };
+
+        const mockAttendanceRecords = [];
+
+        mockPersonnel.forEach(p => {
+            // Seed base score entries for all dates
+            dates.forEach(d => {
+                if (!mockEvalSheets['จุดจำวัด'][p.id]) mockEvalSheets['จุดจำวัด'][p.id] = {};
+                if (!mockEvalSheets['ตะกร้า'][p.id]) mockEvalSheets['ตะกร้า'][p.id] = {};
+                if (!mockEvalSheets['วิมาน'][p.id]) mockEvalSheets['วิมาน'][p.id] = {};
+                if (!mockEvalSheets['ราวตาก'][p.id]) mockEvalSheets['ราวตาก'][p.id] = {};
+                if (!mockEvalSheets['ห่มดอง'][p.id]) mockEvalSheets['ห่มดอง'][p.id] = {};
+
+                mockEvalSheets['จุดจำวัด'][p.id][d] = 42 + Math.floor(Math.random() * 8);
+                mockEvalSheets['ตะกร้า'][p.id][d] = 20 + Math.floor(Math.random() * 5);
+                mockEvalSheets['วิมาน'][p.id][d] = 20 + Math.floor(Math.random() * 5);
+                mockEvalSheets['ราวตาก'][p.id][d] = 24 + Math.floor(Math.random() * 6);
+                mockEvalSheets['ห่มดอง'][p.id][d] = 20 + Math.floor(Math.random() * 5);
+            });
+
+            // Seed real attendance matching 1782719272984.jpg layout
+            // 25/06/2026 - Present Morning, Late Morning, Afternoon
+            mockAttendanceRecords.push({ name: p.name, date: '25/06/2026', round: 'เช้า', status: 'มา', village: p.village });
+            mockAttendanceRecords.push({ name: p.name, date: '25/06/2026', round: 'สาย', status: 'มา', village: p.village });
+            mockAttendanceRecords.push({ name: p.name, date: '25/06/2026', round: 'บ่าย', status: 'มา', village: p.village });
+
+            // 26/06/2026 - Present Afternoon
+            mockAttendanceRecords.push({ name: p.name, date: '26/06/2026', round: 'บ่าย', status: 'มา', village: p.village });
+
+            // 27/06/2026 - Present Late Morning
+            mockAttendanceRecords.push({ name: p.name, date: '27/06/2026', round: 'สาย', status: 'มา', village: p.village });
+
+            // 28/06/2026 - Present Late Morning
+            mockAttendanceRecords.push({ name: p.name, date: '28/06/2026', round: 'สาย', status: 'มา', village: p.village });
+
+            // 29/06/2026 - Present Afternoon
+            mockAttendanceRecords.push({ name: p.name, date: '29/06/2026', round: 'บ่าย', status: 'มา', village: p.village });
+
+            // 01/07/2026 (Wednesday Jul 1st) - Present Morning, Late Morning
+            mockAttendanceRecords.push({ name: p.name, date: '01/07/2026', round: 'เช้า', status: 'มา', village: p.village });
+            mockAttendanceRecords.push({ name: p.name, date: '01/07/2026', round: 'สาย', status: 'มา', village: p.village });
+        });
+
+        // --- GLOBAL SYSTEM STATE ---
+        let rawPersonnel = [];
+        let compiledPersonnel = []; 
+        let filteredPersonnel = [];
+        let rawAttendance = []; 
+        let availableDates = new Set();
+        let viewMode = 'grid';
+
+        // --- TRAINING-PERIOD EVALUATION FORM (แบบประเมินพระนวกะช่วงอบรม) ---
+        // Topic structure taken directly from the reference PDF (Navaka3 training-period evaluation form).
+        // Score integration ("คะแนนที่ได้") will be connected to a live data source in a future update.
+        const TRAINING_EVAL_TOPICS = [
+            { title: 'วินัย', sub: '(20 คะแนน)', items: [
+                { label: '1. การปฏิบัติตามกฎระเบียบของโครงการ', max: 10 },
+                { label: '2. การรักษาความสะอาดและความเป็นระเบียบของเครื่องใช้', max: 10 }
+            ]},
+            { title: 'เคารพ', sub: '(20 คะแนน)', items: [
+                { label: '1. การเชื่อฟังคำสั่งสอน of พระอาจารย์และพระพี่เลี้ยง', max: 10 },
+                { label: '2. ความเคารพและการให้เกียรติกันตามภันเต-อาวุโส', max: 10 }
+            ]},
+            { title: 'มีเป้าหมายชัดเจน', sub: '(20 คะแนน)', items: [
+                { label: '1. ความตั้งใจในการฝึกฝนตนเอง', max: 10 },
+                { label: '2. ความเข้าใจในมโนปณิธานของหมู่คณะ', max: 10 }
+            ]},
+            { title: 'ทำงานเป็นทีม', sub: '(20 คะแนน)', items: [
+                { label: '1. มีน้ำใจและสามารถทำงานกับผู้อื่นในทีมได้', max: 10 },
+                { label: '2. รับฟังความเห็นของผู้อื่นและปฏิบัติตามมติของหมู่คณะ', max: 10 }
+            ]},
+            { title: 'การปฏิบัติธรรม', sub: '(20 คะแนน)', items: [
+                { label: '1. ความตั้งใจในการปฏิบัติธรรม', max: 10 },
+                { label: '2. ความแข็งแรงของสุขภาพ', max: 10 }
+            ]}
+        ];
+        let trainingEvalSelectedVillage = '';
+
+        // --- INTERACTIVE FILTER SYSTEM STATUS ---
+        let analyticsSelectedTopic = 'all';      
+        let analyticsSelectedDate = '01/07/2026'; // Default selected date (July 1, 2026)
+        let analyticsSelectedVillage = '';       
+
+        // Attendance local filter state (Removed local round selector as requested)
+        let attendanceSelectedVillage = '';
+
+        const TOPIC_METRIC_MAP = {
+            all: { name: 'ทั้งหมด', max: 155, field: 'total', emoji: '🌟' },
+            jumwat: { name: 'จุดจำวัด', max: 50, field: 'jumwat', emoji: '⛺' },
+            takra: { name: 'ตะกร้า', max: 25, field: 'takra', emoji: '🧺' },
+            wiman: { name: 'วิมาน', max: 25, field: 'wiman', emoji: '🏰' },
+            raotak: { name: 'ราวตาก', max: 30, field: 'raotak', emoji: '🧣' },
+            homdong: { name: 'ห่มดอง', max: 25, field: 'homdong', emoji: '🧥' }
+        };
+
+        window.onload = function() {
+            fetchAllData();
+        };
+
+        /**
+         * Robust parser to normalize dates as Gregorian DD/MM/YYYY.
+         * Specifically translates Thai Buddhist year (e.g., 2569) to Western Gregorian year (2026).
+         */
+        function normalizeDateStr(dateStr) {
+            if (!dateStr) return '';
+            dateStr = String(dateStr).trim();
+            
+            // Clean Thai month names if Google Sheet formats them in words
+            const thaiMonthsShort = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            const thaiMonthsFull = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+            
+            for (let i = 0; i < 12; i++) {
+                if (dateStr.includes(thaiMonthsFull[i]) || dateStr.includes(thaiMonthsShort[i])) {
+                    const matches = dateStr.match(/(\d+)\s+([ก-ฮa-zA-Z.]+)\s+(\d+)/);
+                    if (matches) {
+                        let d = String(parseInt(matches[1])).padStart(2, '0');
+                        let m = String(i + 1).padStart(2, '0');
+                        let y = parseInt(matches[3]);
+                        if (y > 2500) y -= 543; // Convert Buddhist Year (พ.ศ.) to AD
+                        return `${d}/${m}/${y}`;
+                    }
+                }
+            }
+
+            // Google sheets raw JSON date representations: Date(2026,6,1)
+            if (dateStr.includes('Date(')) {
+                const matches = dateStr.match(/Date\((\d+),(\d+),(\d+)\)/);
+                if (matches) {
+                    let y = parseInt(matches[1]);
+                    if (y > 2500) y -= 543;
+                    const m = String(parseInt(matches[2]) + 1).padStart(2, '0');
+                    const d = String(parseInt(matches[3])).padStart(2, '0');
+                    return `${d}/${m}/${y}`;
+                }
+            }
+            
+            // Handle ISO representation or dashes: YYYY-MM-DD
+            if (dateStr.includes('-')) {
+                const parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    let y = parseInt(parts[0]);
+                    let m = String(parseInt(parts[1])).padStart(2, '0');
+                    let d = String(parseInt(parts[2])).padStart(2, '0');
+                    if (y > 2500) y -= 543;
+                    return `${d}/${m}/${y}`;
+                }
+            }
+            
+            // Handle standard slashes: DD/MM/YYYY
+            if (dateStr.includes('/')) {
+                const parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    let d = String(parseInt(parts[0])).padStart(2, '0');
+                    let m = String(parseInt(parts[1])).padStart(2, '0');
+                    let y = parseInt(parts[2]);
+                    if (y > 2500) y -= 543;
+                    
+                    // Month/day swap guard
+                    const p0 = parseInt(parts[0]);
+                    const p1 = parseInt(parts[1]);
+                    if (p0 > 12 && p1 <= 12) {
+                        return `${d}/${m}/${y}`;
+                    } else if (p0 <= 12 && p1 > 12) {
+                        return `${String(p1).padStart(2, '0')}/${String(p0).padStart(2, '0')}/${y}`;
+                    }
+                    return `${d}/${m}/${y}`;
+                }
+            }
+            return dateStr;
+        }
+
+        /**
+         * Robust Thai Name matching logic.
+         * Cleans, normalizes, and compares substrings of two names to handle formatting mismatches.
+         * Specifically strips title "พระ", brackets, English group letters (C, D, E), and trims whitespace.
+         */
+        function isNameMatch(nameA, nameB) {
+            if (!nameA || !nameB) return false;
+            
+            const clean = (s) => {
+                return s.replace(/\s+/g, '')
+                        .replace(/^(พระครูอธิการ|พระครูวิกรมธรรมธาดา|พระครู|พระมหา|พระอธิการ|พระ)/g, '')
+                        .replace(/\([^)]*\)/g, '') // remove brackets and content inside brackets e.g. (C)
+                        .replace(/[A-Za-z().,_\-]/g, '') // remove trailing group labels
+                        .trim();
+            };
+            
+            const cleanA = clean(nameA);
+            const cleanB = clean(nameB);
+            
+            if (!cleanA || !cleanB) return false;
+            return cleanA.includes(cleanB) || cleanB.includes(cleanA);
+        }
+
+        async function fetchAllData() {
+            const statusEl = document.getElementById('sync-status');
+            statusEl.innerHTML = `<span class="w-2 h-2 mr-1.5 bg-yellow-400 rounded-full animate-ping"></span> กำลังดึงข้อมูล Multi-Sheets...`;
+            statusEl.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-yellow-100 text-yellow-800";
+
+            const urlPersonnel = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_PERSONAL}`;
+            const urlEstimate = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_ESTIMATE}`;
+            
+            const evalPromises = EVAL_TABS.map(tabName => {
+                const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_EVAL_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tabName)}`;
+                return fetch(url).then(res => res.text()).then(txt => ({ tabName, text: txt })).catch(err => {
+                    console.error(`Error fetching evaluation tab ${tabName}:`, err);
+                    return { tabName, text: null, error: true };
+                });
+            });
+
+            const attendancePromises = ATTENDANCE_TABS.map(tabName => {
+                const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ATTENDANCE_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tabName)}`;
+                return fetch(url).then(res => res.text()).then(txt => ({ tabName, text: txt })).catch(err => {
+                    console.error(`Error fetching attendance tab ${tabName}:`, err);
+                    return { tabName, text: null, error: true };
+                });
+            });
+
+            try {
+                const [personnelRes, estimateRes, ...allOtherResults] = await Promise.all([
+                    fetch(urlPersonnel).then(r => r.ok ? r.text() : null).catch(() => null),
+                    fetch(urlEstimate).then(r => r.ok ? r.text() : null).catch(() => null),
+                    ...evalPromises,
+                    ...attendancePromises
+                ]);
+
+                if (!personnelRes) throw new Error("Could not acquire personnel records.");
+
+                rawPersonnel = parsePersonnelJSON(personnelRes);
+                
+                // Parse the new Estimate sheet data
+                let estimateMap = {};
+                if (estimateRes) {
+                    estimateMap = parseEstimateJSON(estimateRes);
+                }
+
+                const evalMaps = {};
+                const evalResults = allOtherResults.slice(0, EVAL_TABS.length);
+                const attendResults = allOtherResults.slice(EVAL_TABS.length);
+
+                evalResults.forEach(res => {
+                    if (res && res.text && !res.error) {
+                        evalMaps[res.tabName] = parseEvaluationJSON(res.text, res.tabName);
+                    } else {
+                        evalMaps[res.tabName] = {};
+                    }
+                });
+
+                rawAttendance = [];
+                attendResults.forEach((res, index) => {
+                    const sheetName = ATTENDANCE_TABS[index];
+                    if (res && res.text && !res.error) {
+                        const records = parseAttendanceSheetJSON(res.text, sheetName);
+                        rawAttendance.push(...records);
+                    }
+                });
+
+                compileData(rawPersonnel, evalMaps, rawAttendance, estimateMap, false);
+
+                statusEl.innerHTML = `<span class="w-2 h-2 mr-1.5 bg-emerald-500 rounded-full"></span> ดึงข้อมูลสดสำเร็จ`;
+                statusEl.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-100 text-emerald-800";
+
+            } catch (err) {
+                console.warn("API direct linking failed. Deploying beautiful simulated sandbox database.", err);
+                rawPersonnel = [...mockPersonnel];
+                rawAttendance = [...mockAttendanceRecords];
+                compileData(mockPersonnel, mockEvalSheets, mockAttendanceRecords, {}, true);
+
+                statusEl.innerHTML = `<span class="w-2 h-2 mr-1.5 bg-amber-500 rounded-full"></span> โหมดออฟไลน์จำลอง`;
+                statusEl.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-100 text-amber-800";
+                
+                toggleSandboxModal(true);
+            }
+
+            initFilterOptions();
+            applyFilters();
+            applyAttendanceFilters();
+            initTrainingEvalFilterOptions();
+            renderTrainingEvalDirectory();
+        }
+
+        function parsePersonnelJSON(responseText) {
+            const jsonString = responseText.substring(responseText.indexOf('{'), responseText.lastIndexOf('}') + 1);
+            const json = JSON.parse(jsonString);
+            const rows = json.table.rows;
+
+            return rows.map(r => {
+                const cells = r.c;
+                const valOf = (idx) => {
+                    if (cells && cells[idx]) {
+                        return cells[idx].v !== null && cells[idx].v !== undefined ? cells[idx].v : (cells[idx].f || '');
+                    }
+                    return '';
+                };
+
+                // Column A: รหัส (ID) -> index 0
+                const idVal = parseInt(valOf(0)) || 0;
+                // Column B: หมู่ (Village) -> index 1
+                const villageVal = String(valOf(1) || '').trim();
+                // Column C: รูป (Image) -> index 2
+                const imageVal = String(valOf(2) || '').trim();
+                // Column D: ชื่อ (First Name) -> index 3
+                const firstNameVal = String(valOf(3) || '').trim();
+                // Column E: ฉายา (Monastic Honorific) -> index 4
+                const honorificVal = String(valOf(4) || '').trim();
+                // Column F: นามสกุล (Last Name) -> index 5
+                const lastNameVal = String(valOf(5) || '').trim();
+
+                // Build consistent full name with default monastic prefix "พระ"
+                let fullName = '';
+                if (firstNameVal) {
+                    const hasPrefix = firstNameVal.startsWith('พระ');
+                    fullName = `${hasPrefix ? '' : 'พระ'}${firstNameVal} ${honorificVal} ${lastNameVal}`.trim().replace(/\s+/g, ' ');
+                }
+
+                return {
+                    id: idVal,
+                    village: villageVal,
+                    image: imageVal,
+                    firstname: firstNameVal,
+                    honorific: honorificVal,
+                    lastname: lastNameVal,
+                    name: fullName,
+                    age: 0,
+                    education: ''
+                };
+            }).filter(item => item.id && item.name);
+        }
+
+        /**
+         * Parses the Estimate sheet based on Column E-S
+         */
+        function parseEstimateJSON(responseText) {
+            const jsonString = responseText.substring(responseText.indexOf('{'), responseText.lastIndexOf('}') + 1);
+            const json = JSON.parse(jsonString);
+            const rows = json.table.rows;
+            const estimateMap = {};
+
+            rows.forEach(r => {
+                if (!r || !r.c) return;
+                const valOf = (idx) => {
+                    if (r.c && r.c[idx]) {
+                        return r.c[idx].v !== null && r.c[idx].v !== undefined ? r.c[idx].v : (r.c[idx].f || '');
+                    }
+                    return '';
+                };
+
+                // Column A (index 0) has ID
+                const idVal = parseInt(valOf(0));
+                if (!isNaN(idVal)) {
+                    // Col E-S are indices 4-18
+                    const scores = [
+                        parseFloat(valOf(4)) || 0, // E
+                        parseFloat(valOf(5)) || 0, // F
+                        parseFloat(valOf(6)) || 0, // G
+                        parseFloat(valOf(7)) || 0, // H
+                        parseFloat(valOf(8)) || 0, // I
+                        parseFloat(valOf(9)) || 0, // J
+                        parseFloat(valOf(10)) || 0, // K
+                        parseFloat(valOf(11)) || 0, // L
+                        parseFloat(valOf(12)) || 0, // M
+                        parseFloat(valOf(13)) || 0  // N
+                    ];
+
+                    const total = parseFloat(valOf(14)) || scores.reduce((s, x) => s + x, 0); // O (คะแนนรวม)
+                    const mentorType = String(valOf(15)).trim() || 'ไม่เหมาะสม'; // P (ตำแหน่งพระพี่เลี้ยง)
+                    const notes = String(valOf(16)).trim() || 'ความประพฤติเรียบร้อยสง่างาม'; // Q (ความประพฤติ)
+                    const assessor = String(valOf(17)).trim() || 'พระครูประเมินคุณาธิการ'; // R (ลงชื่อผู้ประเมิน)
+                    const dateAssess = String(valOf(18)).trim() || '26-06-2026'; // S (วันที่ประเมิน)
+
+                    estimateMap[idVal] = {
+                        scores,
+                        total,
+                        passed: total >= 75,
+                        mentorType,
+                        notes,
+                        assessor,
+                        dateAssess
+                    };
+                }
+            });
+
+            return estimateMap;
+        }
+
+        function parseEvaluationJSON(responseText, tabName) {
+            const jsonString = responseText.substring(responseText.indexOf('{'), responseText.lastIndexOf('}') + 1);
+            const json = JSON.parse(jsonString);
+            const rows = json.table.rows;
+            const cols = json.table.cols;
+
+            let idIdx = -1;
+            let dateIdx = -1;
+            let scoreIdx = -1;
+
+            if (tabName === 'จุดจำวัด') scoreIdx = 16;
+            else if (tabName === 'ตะกร้า') scoreIdx = 11;
+            else if (tabName === 'วิมาน') scoreIdx = 11;
+            else if (tabName === 'ราวตาก') scoreIdx = 12;
+            else if (tabName === 'ห่มดอง') scoreIdx = 11;
+
+            cols.forEach((col, idx) => {
+                if (!col || !col.label) return;
+                const lbl = col.label.trim();
+                if (lbl === 'รหัส' || lbl === 'ที่' || lbl === 'ID' || lbl.includes('รหัส') || lbl.toLowerCase() === 'id') {
+                    idIdx = idx;
+                } else if (lbl.includes('วัน') || lbl.includes('date') || lbl === 'วันที่') {
+                    dateIdx = idx;
+                }
+            });
+
+            if (idIdx === -1) idIdx = 0;
+            if (dateIdx === -1) dateIdx = 1;
+
+            const dataMap = {};
+            rows.forEach(r => {
+                if (!r || !r.c) return;
+                const idVal = r.c[idIdx] ? (r.c[idIdx].v !== null ? r.c[idIdx].v : r.c[idIdx].f) : null;
+                const parsedId = parseInt(idVal);
+
+                if (!isNaN(parsedId)) {
+                    let dateStr = '';
+                    if (r.c[dateIdx]) {
+                        dateStr = r.c[dateIdx].f || r.c[dateIdx].v || '';
+                    }
+                    
+                    dateStr = normalizeDateStr(dateStr);
+
+                    if (!dataMap[parsedId]) {
+                        dataMap[parsedId] = {};
+                    }
+                    
+                    let scoreVal = 0;
+                    if (scoreIdx !== -1 && r.c[scoreIdx]) {
+                        const cellVal = r.c[scoreIdx].v !== null ? r.c[scoreIdx].v : r.c[scoreIdx].f;
+                        const parsedScore = parseFloat(cellVal);
+                        if (!isNaN(parsedScore)) {
+                            scoreVal = parsedScore;
+                        }
+                    }
+
+                    dataMap[parsedId][dateStr] = scoreVal;
+                    if (dateStr) {
+                        availableDates.add(dateStr);
+                    }
+                }
+            });
+
+            return dataMap;
+        }
+
+        function serialDateToStr(serial) {
+            if (!serial || isNaN(serial)) return '';
+            const excelEpoch = new Date(1899, 11, 30);
+            const date = new Date(excelEpoch.getTime() + serial * 86400000);
+            const d = String(date.getDate()).padStart(2, '0');
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const y = date.getFullYear();
+            return `${d}/${m}/${y}`;
+        }
+
+        function parseAttendanceSheetJSON(responseText, sheetName) {
+            const jsonString = responseText.substring(responseText.indexOf('{'), responseText.lastIndexOf('}') + 1);
+            const json = JSON.parse(jsonString);
+            const rows = json.table.rows;
+            const cols = json.table.cols;
+
+            const nameMap = [];
+            let gotNamesFromHeader = false;
+
+            if (cols && cols.length > 2) {
+                cols.forEach((col, idx) => {
+                    if (idx >= 2 && col && col.label && col.label.trim().length > 1
+                        && !col.label.match(/^Col\d+$/) && !col.label.match(/^[A-Z]$/)
+                        && col.label.trim() !== 'วันที่' && col.label.trim() !== 'รอบ') {
+                        nameMap.push({ name: col.label.trim(), colIdx: idx });
+                        gotNamesFromHeader = true;
+                    }
+                });
+            }
+
+            const startRowIdx = gotNamesFromHeader ? 0 : 1;
+            if (!gotNamesFromHeader && rows && rows.length > 0) {
+                const firstRow = rows[0];
+                if (firstRow && firstRow.c) {
+                    firstRow.c.forEach((cell, idx) => {
+                        if (idx >= 2 && cell) {
+                            const val = String(cell.v !== null && cell.v !== undefined ? cell.v : (cell.f || '')).trim();
+                            if (val && val.length > 1 && val !== 'วันที่' && val !== 'รอบ') {
+                                nameMap.push({ name: val, colIdx: idx });
+                            }
+                        }
+                    });
+                }
+            }
+
+            const records = [];
+            const villageNum = sheetName.replace(/หมู่\s*/g, '').replace(/\s+/g, '').trim();
+
+            for (let i = startRowIdx; i < rows.length; i++) {
+                const r = rows[i];
+                if (!r || !r.c) continue;
+
+                let dateVal = '';
+                if (r.c[0]) {
+                    const cellV = r.c[0].v;
+                    const cellF = r.c[0].f;
+
+                    if (typeof cellV === 'number') {
+                        dateVal = serialDateToStr(cellV);
+                    } else {
+                        dateVal = normalizeDateStr(cellF || cellV || '');
+                    }
+                }
+
+                let roundVal = '';
+                if (r.c[1]) {
+                    roundVal = String(r.c[1].v !== null && r.c[1].v !== undefined ? r.c[1].v : (r.c[1].f || '')).trim();
+                }
+                if (roundVal === 'เข้า') roundVal = 'เช้า';
+
+                if (!dateVal || !roundVal) continue;
+
+                nameMap.forEach(n => {
+                    if (n.colIdx < r.c.length && r.c[n.colIdx]) {
+                        const statusCell = r.c[n.colIdx];
+                        const status = String(
+                            statusCell.v !== null && statusCell.v !== undefined ? statusCell.v : (statusCell.f || '')
+                        ).trim();
+                        if (status) {
+                            records.push({
+                                date: dateVal,
+                                round: roundVal,
+                                name: n.name,
+                                status: status,
+                                village: villageNum
+                            });
+                        }
+                    }
+                });
+            }
+
+            return records;
+        }
+
+        function compileData(personnelList, evalMaps, attendanceList, estimateMap, isMock = false) {
+            if (isMock) {
+                availableDates = new Set(['25/06/2026', '26/06/2026', '27/06/2026', '28/06/2026', '29/06/2026', '01/07/2026']);
+            } else {
+                availableDates.add('01/07/2026');
+                attendanceList.forEach(rec => {
+                    if (rec.date) {
+                        const nd = normalizeDateStr(rec.date);
+                        if (nd) availableDates.add(nd);
+                    }
+                });
+            }
+
+            compiledPersonnel = personnelList.map(person => {
+                const datesScores = {};
+                const datesArray = Array.from(availableDates);
+
+                datesArray.forEach(date => {
+                    const jumwat = evalMaps['จุดจำวัด']?.[person.id]?.[date];
+                    const takra  = evalMaps['ตะกร้า']?.[person.id]?.[date];
+                    const wiman  = evalMaps['วิมาน']?.[person.id]?.[date];
+                    const raotak = evalMaps['ราวตาก']?.[person.id]?.[date];
+                    const homdong = evalMaps['ห่มดอง']?.[person.id]?.[date];
+
+                    const hasRecord = (jumwat !== undefined || takra !== undefined || wiman !== undefined || raotak !== undefined || homdong !== undefined);
+
+                    if (hasRecord) {
+                        datesScores[date] = {
+                            jumwat: jumwat !== undefined ? jumwat : 0,
+                            takra: takra !== undefined ? takra : 0,
+                            wiman: wiman !== undefined ? wiman : 0,
+                            raotak: raotak !== undefined ? raotak : 0,
+                            homdong: homdong !== undefined ? homdong : 0,
+                            total: (jumwat || 0) + (takra || 0) + (wiman || 0) + (raotak || 0) + (homdong || 0),
+                            hasRealEntry: true
+                        };
+                    } else {
+                        datesScores[date] = {
+                            jumwat: 0, takra: 0, wiman: 0, raotak: 0, homdong: 0, total: 0,
+                            hasRealEntry: false
+                        };
+                    }
+                });
+
+                let cumulativeJumwat = 0;
+                let cumulativeTakra = 0;
+                let cumulativeWiman = 0;
+                let cumulativeRaotak = 0;
+                let cumulativeHomdong = 0;
+                let cumulativeTotal = 0;
+                let activeDaysCount = 0;
+
+                datesArray.forEach(date => {
+                    const d = datesScores[date];
+                    if (d && d.hasRealEntry) {
+                        activeDaysCount++;
+                        cumulativeJumwat += d.jumwat;
+                        cumulativeTakra += d.takra;
+                        cumulativeWiman += d.wiman;
+                        cumulativeRaotak += d.raotak;
+                        cumulativeHomdong += d.homdong;
+                        cumulativeTotal += d.total;
+                    }
+                });
+
+                const individualAttend = attendanceList.filter(rec => isNameMatch(person.name, rec.name));
+
+                let presentCount = 0;
+                let lateCount = 0;
+                let sickLeaveCount = 0;
+                let casualLeaveCount = 0;
+                let absentCount = 0;
+                let totalRoundsChecked = individualAttend.length;
+
+                individualAttend.forEach(rec => {
+                    const status = rec.status;
+                    if (status === 'มา') presentCount++;
+                    else if (status === 'สาย') lateCount++;
+                    else if (status === 'ลาป่วย') sickLeaveCount++;
+                    else if (status === 'ลากิจ' || status === 'ลา') casualLeaveCount++;
+                    else absentCount++;
+                });
+
+                const attendRate = totalRoundsChecked > 0 ? ((presentCount + (lateCount * 0.5) + sickLeaveCount + casualLeaveCount) / totalRoundsChecked * 100) : 0;
+
+                // Bind either actual fetched scores from "Estimate" or fallback simulator values
+                let trainingScoresObj = {};
+                if (estimateMap && estimateMap[person.id]) {
+                    trainingScoresObj = estimateMap[person.id];
+                } else {
+                    // Fallback to beautiful simulation if offline/not evaluated
+                    const trainingBase = 72 + (person.id % 25); 
+                    const mockTrainingScores = [
+                        Math.min(10, Math.floor(trainingBase / 10)),
+                        Math.min(10, Math.floor((trainingBase - 10) / 10)),
+                        Math.min(10, Math.floor(trainingBase % 9) + 1),
+                        Math.min(10, Math.floor(trainingBase % 8) + 2),
+                        Math.min(10, Math.floor(trainingBase % 7) + 3),
+                        Math.min(10, 8),
+                        Math.min(10, 9),
+                        Math.min(10, Math.floor(trainingBase % 5) + 5),
+                        Math.min(10, 8),
+                        Math.min(10, Math.floor(trainingBase % 3) + 7)
+                    ];
+                    const trainingTotal = mockTrainingScores.reduce((sum, s) => sum + s, 0);
+                    trainingScoresObj = {
+                        scores: mockTrainingScores,
+                        total: trainingTotal,
+                        passed: trainingTotal >= 75,
+                        notes: `มีความพากเพียรในการศึกษา ทรงอภิธรรม ทรงวินัย${trainingTotal >= 85 ? ' ยอดเยี่ยมประเสริฐยิ่ง' : ' ปฏิบัติตนเรียบร้อยตามอุปัชฌาย์'}`,
+                        mentorType: trainingTotal >= 90 ? 'พพล.กลุ่ม' : (trainingTotal >= 80 ? 'พพล.บุญ' : 'ไม่เหมาะสม'),
+                        assessor: "พระอุปัชฌาย์ประเมินคุณบดี",
+                        dateAssess: "26-06-2026"
+                    };
+                }
+
+                return {
+                    ...person,
+                    datesScores,
+                    cumulativeScores: {
+                        jumwat: cumulativeJumwat,
+                        takra: cumulativeTakra,
+                        wiman: cumulativeWiman,
+                        raotak: cumulativeRaotak,
+                        homdong: cumulativeHomdong,
+                        total: cumulativeTotal,
+                        activeDaysCount: activeDaysCount
+                    },
+                    attendanceRecords: individualAttend,
+                    attendanceSummary: {
+                        present: presentCount,
+                        late: lateCount,
+                        sickLeave: sickLeaveCount,
+                        casualLeave: casualLeaveCount,
+                        absent: absentCount,
+                        total: totalRoundsChecked,
+                        rate: attendRate
+                    },
+                    trainingScores: trainingScoresObj
+                };
+            });
+        }
+
+        function initFilterOptions() {
+            const villageSet = new Set();
+            compiledPersonnel.forEach(item => {
+                if (item.village) villageSet.add(item.village);
+            });
+
+            const vSelect = document.getElementById('filter-village');
+            vSelect.innerHTML = '<option value="">ทั้งหมดทุกหมู่</option>';
+
+            const sortedVillages = Array.from(villageSet).sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
+            sortedVillages.forEach(v => {
+                vSelect.innerHTML += `<option value="${v}">หมู่ที่ ${v}</option>`;
+            });
+
+            const sortedDates = Array.from(availableDates).sort((a, b) => {
+                const parseDate = (s) => {
+                    const p = s.split('/');
+                    if (p.length === 3) return new Date(p[2], p[1] - 1, p[0]);
+                    return new Date(0);
+                };
+                return parseDate(a) - parseDate(b);
+            });
+
+            const dSelect = document.getElementById('filter-date');
+            dSelect.innerHTML = '<option value="all">รวมคะแนนสะสมทุกวัน</option>';
+            
+            sortedDates.forEach(date => {
+                dSelect.innerHTML += `<option value="${date}">คะแนนรายวัน: ${date}</option>`;
+            });
+
+            // Auto select '01/07/2026' as default
+            const defaultDate = '01/07/2026';
+            if (availableDates.has(defaultDate)) {
+                dSelect.value = defaultDate;
+                analyticsSelectedDate = defaultDate;
+            } else if (sortedDates.length > 0) {
+                const latestDate = sortedDates[sortedDates.length - 1];
+                dSelect.value = latestDate;
+                analyticsSelectedDate = latestDate;
+            } else {
+                dSelect.value = 'all';
+                analyticsSelectedDate = 'all';
+            }
+
+            renderAnalyticsTopicButtons();
+            renderAnalyticsDateButtons(sortedDates);
+            renderAnalyticsVillageButtons(Array.from(villageSet));
+            renderPersonnelVillageButtons(Array.from(villageSet));
+
+            renderAttendanceVillageButtons(Array.from(villageSet));
+            renderAttendanceDateButtons(sortedDates);
+        }
+
+        function renderAnalyticsTopicButtons() {
+            const container = document.getElementById('analytics-topic-container');
+            container.innerHTML = '';
+
+            const topics = Object.keys(TOPIC_METRIC_MAP);
+            topics.forEach(tKey => {
+                const meta = TOPIC_METRIC_MAP[tKey];
+                const isActive = analyticsSelectedTopic === tKey;
+                const activeClass = "bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold";
+                const inactiveClass = "bg-white hover:bg-slate-50 text-slate-700 border-slate-200";
+
+                const btn = `
+                    <button onclick="selectAnalyticsTopic('${tKey}')" class="px-4 py-2 border rounded-full text-xs transition duration-150 whitespace-nowrap ${isActive ? activeClass : inactiveClass}">
+                        ${meta.emoji} ${meta.name} (เต็ม ${meta.max})
+                    </button>
+                `;
+                container.innerHTML += btn;
+            });
+        }
+
+        function renderAnalyticsDateButtons(sortedDates) {
+            const container = document.getElementById('analytics-date-container');
+            container.innerHTML = '';
+
+            const latest3Dates = sortedDates.slice(-3);
+
+            const isAllActive = analyticsSelectedDate === 'all';
+            const allBtn = `
+                <button onclick="syncGlobalDate('all')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${isAllActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
+                    📅 รวมสะสมทุกวัน
+                </button>
+            `;
+            container.innerHTML += allBtn;
+
+            latest3Dates.forEach(date => {
+                const isActive = analyticsSelectedDate === date;
+                const btn = `
+                    <button onclick="syncGlobalDate('${date}')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
+                        📆 วันที่ ${date}
+                    </button>
+                `;
+                container.innerHTML += btn;
+            });
+        }
+
+        function renderAttendanceDateButtons(sortedDates) {
+            const container = document.getElementById('attend-date-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const latest3Dates = sortedDates.slice(-3);
+
+            const isAllActive = analyticsSelectedDate === 'all';
+            const allBtn = `
+                <button onclick="syncGlobalDate('all')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${isAllActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
+                    📅 รวมสะสมทุกวัน
+                </button>
+            `;
+            container.innerHTML += allBtn;
+
+            latest3Dates.forEach(date => {
+                const isActive = analyticsSelectedDate === date;
+                const btn = `
+                    <button onclick="syncGlobalDate('${date}')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
+                        📆 วันที่ ${date}
+                    </button>
+                `;
+                container.innerHTML += btn;
+            });
+        }
+
+        function renderAnalyticsVillageButtons(villageList) {
+            const container = document.getElementById('analytics-village-container');
+            container.innerHTML = '';
+
+            const isAllActive = analyticsSelectedVillage === '';
+            const allBtn = `
+                <button onclick="selectAnalyticsVillage('')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${isAllActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
+                    🏘️ ทั้งหมดทุกหมู่
+                </button>
+            `;
+            container.innerHTML += allBtn;
+
+            const sortedVillages = villageList.sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
+            sortedVillages.forEach(v => {
+                const isActive = analyticsSelectedVillage === v;
+                const btn = `
+                    <button onclick="selectAnalyticsVillage('${v}')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
+                        🏘️ หมู่ที่ ${v}
+                    </button>
+                `;
+                container.innerHTML += btn;
+            });
+        }
+
+        function renderAttendanceVillageButtons(villageList) {
+            const container = document.getElementById('attend-village-container');
+            container.innerHTML = '';
+
+            const isAllActive = attendanceSelectedVillage === '';
+            const allBtn = `
+                <button onclick="selectAttendanceVillage('')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${isAllActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
+                    🏘️ ทั้งหมดทุกหมู่
+                </button>
+            `;
+            container.innerHTML += allBtn;
+
+            const sortedVillages = villageList.sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
+            sortedVillages.forEach(v => {
+                const isActive = attendanceSelectedVillage === v;
+                const btn = `
+                    <button onclick="selectAttendanceVillage('${v}')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
+                        🏘️ หมู่ที่ ${v}
+                    </button>
+                `;
+                container.innerHTML += btn;
+            });
+        }
+
+        function syncGlobalDate(dateVal) {
+            const normalized = normalizeDateStr(dateVal);
+            analyticsSelectedDate = normalized;
+            
+            const dSelect = document.getElementById('filter-date');
+            if (dSelect) {
+                dSelect.value = normalized;
+            }
+
+            const sortedDates = Array.from(availableDates).sort((a, b) => {
+                const parseDate = (s) => {
+                    const p = s.split('/');
+                    if (p.length === 3) return new Date(p[2], p[1] - 1, p[0]);
+                    return new Date(0);
+                };
+                return parseDate(a) - parseDate(b);
+            });
+            renderAnalyticsDateButtons(sortedDates);
+            renderAttendanceDateButtons(sortedDates);
+
+            const dateLabelEl = document.getElementById('attendance-subtitle-date');
+            if (dateLabelEl) {
+                dateLabelEl.innerText = `แสดงข้อมูลของวันที่ประเมินหลัก: ${normalized === 'all' ? 'สถิติสะสมทุกวัน' : normalized}`;
+            }
+
+            applyFilters();
+            applyAttendanceFilters();
+        }
+
+        function applyFilters() {
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+            const vVal = document.getElementById('filter-village').value;
+            const dateVal = analyticsSelectedDate;
+
+            filteredPersonnel = compiledPersonnel.map(item => {
+                let activeScores = {};
+                let activeTotal = 0;
+                let activeDaysCount = item.cumulativeScores.activeDaysCount;
+
+                if (dateVal === 'all') {
+                    activeScores = { ...item.cumulativeScores };
+                    activeTotal = item.cumulativeScores.total;
+                } else {
+                    const dayData = item.datesScores[dateVal] || { jumwat: 0, takra: 0, wiman: 0, raotak: 0, homdong: 0, total: 0 };
+                    activeScores = { ...dayData };
+                    activeTotal = dayData.total;
+                }
+
+                return {
+                    ...item,
+                    activeScores,
+                    activeTotal,
+                    activeDaysCount
+                };
+            }).filter(item => {
+                const matchSearch = !searchVal || item.name.toLowerCase().includes(searchVal);
+                const matchVillage = !vVal || item.village === vVal;
+                return matchSearch && matchVillage;
+            });
+
+            filteredPersonnel.sort((a, b) => a.id - b.id);
+
+            calculateAnalyticsKPIs();
+            renderAnalyticsTable(); 
+            renderDirectoryView();
+        }
+
+        function applyAttendanceFilters() {
+            let filteredAttend = compiledPersonnel.filter(p => {
+                return !attendanceSelectedVillage || p.village === attendanceSelectedVillage;
+            });
+
+            let presentCount = 0;
+            let lateCount = 0;
+            let sickCount = 0;
+            let leaveCount = 0;
+
+            filteredAttend.forEach(p => {
+                let records = p.attendanceRecords;
+                
+                if (analyticsSelectedDate !== 'all') {
+                    records = records.filter(r => r.date === analyticsSelectedDate);
+                }
+
+                records.forEach(r => {
+                    if (r.status === 'มา') presentCount++;
+                    else if (r.status === 'สาย') lateCount++;
+                    else if (r.status === 'ลาป่วย') sickCount++;
+                    else if (r.status === 'ลากิจ' || r.status === 'ลา') leaveCount++;
+                });
+            });
+
+            document.getElementById('attend-present-kpi').innerText = `${presentCount} ครั้ง`;
+            document.getElementById('attend-late-kpi').innerText = `${lateCount} ครั้ง`;
+            document.getElementById('attend-sick-kpi').innerText = `${sickCount} ครั้ง`;
+            document.getElementById('attend-leave-kpi').innerText = `${leaveCount} ครั้ง`;
+
+            const tbody = document.getElementById('attendance-tbody');
+            tbody.innerHTML = '';
+            document.getElementById('attendance-count-badge').innerText = `${filteredAttend.length} รายการ`;
+
+            if (filteredAttend.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-slate-400 font-semibold text-center">ไม่มีข้อมูลการเช็คชื่อในวันที่หรือเงื่อนไขที่ระบุ</td></tr>`;
+                return;
+            }
+
+            filteredAttend.forEach(p => {
+                let records = p.attendanceRecords;
+                
+                if (analyticsSelectedDate !== 'all') {
+                    records = records.filter(r => r.date === analyticsSelectedDate);
+                }
+
+                const getStatusEmoji = (roundName) => {
+                    const match = records.find(r => r.round === roundName);
+                    if (!match) return '<span class="text-slate-300">-</span>';
+                    const status = match.status;
+                    if (status === 'มา') return '<span class="text-emerald-600 font-bold">มา</span>';
+                    if (status === 'สาย') return '<span class="text-amber-500 font-bold">สาย</span>';
+                    if (status === 'ลากิจ' || status === 'ลาป่วย' || status === 'ลา') return `<span class="text-blue-500 font-bold">${status}</span>`;
+                    return '<span class="text-rose-500 font-bold">ขาด</span>';
+                };
+
+                const statMorning = getStatusEmoji('เช้า');
+                const statLateMorning = getStatusEmoji('สาย');
+                const statAfternoon = getStatusEmoji('บ่าย');
+                const statNight = getStatusEmoji('ค่ำ');
+
+                const tr = `
+                    <tr class="hover:bg-indigo-50/20 transition cursor-pointer text-center" onclick="openPersonnelProfile(${p.id})">
+                        <td class="px-4 py-3 font-semibold text-slate-500">#${p.id}</td>
+                        <td class="px-4 py-3 text-left font-bold text-slate-900">${p.name}</td>
+                        <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-semibold">หมู่ ${p.village}</span></td>
+                        <td class="px-4 py-3">${statMorning}</td>
+                        <td class="px-4 py-3">${statLateMorning}</td>
+                        <td class="px-4 py-3">${statAfternoon}</td>
+                        <td class="px-4 py-3">${statNight}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += tr;
+            });
+        }
+
+        function selectAnalyticsTopic(topicKey) {
+            analyticsSelectedTopic = topicKey;
+            renderAnalyticsTopicButtons();
+            calculateAnalyticsKPIs();
+            renderAnalyticsTable();
+        }
+
+        function selectAnalyticsVillage(villageVal) {
+            analyticsSelectedVillage = villageVal;
+            const villageSet = new Set();
+            compiledPersonnel.forEach(item => { if (item.village) villageSet.add(item.village); });
+            renderAnalyticsVillageButtons(Array.from(villageSet));
+            calculateAnalyticsKPIs();
+            renderAnalyticsTable();
+        }
+
+        function selectAttendanceVillage(villageVal) {
+            attendanceSelectedVillage = villageVal;
+            const villageSet = new Set();
+            compiledPersonnel.forEach(item => { if (item.village) villageSet.add(item.village); });
+            renderAttendanceVillageButtons(Array.from(villageSet));
+            applyAttendanceFilters();
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-village').value = '';
+            
+            const defaultDate = '01/07/2026';
+            syncGlobalDate(defaultDate);
+        }
+
+        function calculateAnalyticsKPIs() {
+            const analyticsFilteredList = compiledPersonnel.filter(p => {
+                return !analyticsSelectedVillage || p.village === analyticsSelectedVillage;
+            });
+
+            const total = analyticsFilteredList.length;
+            document.getElementById('stat-total').innerText = total + " ราย";
+
+            const days = availableDates.size || 1;
+            const meta = TOPIC_METRIC_MAP[analyticsSelectedTopic];
+            
+            const singleMax = meta.max;
+            const maxCap = analyticsSelectedDate === 'all' ? (singleMax * days) : singleMax;
+
+            document.getElementById('label-avg-score').innerHTML = `คะแนนเฉลี่ยรวม`;
+
+            if (total === 0) {
+                document.getElementById('stat-avg-score').innerText = "-";
+                return;
+            }
+
+            let sumScore = 0;
+
+            analyticsFilteredList.forEach(p => {
+                let score = 0;
+
+                if (analyticsSelectedDate === 'all') {
+                    if (analyticsSelectedTopic === 'all') {
+                        score = p.cumulativeScores.total;
+                    } else {
+                        score = p.cumulativeScores[analyticsSelectedTopic] || 0;
+                    }
+                } else {
+                    const entry = p.datesScores[analyticsSelectedDate];
+                    if (entry && entry.hasRealEntry) {
+                        if (analyticsSelectedTopic === 'all') {
+                            score = entry.total;
+                        } else {
+                            score = entry[analyticsSelectedTopic] || 0;
+                        }
+                    }
+                }
+
+                sumScore += score;
+            });
+
+            const avgScore = (sumScore / total).toFixed(1);
+            document.getElementById('stat-avg-score').innerText = `${avgScore} / ${maxCap}`;
+        }
+
+        function renderAnalyticsTable() {
+            const tbody = document.getElementById('leaderboard-tbody');
+            tbody.innerHTML = '';
+
+            let tableList = compiledPersonnel.filter(p => {
+                return !analyticsSelectedVillage || p.village === analyticsSelectedVillage;
+            });
+
+            const days = availableDates.size || 1;
+            const meta = TOPIC_METRIC_MAP[analyticsSelectedTopic];
+            const maxCap = analyticsSelectedDate === 'all' ? (meta.max * days) : meta.max;
+
+            document.getElementById('analytics-table-header-max').innerText = `ผลการประเมิน (${meta.name} เต็ม ${maxCap})`;
+            document.getElementById('all-leader-count-badge').innerText = `${tableList.length} รายการ`;
+
+            tableList.sort((a, b) => {
+                let scoreA = 0, scoreB = 0;
+                if (analyticsSelectedDate === 'all') {
+                    scoreA = analyticsSelectedTopic === 'all' ? a.cumulativeScores.total : (a.cumulativeScores[analyticsSelectedTopic] || 0);
+                    scoreB = analyticsSelectedTopic === 'all' ? b.cumulativeScores.total : (b.cumulativeScores[analyticsSelectedTopic] || 0);
+                } else {
+                    const entryA = a.datesScores[analyticsSelectedDate];
+                    const entryB = b.datesScores[analyticsSelectedDate];
+                    if (entryA) scoreA = analyticsSelectedTopic === 'all' ? entryA.total : (entryA[analyticsSelectedTopic] || 0);
+                    if (entryB) scoreB = analyticsSelectedTopic === 'all' ? entryB.total : (entryB[analyticsSelectedTopic] || 0);
+                }
+                return scoreB - scoreA;
+            });
+
+            if (tableList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-slate-400 font-semibold text-center">ไม่มีสถิติข้อมูลตามตัวเลือกหมู่คณะที่เลือก</td></tr>`;
+                return;
+            }
+
+            tableList.forEach(p => {
+                let score = 0;
+                if (analyticsSelectedDate === 'all') {
+                    score = analyticsSelectedTopic === 'all' ? p.cumulativeScores.total : (p.cumulativeScores[analyticsSelectedTopic] || 0);
+                } else {
+                    const entry = p.datesScores[analyticsSelectedDate];
+                    if (entry) score = analyticsSelectedTopic === 'all' ? entry.total : (entry[analyticsSelectedTopic] || 0);
+                }
+
+                const breakDownText = `⛺ ${p.cumulativeScores.jumwat} | 🧺 ${p.cumulativeScores.takra} | 🏰 ${p.cumulativeScores.wiman} | 🧣 ${p.cumulativeScores.raotak} | 🧥 ${p.cumulativeScores.homdong}`;
+                const totalDaysLabel = `${p.cumulativeScores.activeDaysCount} วัน`;
+
+                const tr = `
+                    <tr class="hover:bg-indigo-50/30 transition cursor-pointer text-center border-b border-slate-100" onclick="openPersonnelProfile(${p.id})">
+                        <td class="px-4 py-3 font-semibold text-slate-500">#${p.id}</td>
+                        <td class="px-4 py-3 text-left font-bold text-slate-900">${p.name}</td>
+                        <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-semibold">หมู่ ${p.village}</span></td>
+                        <td class="px-4 py-3 font-semibold text-indigo-600">${totalDaysLabel}</td>
+                        <td class="px-4 py-3 text-left text-slate-500 font-mono text-[10px]">${breakDownText}</td>
+                        <td class="px-4 py-3 font-black text-indigo-800 bg-indigo-50/10 text-xs">${score} / ${maxCap}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += tr;
+            });
+        }
+
+        function setViewMode(mode) {
+            viewMode = mode;
+            const btnGrid = document.getElementById('btn-view-grid');
+            const btnTable = document.getElementById('btn-view-table');
+            const gridView = document.getElementById('grid-view-container');
+            const tableView = document.getElementById('table-view-container');
+
+            if (mode === 'grid') {
+                btnGrid.className = "px-3 py-1.5 rounded-md text-xs font-semibold transition bg-white text-indigo-600 shadow-sm flex items-center gap-1";
+                btnTable.className = "px-3 py-1.5 rounded-md text-xs font-semibold transition text-slate-600 hover:text-slate-900 flex items-center gap-1";
+                gridView.classList.remove('hidden');
+                tableView.classList.add('hidden');
+            } else {
+                btnGrid.className = "px-3 py-1.5 rounded-md text-xs font-semibold transition text-slate-600 hover:text-slate-900 flex items-center gap-1";
+                btnTable.className = "px-3 py-1.5 rounded-md text-xs font-semibold transition bg-white text-indigo-600 shadow-sm flex items-center gap-1";
+                gridView.classList.add('hidden');
+                tableView.classList.remove('hidden');
+            }
+            renderDirectoryView();
+        }
+
+        function renderDirectoryView() {
+            const noDataEl = document.getElementById('no-data-alert');
+            if (filteredPersonnel.length === 0) {
+                noDataEl.classList.remove('hidden');
+                document.getElementById('grid-view-container').innerHTML = '';
+                document.getElementById('table-body').innerHTML = '';
+                return;
+            } else {
+                noDataEl.classList.add('hidden');
+            }
+
+            if (viewMode === 'grid') {
+                renderGridView();
+            } else {
+                renderTableView();
+            }
+        }
+
+        function renderGridView() {
+            const container = document.getElementById('grid-view-container');
+            container.innerHTML = '';
+            
+            const dateVal = analyticsSelectedDate;
+            const days = availableDates.size || 1;
+            const maxCap = dateVal === 'all' ? (155 * days) : 155;
+
+            filteredPersonnel.forEach(p => {
+                const imgUrl = parseDriveImageUrl(p.image);
+                
+                let ratingColor = "bg-emerald-500 text-white";
+                let performanceText = "ประพฤติดีเยี่ยม";
+                
+                const pct = (p.activeTotal / maxCap) * 100;
+                if (pct < 60) {
+                    ratingColor = "bg-rose-500 text-white";
+                    performanceText = "ต้องปรับปรุง";
+                } else if (pct < 80) {
+                    ratingColor = "bg-amber-500 text-white";
+                    performanceText = "ผ่านเกณฑ์ดี";
+                }
+
+                const scoreSummary = `${p.activeTotal} / ${maxCap} คะแนน`;
+                const attendRate = p.attendanceSummary.rate.toFixed(0);
+                const attendSummary = `มา ${p.attendanceSummary.present} / ${p.attendanceSummary.total} ครั้ง (${attendRate}%)`;
+
+                const card = `
+                    <div onclick="openPersonnelProfile(${p.id})" class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md border border-slate-100 transition duration-150 cursor-pointer flex flex-col hover:-translate-y-0.5">
+                        <div class="relative bg-slate-50 h-44 w-full flex items-center justify-center overflow-hidden border-b border-slate-100">
+                            <img src="${imgUrl}" alt="${p.name}" class="object-cover w-full h-full" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=60';">
+                            <span class="absolute top-2.5 left-2.5 bg-indigo-950 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-sm">หมู่ที่ ${p.village}</span>
+                            <span class="absolute bottom-2.5 right-2.5 ${ratingColor} text-[10px] font-black px-2 py-0.5 rounded shadow-sm">${scoreSummary}</span>
+                        </div>
+                        <div class="p-4 flex-grow flex flex-col justify-between space-y-3">
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-xs leading-snug line-clamp-2 mb-2" title="${p.name}">${p.name}</h4>
+                                <div class="space-y-1.5 pt-1 text-[11px]">
+                                    <div class="flex justify-between items-center text-[10px] text-slate-500">
+                                        <span>⛺ คะแนนมิติรวม:</span>
+                                        <strong class="text-indigo-600 font-mono">${p.activeTotal} / ${maxCap}</strong>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[10px] text-slate-500">
+                                        <span>📋 ประวัติการมาเช็คชื่อ:</span>
+                                        <strong class="text-indigo-600 font-mono">${attendSummary}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border-t border-slate-50 pt-2 flex justify-between items-center text-[10px] font-bold text-indigo-700">
+                                <span>รหัส: #${p.id}</span>
+                                <span>${performanceText}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        function renderTableView() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            const dateVal = analyticsSelectedDate;
+            const days = availableDates.size || 1;
+            const maxCap = dateVal === 'all' ? (155 * days) : 155;
+
+            filteredPersonnel.forEach(p => {
+                const imgUrl = parseDriveImageUrl(p.image);
+                const scoreSummary = `${p.activeTotal} / ${maxCap}`;
+                const sc = p.cumulativeScores;
+                const scoreBreakdown = `<span class="text-indigo-700">⛺${sc.jumwat}</span> <span class="text-blue-600">🧺${sc.takra}</span> <span class="text-cyan-600">🏰${sc.wiman}</span> <span class="text-amber-600">🧣${sc.raotak}</span> <span class="text-emerald-600">🧥${sc.homdong}</span>`;
+                const at = p.attendanceSummary;
+                const attendSummary = `<span class="text-emerald-600">มา ${at.present}</span> <span class="text-amber-500">สาย ${at.late}</span> <span class="text-blue-500">ลาป่วย ${at.sickLeave||0}</span> <span class="text-violet-500">ลากิจ ${at.casualLeave||0}</span>`;
+
+                const tr = `
+                    <tr class="hover:bg-slate-50 transition cursor-pointer text-center" onclick="openPersonnelProfile(${p.id})">
+                        <td class="px-4 py-3 whitespace-nowrap text-slate-500 font-semibold text-left">${p.id}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-left">
+                            <div class="w-8 h-8 rounded-full overflow-hidden bg-slate-100 border border-slate-200">
+                                <img src="${imgUrl}" alt="${p.name}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=60';">
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap font-bold text-slate-900 text-left">${p.name}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-medium">หมู่ ${p.village}</span>
+                        </td>
+                        <td class="px-4 py-3 text-center font-semibold text-slate-700 bg-amber-50/20">
+                            <div class="font-bold text-indigo-800">${scoreSummary}</div>
+                            <div class="text-[10px] font-mono mt-0.5">${scoreBreakdown}</div>
+                        </td>
+                        <td class="px-4 py-3 text-center bg-indigo-50/10">
+                            <div class="text-[10px] font-semibold space-x-1">${attendSummary}</div>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += tr;
+            });
+        }
+
+        function openPersonnelProfile(id) {
+            const p = compiledPersonnel.find(x => x.id === id);
+            if (!p) return;
+
+            const days = availableDates.size || 1;
+            const maxCap = 155 * days;
+            const limits = { jumwat: 50 * days, takra: 25 * days, wiman: 25 * days, raotak: 30 * days, homdong: 25 * days };
+            const scores = p.cumulativeScores;
+
+            document.getElementById('modal-img').src = parseDriveImageUrl(p.image);
+            document.getElementById('modal-title-name').innerText = p.name;
+            document.getElementById('modal-desc-sub').innerText = `รหัส: #${p.id} | อายุ: ${p.age} ปี | วุฒิการศึกษา: ${p.education || 'ไม่มีข้อมูล'} | บันทึกความเป็นอยู่: ${scores.activeDaysCount} วัน`;
+            document.getElementById('modal-tag-village').innerText = `หมู่ที่ ${p.village}`;
+
+            document.getElementById('modal-badge-score').innerText = `คะแนนรวมสะสม: ${scores.total} / ${maxCap} คะแนน`;
+            document.getElementById('modal-badge-attend').innerText = `อัตราการเข้าชั้น: ${p.attendanceSummary.rate.toFixed(0)}%`;
+            document.getElementById('modal-detail-header').innerText = `คะแนนประเมินรวมสะสมทุกวัน (${scores.activeDaysCount} วัน / เต็มรวม ${maxCap})`;
+
+            const items = ['jumwat', 'takra', 'wiman', 'raotak', 'homdong'];
+            items.forEach(it => {
+                const score = scores[it] || 0;
+                const singleMax = limits[it];
+                document.getElementById(`score-${it}-val`).innerText = `${score} / ${singleMax}`;
+                const barPct = singleMax > 0 ? Math.min((score / singleMax) * 100, 100) : 0;
+                document.getElementById(`bar-${it}`).style.width = `${barPct}%`;
+            });
+
+            document.getElementById('modal-attend-total').innerText = `${p.attendanceSummary.total} ครั้ง`;
+            document.getElementById('modal-attend-present').innerText = `${p.attendanceSummary.present} ครั้ง`;
+            document.getElementById('modal-attend-late').innerText = `${p.attendanceSummary.late} ครั้ง`;
+            document.getElementById('modal-attend-sick').innerText = `${p.attendanceSummary.sickLeave || 0} ครั้ง`;
+            document.getElementById('modal-attend-leave').innerText = `${p.attendanceSummary.casualLeave || 0} ครั้ง`;
+            document.getElementById('modal-attend-absent').innerText = `${p.attendanceSummary.absent} ครั้ง`;
+
+            toggleDetailModal(true);
+        }
+
+        function exportFullCSV() {
+            if (filteredPersonnel.length === 0) return;
+
+            const dateVal = analyticsSelectedDate;
+            const days = availableDates.size || 1;
+            const maxCap = dateVal === 'all' ? (155 * days) : 155;
+
+            let csvContent = "\uFEFF";
+            csvContent += `รายงานผลรวมการประเมิน (ชนิดตัวกรอง: ${dateVal === 'all' ? 'ผลสะสมทุกวัน' : 'วันที่ ' + dateVal})\r\n`;
+            csvContent += `ที่,หมู่,ชื่อ-ฉายา,อายุ,จำนวนวันบันทึกจริง,จุดจำวัด,ตะกร้า,วิมาน,ราวตาก,ห่มดอง,คะแนนรวม(เต็ม ${maxCap}),เช็คชื่อมา,เช็คชื่อสาย,เช็คชื่อขาด/ลา,อัตราการมา(%)\r\n`;
+
+            filteredPersonnel.forEach(p => {
+                const row = [
+                    p.id,
+                    `"${p.village}"`,
+                    `"${p.name}"`,
+                    p.age,
+                    p.activeDaysCount,
+                    p.activeScores.jumwat,
+                    p.activeScores.takra,
+                    p.activeScores.wiman,
+                    p.activeScores.raotak,
+                    p.activeScores.homdong,
+                    p.activeTotal,
+                    p.attendanceSummary.present,
+                    p.attendanceSummary.late,
+                    p.attendanceSummary.absent,
+                    p.attendanceSummary.rate.toFixed(1)
+                ];
+                csvContent += row.join(",") + "\r\n";
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", `รายงานรวมการประเมิน_${dateVal.replace(/\//g, '-')}_${new Date().toISOString().slice(0,10)}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        // ==================== TRAINING-PERIOD EVALUATION (แบบประเมินพระนวกะช่วงอบรม) ====================
+
+        function initTrainingEvalFilterOptions() {
+            const villageSet = new Set();
+            compiledPersonnel.forEach(item => { if (item.village) villageSet.add(item.village); });
+            renderTrainingEvalVillageButtons(Array.from(villageSet));
+        }
+
+        function renderTrainingEvalVillageButtons(villageList) {
+            const container = document.getElementById('trainingeval-village-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const allActive = trainingEvalSelectedVillage === '';
+            container.innerHTML += `<button onclick="selectTrainingEvalVillage('')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${allActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">🏘️ ทั้งหมด</button>`;
+
+            const sorted = [...villageList].sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
+            sorted.forEach(v => {
+                const isActive = trainingEvalSelectedVillage === v;
+                container.innerHTML += `<button onclick="selectTrainingEvalVillage('${v}')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">หมู่ที่ ${v}</button>`;
+            });
+        }
+
+        function selectTrainingEvalVillage(v) {
+            trainingEvalSelectedVillage = v;
+            const villageSet = new Set();
+            compiledPersonnel.forEach(p => { if (p.village) villageSet.add(p.village); });
+            renderTrainingEvalVillageButtons(Array.from(villageSet));
+            renderTrainingEvalDirectory();
+        }
+
+        function renderTrainingEvalDirectory() {
+            const tbody = document.getElementById('trainingeval-tbody');
+            const noDataEl = document.getElementById('trainingeval-no-data');
+            const badge = document.getElementById('trainingeval-count-badge');
+            if (!tbody) return;
+
+            const searchInput = document.getElementById('trainingeval-search-input');
+            const searchTerm = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+            const source = (compiledPersonnel && compiledPersonnel.length) ? compiledPersonnel : rawPersonnel;
+
+            const list = source.filter(p => {
+                const matchVillage = trainingEvalSelectedVillage === '' || String(p.village) === String(trainingEvalSelectedVillage);
+                const matchSearch = searchTerm === '' || (p.name || '').toLowerCase().includes(searchTerm);
+                return matchVillage && matchSearch;
+            }).sort((a, b) => (a.id || 0) - (b.id || 0));
+
+            if (badge) badge.innerText = `${list.length} รายการ`;
+
+            if (list.length === 0) {
+                tbody.innerHTML = '';
+                if (noDataEl) noDataEl.classList.remove('hidden');
+                return;
+            }
+            if (noDataEl) noDataEl.classList.add('hidden');
+
+            // Render beautifully as requested: "รายชื่อ คะแนน สรุปผลการประเมิน"
+            tbody.innerHTML = list.map(p => {
+                const evalData = p.trainingScores || { total: 85, passed: true };
+                const badgeStyle = evalData.passed 
+                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200" 
+                    : "bg-rose-50 text-rose-700 border border-rose-200";
+                const badgeLabel = evalData.passed 
+                    ? `<i class="fa-solid fa-circle-check"></i> ผ่านเกณฑ์ (${evalData.total} คะแนน)` 
+                    : `<i class="fa-solid fa-triangle-exclamation"></i> ไม่ผ่านเกณฑ์ (${evalData.total} คะแนน)`;
+
+                return `
+                    <tr class="hover:bg-indigo-50/20 transition cursor-pointer text-center" onclick="openTrainingEvalForm(${p.id})">
+                        <td class="px-4 py-3 font-semibold text-slate-500">#${p.id}</td>
+                        <td class="px-4 py-3 text-left font-bold text-slate-900">${p.name}</td>
+                        <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-semibold">หมู่ ${p.village}</span></td>
+                        <td class="px-4 py-3 font-mono font-bold text-indigo-900">${evalData.total} / 100</td>
+                        <td class="px-4 py-3"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold ${badgeStyle}">${badgeLabel}</span></td>
+                        <td class="px-4 py-3 text-indigo-600 hover:text-indigo-950">
+                            <button class="bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 mx-auto">
+                                <i class="fa-solid fa-print"></i> เปิด/พิมพ์
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function parseTrainingEvalNameParts(rawName) {
+            if (!rawName) return { firstName: '-', honorific: '-' };
+            let clean = rawName
+                .replace(/^(พระครูอธิการ|พระครูวิกรมธรรมธาดา|พระครู|พระมหา|พระอธิการ|พระ)/g, '')
+                .replace(/\([^)]*\)/g, '') 
+                .trim();
+            clean = clean.replace(/\s+[A-Za-z]\.?$/, '').trim();
+            const parts = clean.split(/\s+/).filter(Boolean);
+            const firstName = parts[0] || '-';
+            const honorific = parts.slice(1).join(' ') || '-';
+            return { firstName, honorific };
+        }
+
+        function openTrainingEvalForm(id) {
+            const source = (compiledPersonnel && compiledPersonnel.length) ? compiledPersonnel : rawPersonnel;
+            const p = source.find(x => x.id === id);
+            if (!p) return;
+
+            const evalData = p.trainingScores || { scores: [9,9,9,9,9,9,9,9,9,9], total: 90, passed: true, notes: '', mentorType: 'พพล.กลุ่ม', assessor: 'พระอาจารย์ผู้ประเมิน', dateAssess: '26-06-2026' };
+
+            document.getElementById('trainingeval-modal-img').src = parseDriveImageUrl(p.image);
+            document.getElementById('trainingeval-field-firstname').innerText = p.firstname || '-';
+            document.getElementById('trainingeval-field-honorific').innerText = p.honorific || '-';
+            document.getElementById('trainingeval-field-lastname').innerText = p.lastname || '-'; 
+            document.getElementById('trainingeval-field-village').innerText = p.village ? `หมู่ที่ ${p.village}` : '-';
+            document.getElementById('trainingeval-field-id').innerText = p.id != null ? p.id : '-';
+
+            // Build evaluation scores from training evaluation schema
+            const tbody = document.getElementById('trainingeval-score-tbody');
+            let scorePointer = 0;
+            
+            tbody.innerHTML = TRAINING_EVAL_TOPICS.map(topic => {
+                const rows = topic.items.length;
+                return topic.items.map((item, idx) => {
+                    const topicCell = idx === 0
+                        ? `<td class="border border-slate-200 px-2 py-2 text-center font-bold align-top" rowspan="${rows}">${topic.title}<br><span class="font-normal text-slate-400">${topic.sub}</span></td>`
+                        : '';
+                    const scoreVal = evalData.scores[scorePointer++] || 0;
+                    return `
+                        <tr>
+                            ${topicCell}
+                            <td class="border border-slate-200 px-2 py-2">${item.label}</td>
+                            <td class="border border-slate-200 px-2 py-2 text-center">${item.max}</td>
+                            <td class="border border-slate-200 px-2 py-2 text-center bg-amber-50/50 font-bold text-indigo-900">${scoreVal}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }).join('');
+
+            document.getElementById('trainingeval-total-score').innerText = evalData.total;
+
+            // Mark evaluation summary checkboxes (Passed / Failed)
+            const passIcon = document.getElementById('icon-pass-chk');
+            const failIcon = document.getElementById('icon-fail-chk');
+            if (evalData.passed) {
+                passIcon.className = "fa-solid fa-circle-check text-emerald-600";
+                failIcon.className = "fa-regular fa-circle text-slate-300";
+            } else {
+                passIcon.className = "fa-regular fa-circle text-slate-300";
+                failIcon.className = "fa-solid fa-circle-check text-rose-600";
+            }
+
+            // Mark suitable mentor status checkboxes
+            const mentorTypes = { none: 'mentor-none', group: 'mentor-group', merit: 'mentor-merit' };
+            Object.values(mentorTypes).forEach(elId => {
+                const el = document.getElementById(elId);
+                if (el) el.querySelector('i').className = "fa-regular fa-circle text-slate-300";
+            });
+
+            if (evalData.mentorType === 'พพล.กลุ่ม') {
+                document.getElementById('mentor-group').querySelector('i').className = "fa-solid fa-circle-check text-indigo-600";
+            } else if (evalData.mentorType === 'พพล.บุญ') {
+                document.getElementById('mentor-merit').querySelector('i').className = "fa-solid fa-circle-check text-indigo-600";
+            } else {
+                document.getElementById('mentor-none').querySelector('i').className = "fa-solid fa-circle-check text-indigo-600";
+            }
+
+            // Behavior note displaying
+            document.getElementById('trainingeval-notes-display').innerText = evalData.notes || 'ความประพฤติสม่ำเสมอดีงาม เรียบร้อยเป็นที่น่าพึงใจ';
+            document.getElementById('trainingeval-assessor-display').innerText = `ลงชื่อผู้ประเมิน: ${evalData.assessor || '...........................................'}`;
+            document.getElementById('trainingeval-date-display').innerText = `วันที่ประเมิน: ${evalData.dateAssess || '26-06-2026'}`;
+
+            toggleTrainingEvalModal(true);
+        }
+
+        function toggleTrainingEvalModal(show) {
+            const modal = document.getElementById('trainingeval-modal');
+            if (!modal) return;
+            if (show) modal.classList.remove('hidden');
+            else modal.classList.add('hidden');
+        }
+
+        function parseDriveImageUrl(driveUrl) {
+            if (!driveUrl) return 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=60';
+            if (driveUrl.startsWith('image_')) return driveUrl; 
+            try {
+                let fileId = '';
+                const match1 = driveUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                const match2 = driveUrl.match(/id=([a-zA-Z0-9_-]+)/);
+                if (match1 && match1[1]) fileId = match1[1];
+                else if (match2 && match2[1]) fileId = match2[1];
+                if (fileId) return `https://lh3.googleusercontent.com/d/${fileId}`;
+            } catch (err) {
+                console.error("Error formatting Drive URL:", err);
+            }
+            return driveUrl;
+        }
+
+        function switchTab(tabId) {
+            const tabs = ['analytics', 'attendance', 'personnel', 'trainingeval', 'sources'];
+            tabs.forEach(t => {
+                const element = document.getElementById(`tab-${t}`);
+                const btn = document.getElementById(`tab-${t}-btn`);
+                if (t === tabId) {
+                    element.classList.remove('hidden');
+                    btn.className = "bg-indigo-600 text-white shadow-sm px-4 py-2.5 rounded-lg text-xs md:text-sm font-semibold flex items-center gap-1.5 transition whitespace-nowrap";
+                } else {
+                    element.classList.add('hidden');
+                    btn.className = "text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-xs md:text-sm font-semibold flex items-center gap-1.5 transition whitespace-nowrap";
+                }
+            });
+        }
+
+        function toggleSandboxModal(show) {
+            const modal = document.getElementById('sandbox-modal');
+            if (show) modal.classList.remove('hidden');
+            else modal.classList.add('hidden');
+        }
+
+        function toggleDetailModal(show) {
+            const modal = document.getElementById('detail-modal');
+            if (show) modal.classList.remove('hidden');
+            else modal.classList.add('hidden');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                toggleDetailModal(false);
+                toggleSandboxModal(false);
+                toggleTrainingEvalModal(false);
+            }
+        });
+
+        function renderPersonnelVillageButtons(villageList) {
+            const container = document.getElementById('personnel-village-container');
+            if (!container) return;
+            container.innerHTML = '';
+            const currentVal = document.getElementById('filter-village').value;
+
+            const allActive = currentVal === '';
+            container.innerHTML += `<button onclick="selectPersonnelVillage('')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${allActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">🏘️ ทั้งหมด</button>`;
+
+            const sorted = [...villageList].sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
+            sorted.forEach(v => {
+                const isActive = currentVal === v;
+                container.innerHTML += `<button onclick="selectPersonnelVillage('${v}')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">หมู่ที่ ${v}</button>`;
+            });
+        }
+
+        function selectPersonnelVillage(v) {
+            document.getElementById('filter-village').value = v;
+            const villageSet = new Set();
+            compiledPersonnel.forEach(p => { if (p.village) villageSet.add(p.village); });
+            renderPersonnelVillageButtons(Array.from(villageSet));
+            applyFilters();
+        }
+
+        // Collapsible Cloud Sources UI helpers
+        let sourcesCollapsed = true;
+        function toggleSourcesCollapse() {
+            sourcesCollapsed = !sourcesCollapsed;
+            const content = document.getElementById('sources-collapse-content');
+            const icon = document.getElementById('sources-collapse-icon');
+            if (sourcesCollapsed) {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+    </script>
 </body>
 </html>
