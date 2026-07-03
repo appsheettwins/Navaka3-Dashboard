@@ -146,7 +146,7 @@
             <!-- Interactive Analytics Filter -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mb-1">
-                    <i class="fa-solid fa-sliders text-indigo-600"></i> ตัวกรองสถิติความเป็นอยู่ (Interactive Filter)
+                    <i class="fa-solid fa-sliders text-indigo-600"></i> ตัวกรองสถิติความเป็นอยู่รายวัน (Interactive Filter)
                 </h3>
                 
                 <!-- Topic Selection Row -->
@@ -159,7 +159,7 @@
 
                 <!-- Date Selection Row - Showing 3 Latest Days -->
                 <div>
-                    <label class="block text-[11px] font-semibold text-slate-500 mb-2">ระบุวันที่ประเมิน (3 วันล่าสุด):</label>
+                    <label class="block text-[11px] font-semibold text-slate-500 mb-2">ระบุวันที่ประเมินย้อนหลัง (3 วันล่าสุด):</label>
                     <div id="analytics-date-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
                         <!-- Dates (latest 3) injected dynamically -->
                     </div>
@@ -201,9 +201,9 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
                     <div>
                         <h3 class="text-xs md:text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                            <i class="fa-solid fa-address-book text-indigo-600"></i> ทำเนียบข้อมูลบุคลากรและคะแนนประเมิน
+                            <i class="fa-solid fa-address-book text-indigo-600"></i> ทำเนียบข้อมูลบุคลากรและคะแนนประเมินรายวัน
                         </h3>
-                        <p class="text-[10px] text-slate-500 mt-0.5">แสดงผลลัพธ์รายชื่อและสรุปคะแนนประเมินความเป็นอยู่แยกตามมิติ วันที่ และหมู่คณะ (รวมสะสมทุกคอลัมน์)</p>
+                        <p class="text-[10px] text-slate-500 mt-0.5">แสดงผลลัพธ์รายชื่อและสรุปคะแนนประเมินความเป็นอยู่รายวัน แยกตามมิติ วันที่ และหมู่คณะที่เลือก</p>
                     </div>
                     <span id="all-leader-count-badge" class="text-[10px] text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded font-bold">
                         - รายการ
@@ -216,8 +216,8 @@
                                 <th class="px-4 py-2.5 w-14">รหัส</th>
                                 <th class="px-4 py-2.5 text-left">ชื่อ-ฉายา</th>
                                 <th class="px-4 py-2.5 w-20">หมู่คณะ</th>
-                                <th class="px-4 py-2.5 w-28">บันทึกจริง</th>
-                                <th class="px-4 py-2.5 text-left">คะแนนดิบสะสม (⛺ จำวัด | 🧺 ตะกร้า | 🏰 วิมาน | 🧣 ราวตาก | 🧥 ห่มดอง)</th>
+                                <th class="px-4 py-2.5 w-28">วันที่เลือกตรวจ</th>
+                                <th class="px-4 py-2.5 text-left">คะแนนดิบรายวัน (⛺ จำวัด | 🧺 ตะกร้า | 🏰 วิมาน | 🧣 ราวตาก | 🧥 ห่มดอง)</th>
                                 <th class="px-4 py-2.5 w-32 font-bold text-indigo-800" id="analytics-table-header-max">ผลประเมิน</th>
                             </tr>
                         </thead>
@@ -341,9 +341,9 @@
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-5 border-b border-slate-100">
                     <div>
                         <h3 class="text-sm md:text-base font-bold text-slate-900 flex items-center gap-1.5">
-                            <i class="fa-solid fa-address-book text-indigo-600"></i> ทำเนียบข้อมูลสรุปผลประเมินรวมและความเป็นอยู่
+                            <i class="fa-solid fa-address-book text-indigo-600"></i> ทำเนียบข้อมูลสรุปผลประเมินรวมและความเป็นอยู่สะสม
                         </h3>
-                        <p class="text-xs text-slate-500 mt-0.5 font-medium">รวมคะแนน 5 มิติดิบและอัตราการเช็คชื่อเข้าชั้นเรียน 4 รอบหลักเป็นหนึ่งเดียว</p>
+                        <p class="text-xs text-slate-500 mt-0.5 font-medium">รวมคะแนนสะสม 5 มิติดิบและอัตราการเช็คชื่อเข้าชั้นเรียน 4 รอบหลักเป็นหนึ่งเดียว</p>
                     </div>
                     
                     <div class="flex flex-wrap items-center gap-2">
@@ -374,10 +374,10 @@
                         </div>
                         <div>
                             <label class="block text-[11px] font-semibold text-slate-600 mb-1 flex items-center gap-1">
-                                <i class="fa-solid fa-calendar-days text-indigo-600"></i> เลือกวันที่ตรวจประเมิน
+                                <i class="fa-solid fa-calendar-days text-indigo-600"></i> เลือกวันที่ตรวจประเมิน (เรียงตามวันล่าสุด)
                             </label>
                             <select id="filter-date" onchange="syncGlobalDate(this.value)" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white text-slate-800 font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
-                                <!-- Injected dynamically -->
+                                <!-- Injected dynamically (latest dates on top) -->
                             </select>
                         </div>
                     </div>
@@ -461,6 +461,14 @@
                         <div id="trainingeval-village-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
                             <!-- Injected dynamically -->
                         </div>
+                    </div>
+                </div>
+
+                <!-- Training Eval Status Filter with counts -->
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-500 mb-2">สถานะผลการประเมินช่วงอบรม:</label>
+                    <div id="trainingeval-status-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                        <!-- Injected dynamically (All, Pass, Fail with count) -->
                     </div>
                 </div>
             </div>
@@ -645,14 +653,11 @@
                             <span id="modal-attend-leave" class="font-bold text-violet-600">- ครั้ง</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-2 text-center text-xs">
-                        <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-[10px] text-rose-500">ขาด</span>
-                            <span id="modal-attend-absent" class="font-bold text-rose-600">- ครั้ง</span>
-                        </div>
-                        <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-[10px] text-slate-400">รวมทั้งหมด</span>
-                            <span id="modal-attend-total" class="font-bold text-slate-900">- ครั้ง</span>
+                    <!-- Combined or standalone attendance total block (Removed Absent block completely) -->
+                    <div class="text-center text-xs w-full">
+                        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                            <span class="block text-[10px] text-slate-500 font-semibold">รวมเช็คชื่อทั้งหมด</span>
+                            <span id="modal-attend-total" class="font-bold text-slate-950 text-sm">- ครั้ง</span>
                         </div>
                     </div>
                 </div>
@@ -832,7 +837,7 @@
             { id: 13, village: "2", image: "", name: "พระเมฆบิน โชติธมฺโม F", firstname: "เมฆบิน", honorific: "โชติธมฺโม", lastname: "F", age: 45, education: "ปริญญาโท" },
             { id: 14, village: "2", image: "", name: "พระยุทธนา หิริมโน G", firstname: "ยุทธนา", honorific: "หิริมโน", lastname: "G", age: 41, education: "ปริญญาตรี" },
             { id: 15, village: "2", image: "", name: "พระรัชชานนท์ วรจิตฺโต H", firstname: "รัชชานนท์", honorific: "วรจิตฺโต", lastname: "H", age: 33, education: "มัธยมศึกษา" },
-            { id: 16, village: "2", image: "", name: "พระวัชระ พรหฺมวโร I", firstname: "วัชระ", honorific: "พรหฺมวโร", lastname: "I", age: 38, education: "ปริญญาเอก" },
+            { id: 16, village: "2", image: "", name: "พระวัชระ พรหฺมวโร I", firstname: "วัชระ", hoverific: "พรหฺมวโร", lastname: "I", age: 38, education: "ปริญญาเอก" },
             { id: 17, village: "2", image: "", name: "พระสมชาย เขมภโว J", firstname: "สมชาย", honorific: "เขมภโว", lastname: "J", age: 49, education: "ปริญญาตรี" },
             { id: 18, village: "2", image: "", name: "พระสมบูรณ์ สุนตจิตฺโต K", firstname: "สมบูรณ์", honorific: "สุนตจิตฺโต", lastname: "K", age: 53, education: "นักธรรมโท" },
             { id: 19, village: "2", image: "", name: "พระสุบิน ณฐวุฑฺโฒ L", firstname: "สุบิน", honorific: "ณฐวุฑฺโฒ", lastname: "L", age: 56, education: "ปริญญาตรี" },
@@ -887,24 +892,13 @@
             });
 
             // Seed real attendance matching 1782719272984.jpg layout
-            // 25/06/2026 - Present Morning, Late Morning, Afternoon
             mockAttendanceRecords.push({ name: p.name, date: '25/06/2026', round: 'เช้า', status: 'มา', village: p.village });
             mockAttendanceRecords.push({ name: p.name, date: '25/06/2026', round: 'สาย', status: 'มา', village: p.village });
             mockAttendanceRecords.push({ name: p.name, date: '25/06/2026', round: 'บ่าย', status: 'มา', village: p.village });
-
-            // 26/06/2026 - Present Afternoon
             mockAttendanceRecords.push({ name: p.name, date: '26/06/2026', round: 'บ่าย', status: 'มา', village: p.village });
-
-            // 27/06/2026 - Present Late Morning
             mockAttendanceRecords.push({ name: p.name, date: '27/06/2026', round: 'สาย', status: 'มา', village: p.village });
-
-            // 28/06/2026 - Present Late Morning
             mockAttendanceRecords.push({ name: p.name, date: '28/06/2026', round: 'สาย', status: 'มา', village: p.village });
-
-            // 29/06/2026 - Present Afternoon
             mockAttendanceRecords.push({ name: p.name, date: '29/06/2026', round: 'บ่าย', status: 'มา', village: p.village });
-
-            // 01/07/2026 (Wednesday Jul 1st) - Present Morning, Late Morning
             mockAttendanceRecords.push({ name: p.name, date: '01/07/2026', round: 'เช้า', status: 'มา', village: p.village });
             mockAttendanceRecords.push({ name: p.name, date: '01/07/2026', round: 'สาย', status: 'มา', village: p.village });
         });
@@ -918,15 +912,13 @@
         let viewMode = 'grid';
 
         // --- TRAINING-PERIOD EVALUATION FORM (แบบประเมินพระนวกะช่วงอบรม) ---
-        // Topic structure taken directly from the reference PDF (Navaka3 training-period evaluation form).
-        // Score integration ("คะแนนที่ได้") will be connected to a live data source in a future update.
         const TRAINING_EVAL_TOPICS = [
             { title: 'วินัย', sub: '(20 คะแนน)', items: [
                 { label: '1. การปฏิบัติตามกฎระเบียบของโครงการ', max: 10 },
                 { label: '2. การรักษาความสะอาดและความเป็นระเบียบของเครื่องใช้', max: 10 }
             ]},
             { title: 'เคารพ', sub: '(20 คะแนน)', items: [
-                { label: '1. การเชื่อฟังคำสั่งสอน of พระอาจารย์และพระพี่เลี้ยง', max: 10 },
+                { label: '1. การเชื่อฟังคำสั่งสอน ของ พระอาจารย์และพระพี่เลี้ยง', max: 10 },
                 { label: '2. ความเคารพและการให้เกียรติกันตามภันเต-อาวุโส', max: 10 }
             ]},
             { title: 'มีเป้าหมายชัดเจน', sub: '(20 คะแนน)', items: [
@@ -943,13 +935,14 @@
             ]}
         ];
         let trainingEvalSelectedVillage = '';
+        let trainingEvalSelectedStatus = 'all'; // 'all', 'passed', 'failed'
 
         // --- INTERACTIVE FILTER SYSTEM STATUS ---
         let analyticsSelectedTopic = 'all';      
-        let analyticsSelectedDate = '01/07/2026'; // Default selected date (July 1, 2026)
+        let analyticsSelectedDate = '01/07/2026'; // Default selected date
         let analyticsSelectedVillage = '';       
 
-        // Attendance local filter state (Removed local round selector as requested)
+        // Attendance local filter state
         let attendanceSelectedVillage = '';
 
         const TOPIC_METRIC_MAP = {
@@ -965,15 +958,20 @@
             fetchAllData();
         };
 
+        // Date helper parser
+        function parseDate(s) {
+            const p = s.split('/');
+            if (p.length === 3) return new Date(p[2], p[1] - 1, p[0]);
+            return new Date(0);
+        }
+
         /**
          * Robust parser to normalize dates as Gregorian DD/MM/YYYY.
-         * Specifically translates Thai Buddhist year (e.g., 2569) to Western Gregorian year (2026).
          */
         function normalizeDateStr(dateStr) {
             if (!dateStr) return '';
             dateStr = String(dateStr).trim();
             
-            // Clean Thai month names if Google Sheet formats them in words
             const thaiMonthsShort = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
             const thaiMonthsFull = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
             
@@ -984,13 +982,12 @@
                         let d = String(parseInt(matches[1])).padStart(2, '0');
                         let m = String(i + 1).padStart(2, '0');
                         let y = parseInt(matches[3]);
-                        if (y > 2500) y -= 543; // Convert Buddhist Year (พ.ศ.) to AD
+                        if (y > 2500) y -= 543;
                         return `${d}/${m}/${y}`;
                     }
                 }
             }
 
-            // Google sheets raw JSON date representations: Date(2026,6,1)
             if (dateStr.includes('Date(')) {
                 const matches = dateStr.match(/Date\((\d+),(\d+),(\d+)\)/);
                 if (matches) {
@@ -1002,7 +999,6 @@
                 }
             }
             
-            // Handle ISO representation or dashes: YYYY-MM-DD
             if (dateStr.includes('-')) {
                 const parts = dateStr.split('-');
                 if (parts.length === 3) {
@@ -1014,7 +1010,6 @@
                 }
             }
             
-            // Handle standard slashes: DD/MM/YYYY
             if (dateStr.includes('/')) {
                 const parts = dateStr.split('/');
                 if (parts.length === 3) {
@@ -1023,7 +1018,6 @@
                     let y = parseInt(parts[2]);
                     if (y > 2500) y -= 543;
                     
-                    // Month/day swap guard
                     const p0 = parseInt(parts[0]);
                     const p1 = parseInt(parts[1]);
                     if (p0 > 12 && p1 <= 12) {
@@ -1037,19 +1031,14 @@
             return dateStr;
         }
 
-        /**
-         * Robust Thai Name matching logic.
-         * Cleans, normalizes, and compares substrings of two names to handle formatting mismatches.
-         * Specifically strips title "พระ", brackets, English group letters (C, D, E), and trims whitespace.
-         */
         function isNameMatch(nameA, nameB) {
             if (!nameA || !nameB) return false;
             
             const clean = (s) => {
                 return s.replace(/\s+/g, '')
                         .replace(/^(พระครูอธิการ|พระครูวิกรมธรรมธาดา|พระครู|พระมหา|พระอธิการ|พระ)/g, '')
-                        .replace(/\([^)]*\)/g, '') // remove brackets and content inside brackets e.g. (C)
-                        .replace(/[A-Za-z().,_\-]/g, '') // remove trailing group labels
+                        .replace(/\([^)]*\)/g, '') 
+                        .replace(/[A-Za-z().,_\-]/g, '') 
                         .trim();
             };
             
@@ -1096,7 +1085,6 @@
 
                 rawPersonnel = parsePersonnelJSON(personnelRes);
                 
-                // Parse the new Estimate sheet data
                 let estimateMap = {};
                 if (estimateRes) {
                     estimateMap = parseEstimateJSON(estimateRes);
@@ -1161,20 +1149,13 @@
                     return '';
                 };
 
-                // Column A: รหัส (ID) -> index 0
                 const idVal = parseInt(valOf(0)) || 0;
-                // Column B: หมู่ (Village) -> index 1
                 const villageVal = String(valOf(1) || '').trim();
-                // Column C: รูป (Image) -> index 2
                 const imageVal = String(valOf(2) || '').trim();
-                // Column D: ชื่อ (First Name) -> index 3
                 const firstNameVal = String(valOf(3) || '').trim();
-                // Column E: ฉายา (Monastic Honorific) -> index 4
                 const honorificVal = String(valOf(4) || '').trim();
-                // Column F: นามสกุล (Last Name) -> index 5
                 const lastNameVal = String(valOf(5) || '').trim();
 
-                // Build consistent full name with default monastic prefix "พระ"
                 let fullName = '';
                 if (firstNameVal) {
                     const hasPrefix = firstNameVal.startsWith('พระ');
@@ -1195,9 +1176,6 @@
             }).filter(item => item.id && item.name);
         }
 
-        /**
-         * Parses the Estimate sheet based on Column E-S
-         */
         function parseEstimateJSON(responseText) {
             const jsonString = responseText.substring(responseText.indexOf('{'), responseText.lastIndexOf('}') + 1);
             const json = JSON.parse(jsonString);
@@ -1213,28 +1191,26 @@
                     return '';
                 };
 
-                // Column A (index 0) has ID
                 const idVal = parseInt(valOf(0));
                 if (!isNaN(idVal)) {
-                    // Col E-S are indices 4-18
                     const scores = [
-                        parseFloat(valOf(4)) || 0, // E
-                        parseFloat(valOf(5)) || 0, // F
-                        parseFloat(valOf(6)) || 0, // G
-                        parseFloat(valOf(7)) || 0, // H
-                        parseFloat(valOf(8)) || 0, // I
-                        parseFloat(valOf(9)) || 0, // J
-                        parseFloat(valOf(10)) || 0, // K
-                        parseFloat(valOf(11)) || 0, // L
-                        parseFloat(valOf(12)) || 0, // M
-                        parseFloat(valOf(13)) || 0  // N
+                        parseFloat(valOf(4)) || 0,
+                        parseFloat(valOf(5)) || 0,
+                        parseFloat(valOf(6)) || 0,
+                        parseFloat(valOf(7)) || 0,
+                        parseFloat(valOf(8)) || 0,
+                        parseFloat(valOf(9)) || 0,
+                        parseFloat(valOf(10)) || 0,
+                        parseFloat(valOf(11)) || 0,
+                        parseFloat(valOf(12)) || 0,
+                        parseFloat(valOf(13)) || 0
                     ];
 
-                    const total = parseFloat(valOf(14)) || scores.reduce((s, x) => s + x, 0); // O (คะแนนรวม)
-                    const mentorType = String(valOf(15)).trim() || 'ไม่เหมาะสม'; // P (ตำแหน่งพระพี่เลี้ยง)
-                    const notes = String(valOf(16)).trim() || 'ความประพฤติเรียบร้อยสง่างาม'; // Q (ความประพฤติ)
-                    const assessor = String(valOf(17)).trim() || 'พระครูประเมินคุณาธิการ'; // R (ลงชื่อผู้ประเมิน)
-                    const dateAssess = String(valOf(18)).trim() || '26-06-2026'; // S (วันที่ประเมิน)
+                    const total = parseFloat(valOf(14)) || scores.reduce((s, x) => s + x, 0);
+                    const mentorType = String(valOf(15)).trim() || 'ไม่เหมาะสม';
+                    const notes = String(valOf(16)).trim() || 'ความประพฤติเรียบร้อยสง่างาม';
+                    const assessor = String(valOf(17)).trim() || 'พระครูประเมินคุณาธิการ';
+                    const dateAssess = String(valOf(18)).trim() || '26-06-2026';
 
                     estimateMap[idVal] = {
                         scores,
@@ -1496,12 +1472,11 @@
 
                 const attendRate = totalRoundsChecked > 0 ? ((presentCount + (lateCount * 0.5) + sickLeaveCount + casualLeaveCount) / totalRoundsChecked * 100) : 0;
 
-                // Bind either actual fetched scores from "Estimate" or fallback simulator values
+                // Bind estimate scores
                 let trainingScoresObj = {};
                 if (estimateMap && estimateMap[person.id]) {
                     trainingScoresObj = estimateMap[person.id];
                 } else {
-                    // Fallback to beautiful simulation if offline/not evaluated
                     const trainingBase = 72 + (person.id % 25); 
                     const mockTrainingScores = [
                         Math.min(10, Math.floor(trainingBase / 10)),
@@ -1568,34 +1543,23 @@
                 vSelect.innerHTML += `<option value="${v}">หมู่ที่ ${v}</option>`;
             });
 
-            const sortedDates = Array.from(availableDates).sort((a, b) => {
-                const parseDate = (s) => {
-                    const p = s.split('/');
-                    if (p.length === 3) return new Date(p[2], p[1] - 1, p[0]);
-                    return new Date(0);
-                };
-                return parseDate(a) - parseDate(b);
-            });
+            // Sort dates chronologically
+            const sortedDates = Array.from(availableDates).sort((a, b) => parseDate(a) - parseDate(b));
 
+            // Populate Dropdown for Tab 3 with Newest/Latest date first at the top
+            const sortedDatesDesc = [...sortedDates].reverse();
             const dSelect = document.getElementById('filter-date');
             dSelect.innerHTML = '<option value="all">รวมคะแนนสะสมทุกวัน</option>';
             
-            sortedDates.forEach(date => {
+            sortedDatesDesc.forEach(date => {
                 dSelect.innerHTML += `<option value="${date}">คะแนนรายวัน: ${date}</option>`;
             });
 
-            // Auto select '01/07/2026' as default
-            const defaultDate = '01/07/2026';
-            if (availableDates.has(defaultDate)) {
-                dSelect.value = defaultDate;
-                analyticsSelectedDate = defaultDate;
-            } else if (sortedDates.length > 0) {
+            // Auto select latest single date (Newest) as default for Tab 1 & Tab 2
+            if (sortedDates.length > 0) {
                 const latestDate = sortedDates[sortedDates.length - 1];
-                dSelect.value = latestDate;
                 analyticsSelectedDate = latestDate;
-            } else {
-                dSelect.value = 'all';
-                analyticsSelectedDate = 'all';
+                dSelect.value = latestDate; // set selector to latest day
             }
 
             renderAnalyticsTopicButtons();
@@ -1631,15 +1595,8 @@
             const container = document.getElementById('analytics-date-container');
             container.innerHTML = '';
 
+            // Extract ONLY the 3 latest days for Tab 1 representation
             const latest3Dates = sortedDates.slice(-3);
-
-            const isAllActive = analyticsSelectedDate === 'all';
-            const allBtn = `
-                <button onclick="syncGlobalDate('all')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${isAllActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
-                    📅 รวมสะสมทุกวัน
-                </button>
-            `;
-            container.innerHTML += allBtn;
 
             latest3Dates.forEach(date => {
                 const isActive = analyticsSelectedDate === date;
@@ -1658,14 +1615,6 @@
             container.innerHTML = '';
 
             const latest3Dates = sortedDates.slice(-3);
-
-            const isAllActive = analyticsSelectedDate === 'all';
-            const allBtn = `
-                <button onclick="syncGlobalDate('all')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${isAllActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
-                    📅 รวมสะสมทุกวัน
-                </button>
-            `;
-            container.innerHTML += allBtn;
 
             latest3Dates.forEach(date => {
                 const isActive = analyticsSelectedDate === date;
@@ -1728,27 +1677,28 @@
 
         function syncGlobalDate(dateVal) {
             const normalized = normalizeDateStr(dateVal);
-            analyticsSelectedDate = normalized;
+            
+            // Fallback for Tab 1 & Tab 2: If cumulative 'all' is selected, fall back to the latest day
+            const sortedDates = Array.from(availableDates).sort((a, b) => parseDate(a) - parseDate(b));
+            const latestSingleDate = sortedDates[sortedDates.length - 1];
+
+            if (normalized === 'all') {
+                analyticsSelectedDate = 'all';
+            } else {
+                analyticsSelectedDate = normalized;
+            }
             
             const dSelect = document.getElementById('filter-date');
             if (dSelect) {
                 dSelect.value = normalized;
             }
 
-            const sortedDates = Array.from(availableDates).sort((a, b) => {
-                const parseDate = (s) => {
-                    const p = s.split('/');
-                    if (p.length === 3) return new Date(p[2], p[1] - 1, p[0]);
-                    return new Date(0);
-                };
-                return parseDate(a) - parseDate(b);
-            });
             renderAnalyticsDateButtons(sortedDates);
             renderAttendanceDateButtons(sortedDates);
 
             const dateLabelEl = document.getElementById('attendance-subtitle-date');
             if (dateLabelEl) {
-                dateLabelEl.innerText = `แสดงข้อมูลของวันที่ประเมินหลัก: ${normalized === 'all' ? 'สถิติสะสมทุกวัน' : normalized}`;
+                dateLabelEl.innerText = `แสดงข้อมูลของวันที่ประเมินหลัก: ${normalized === 'all' ? latestSingleDate : normalized}`;
             }
 
             applyFilters();
@@ -1803,12 +1753,16 @@
             let sickCount = 0;
             let leaveCount = 0;
 
+            // Handle date filter fallback for attendance display
+            let activeAttendanceDate = analyticsSelectedDate;
+            if (activeAttendanceDate === 'all') {
+                const sortedDates = Array.from(availableDates).sort((a, b) => parseDate(a) - parseDate(b));
+                activeAttendanceDate = sortedDates[sortedDates.length - 1]; // Fallback to latest
+            }
+
             filteredAttend.forEach(p => {
                 let records = p.attendanceRecords;
-                
-                if (analyticsSelectedDate !== 'all') {
-                    records = records.filter(r => r.date === analyticsSelectedDate);
-                }
+                records = records.filter(r => r.date === activeAttendanceDate);
 
                 records.forEach(r => {
                     if (r.status === 'มา') presentCount++;
@@ -1834,10 +1788,7 @@
 
             filteredAttend.forEach(p => {
                 let records = p.attendanceRecords;
-                
-                if (analyticsSelectedDate !== 'all') {
-                    records = records.filter(r => r.date === analyticsSelectedDate);
-                }
+                records = records.filter(r => r.date === activeAttendanceDate);
 
                 const getStatusEmoji = (roundName) => {
                     const match = records.find(r => r.round === roundName);
@@ -1897,8 +1848,9 @@
             document.getElementById('search-input').value = '';
             document.getElementById('filter-village').value = '';
             
-            const defaultDate = '01/07/2026';
-            syncGlobalDate(defaultDate);
+            const sortedDates = Array.from(availableDates).sort((a, b) => parseDate(a) - parseDate(b));
+            const latestDate = sortedDates[sortedDates.length - 1];
+            syncGlobalDate(latestDate);
         }
 
         function calculateAnalyticsKPIs() {
@@ -1909,11 +1861,8 @@
             const total = analyticsFilteredList.length;
             document.getElementById('stat-total').innerText = total + " ราย";
 
-            const days = availableDates.size || 1;
             const meta = TOPIC_METRIC_MAP[analyticsSelectedTopic];
-            
-            const singleMax = meta.max;
-            const maxCap = analyticsSelectedDate === 'all' ? (singleMax * days) : singleMax;
+            const maxCap = meta.max; // Always single day max
 
             document.getElementById('label-avg-score').innerHTML = `คะแนนเฉลี่ยรวม`;
 
@@ -1922,28 +1871,24 @@
                 return;
             }
 
-            let sumScore = 0;
+            // Find current active date (if 'all' fallback to latest single day)
+            let activeDate = analyticsSelectedDate;
+            if (activeDate === 'all') {
+                const sortedDates = Array.from(availableDates).sort((a, b) => parseDate(a) - parseDate(b));
+                activeDate = sortedDates[sortedDates.length - 1];
+            }
 
+            let sumScore = 0;
             analyticsFilteredList.forEach(p => {
                 let score = 0;
-
-                if (analyticsSelectedDate === 'all') {
+                const entry = p.datesScores[activeDate];
+                if (entry && entry.hasRealEntry) {
                     if (analyticsSelectedTopic === 'all') {
-                        score = p.cumulativeScores.total;
+                        score = entry.total;
                     } else {
-                        score = p.cumulativeScores[analyticsSelectedTopic] || 0;
-                    }
-                } else {
-                    const entry = p.datesScores[analyticsSelectedDate];
-                    if (entry && entry.hasRealEntry) {
-                        if (analyticsSelectedTopic === 'all') {
-                            score = entry.total;
-                        } else {
-                            score = entry[analyticsSelectedTopic] || 0;
-                        }
+                        score = entry[analyticsSelectedTopic] || 0;
                     }
                 }
-
                 sumScore += score;
             });
 
@@ -1959,24 +1904,25 @@
                 return !analyticsSelectedVillage || p.village === analyticsSelectedVillage;
             });
 
-            const days = availableDates.size || 1;
             const meta = TOPIC_METRIC_MAP[analyticsSelectedTopic];
-            const maxCap = analyticsSelectedDate === 'all' ? (meta.max * days) : meta.max;
+            const maxCap = meta.max; // Tab 1 enforces single day maximum capacity
 
             document.getElementById('analytics-table-header-max').innerText = `ผลการประเมิน (${meta.name} เต็ม ${maxCap})`;
             document.getElementById('all-leader-count-badge').innerText = `${tableList.length} รายการ`;
 
+            // Active date fallback
+            let activeDate = analyticsSelectedDate;
+            if (activeDate === 'all') {
+                const sortedDates = Array.from(availableDates).sort((a, b) => parseDate(a) - parseDate(b));
+                activeDate = sortedDates[sortedDates.length - 1];
+            }
+
             tableList.sort((a, b) => {
                 let scoreA = 0, scoreB = 0;
-                if (analyticsSelectedDate === 'all') {
-                    scoreA = analyticsSelectedTopic === 'all' ? a.cumulativeScores.total : (a.cumulativeScores[analyticsSelectedTopic] || 0);
-                    scoreB = analyticsSelectedTopic === 'all' ? b.cumulativeScores.total : (b.cumulativeScores[analyticsSelectedTopic] || 0);
-                } else {
-                    const entryA = a.datesScores[analyticsSelectedDate];
-                    const entryB = b.datesScores[analyticsSelectedDate];
-                    if (entryA) scoreA = analyticsSelectedTopic === 'all' ? entryA.total : (entryA[analyticsSelectedTopic] || 0);
-                    if (entryB) scoreB = analyticsSelectedTopic === 'all' ? entryB.total : (entryB[analyticsSelectedTopic] || 0);
-                }
+                const entryA = a.datesScores[activeDate];
+                const entryB = b.datesScores[activeDate];
+                if (entryA) scoreA = analyticsSelectedTopic === 'all' ? entryA.total : (entryA[analyticsSelectedTopic] || 0);
+                if (entryB) scoreB = analyticsSelectedTopic === 'all' ? entryB.total : (entryB[analyticsSelectedTopic] || 0);
                 return scoreB - scoreA;
             });
 
@@ -1987,22 +1933,20 @@
 
             tableList.forEach(p => {
                 let score = 0;
-                if (analyticsSelectedDate === 'all') {
-                    score = analyticsSelectedTopic === 'all' ? p.cumulativeScores.total : (p.cumulativeScores[analyticsSelectedTopic] || 0);
-                } else {
-                    const entry = p.datesScores[analyticsSelectedDate];
-                    if (entry) score = analyticsSelectedTopic === 'all' ? entry.total : (entry[analyticsSelectedTopic] || 0);
+                const entry = p.datesScores[activeDate];
+                if (entry) {
+                    score = analyticsSelectedTopic === 'all' ? entry.total : (entry[analyticsSelectedTopic] || 0);
                 }
 
-                const breakDownText = `⛺ ${p.cumulativeScores.jumwat} | 🧺 ${p.cumulativeScores.takra} | 🏰 ${p.cumulativeScores.wiman} | 🧣 ${p.cumulativeScores.raotak} | 🧥 ${p.cumulativeScores.homdong}`;
-                const totalDaysLabel = `${p.cumulativeScores.activeDaysCount} วัน`;
+                // Show breakdown for the selected single day instead of cumulative
+                const breakDownText = `⛺ ${entry ? entry.jumwat : 0} | 🧺 ${entry ? entry.takra : 0} | 🏰 ${entry ? entry.wiman : 0} | 🧣 ${entry ? entry.raotak : 0} | 🧥 ${entry ? entry.homdong : 0}`;
 
                 const tr = `
                     <tr class="hover:bg-indigo-50/30 transition cursor-pointer text-center border-b border-slate-100" onclick="openPersonnelProfile(${p.id})">
                         <td class="px-4 py-3 font-semibold text-slate-500">#${p.id}</td>
                         <td class="px-4 py-3 text-left font-bold text-slate-900">${p.name}</td>
                         <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-semibold">หมู่ ${p.village}</span></td>
-                        <td class="px-4 py-3 font-semibold text-indigo-600">${totalDaysLabel}</td>
+                        <td class="px-4 py-3 font-semibold text-indigo-600">${activeDate}</td>
                         <td class="px-4 py-3 text-left text-slate-500 font-mono text-[10px]">${breakDownText}</td>
                         <td class="px-4 py-3 font-black text-indigo-800 bg-indigo-50/10 text-xs">${score} / ${maxCap}</td>
                     </tr>
@@ -2182,7 +2126,6 @@
             document.getElementById('modal-attend-late').innerText = `${p.attendanceSummary.late} ครั้ง`;
             document.getElementById('modal-attend-sick').innerText = `${p.attendanceSummary.sickLeave || 0} ครั้ง`;
             document.getElementById('modal-attend-leave').innerText = `${p.attendanceSummary.casualLeave || 0} ครั้ง`;
-            document.getElementById('modal-attend-absent').innerText = `${p.attendanceSummary.absent} ครั้ง`;
 
             toggleDetailModal(true);
         }
@@ -2196,7 +2139,7 @@
 
             let csvContent = "\uFEFF";
             csvContent += `รายงานผลรวมการประเมิน (ชนิดตัวกรอง: ${dateVal === 'all' ? 'ผลสะสมทุกวัน' : 'วันที่ ' + dateVal})\r\n`;
-            csvContent += `ที่,หมู่,ชื่อ-ฉายา,อายุ,จำนวนวันบันทึกจริง,จุดจำวัด,ตะกร้า,วิมาน,ราวตาก,ห่มดอง,คะแนนรวม(เต็ม ${maxCap}),เช็คชื่อมา,เช็คชื่อสาย,เช็คชื่อขาด/ลา,อัตราการมา(%)\r\n`;
+            csvContent += `ที่,หมู่,ชื่อ-ฉายา,อายุ,จำนวนวันบันทึกจริง,จุดจำวัด,ตะกร้า,วิมาน,ราวตาก,ห่มดอง,คะแนนรวม(เต็ม ${maxCap}),เช็คชื่อมา,เช็คชื่อสาย,อัตราการมา(%)\r\n`;
 
             filteredPersonnel.forEach(p => {
                 const row = [
@@ -2213,7 +2156,6 @@
                     p.activeTotal,
                     p.attendanceSummary.present,
                     p.attendanceSummary.late,
-                    p.attendanceSummary.absent,
                     p.attendanceSummary.rate.toFixed(1)
                 ];
                 csvContent += row.join(",") + "\r\n";
@@ -2232,12 +2174,57 @@
             }
         }
 
-        // ==================== TRAINING-PERIOD EVALUATION (แบบประเมินพระนวกะช่วงอบรม) ====================
+        // ==================== TRAINING-PERIOD EVALUATION ====================
 
         function initTrainingEvalFilterOptions() {
             const villageSet = new Set();
             compiledPersonnel.forEach(item => { if (item.village) villageSet.add(item.village); });
             renderTrainingEvalVillageButtons(Array.from(villageSet));
+            renderTrainingEvalStatusButtons();
+        }
+
+        function renderTrainingEvalStatusButtons() {
+            const container = document.getElementById('trainingeval-status-container');
+            if (!container) return;
+
+            const searchInput = document.getElementById('trainingeval-search-input');
+            const searchTerm = searchInput ? searchInput.value.trim().toLowerCase() : '';
+            const source = (compiledPersonnel && compiledPersonnel.length) ? compiledPersonnel : rawPersonnel;
+
+            // Compute counts relative to search/village filtered bounds
+            let matchedList = source.filter(p => {
+                return trainingEvalSelectedVillage === '' || String(p.village) === String(trainingEvalSelectedVillage);
+            }).filter(p => {
+                return searchTerm === '' || (p.name || '').toLowerCase().includes(searchTerm);
+            });
+
+            const totalCount = matchedList.length;
+            const passedCount = matchedList.filter(p => p.trainingScores && p.trainingScores.passed).length;
+            const failedCount = totalCount - passedCount;
+
+            const makeClass = (status) => {
+                return trainingEvalSelectedStatus === status 
+                    ? "bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold" 
+                    : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200";
+            };
+
+            container.innerHTML = `
+                <button onclick="selectTrainingEvalStatus('all')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${makeClass('all')}">
+                     📿 ทั้งหมด (${totalCount})
+                </button>
+                <button onclick="selectTrainingEvalStatus('passed')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${makeClass('passed')}">
+                     🟢 ผ่าน (${passedCount})
+                </button>
+                <button onclick="selectTrainingEvalStatus('failed')" class="px-4 py-1.5 border rounded-full text-xs transition duration-150 whitespace-nowrap ${makeClass('failed')}">
+                     🔴 ไม่ผ่าน (${failedCount})
+                </button>
+            `;
+        }
+
+        function selectTrainingEvalStatus(status) {
+            trainingEvalSelectedStatus = status;
+            renderTrainingEvalStatusButtons();
+            renderTrainingEvalDirectory();
         }
 
         function renderTrainingEvalVillageButtons(villageList) {
@@ -2260,6 +2247,7 @@
             const villageSet = new Set();
             compiledPersonnel.forEach(p => { if (p.village) villageSet.add(p.village); });
             renderTrainingEvalVillageButtons(Array.from(villageSet));
+            renderTrainingEvalStatusButtons();
             renderTrainingEvalDirectory();
         }
 
@@ -2274,13 +2262,26 @@
 
             const source = (compiledPersonnel && compiledPersonnel.length) ? compiledPersonnel : rawPersonnel;
 
-            const list = source.filter(p => {
+            // 1. Filter by village & search first
+            let list = source.filter(p => {
                 const matchVillage = trainingEvalSelectedVillage === '' || String(p.village) === String(trainingEvalSelectedVillage);
                 const matchSearch = searchTerm === '' || (p.name || '').toLowerCase().includes(searchTerm);
                 return matchVillage && matchSearch;
-            }).sort((a, b) => (a.id || 0) - (b.id || 0));
+            });
+
+            // 2. Filter by selected status (Pass/Fail)
+            if (trainingEvalSelectedStatus === 'passed') {
+                list = list.filter(p => p.trainingScores && p.trainingScores.passed);
+            } else if (trainingEvalSelectedStatus === 'failed') {
+                list = list.filter(p => p.trainingScores && !p.trainingScores.passed);
+            }
+
+            list.sort((a, b) => (a.id || 0) - (b.id || 0));
 
             if (badge) badge.innerText = `${list.length} รายการ`;
+
+            // Always update state counts when search changes
+            renderTrainingEvalStatusButtons();
 
             if (list.length === 0) {
                 tbody.innerHTML = '';
@@ -2289,7 +2290,6 @@
             }
             if (noDataEl) noDataEl.classList.add('hidden');
 
-            // Render beautifully as requested: "รายชื่อ คะแนน สรุปผลการประเมิน"
             tbody.innerHTML = list.map(p => {
                 const evalData = p.trainingScores || { total: 85, passed: true };
                 const badgeStyle = evalData.passed 
@@ -2343,7 +2343,6 @@
             document.getElementById('trainingeval-field-village').innerText = p.village ? `หมู่ที่ ${p.village}` : '-';
             document.getElementById('trainingeval-field-id').innerText = p.id != null ? p.id : '-';
 
-            // Build evaluation scores from training evaluation schema
             const tbody = document.getElementById('trainingeval-score-tbody');
             let scorePointer = 0;
             
@@ -2367,7 +2366,6 @@
 
             document.getElementById('trainingeval-total-score').innerText = evalData.total;
 
-            // Mark evaluation summary checkboxes (Passed / Failed)
             const passIcon = document.getElementById('icon-pass-chk');
             const failIcon = document.getElementById('icon-fail-chk');
             if (evalData.passed) {
@@ -2378,7 +2376,6 @@
                 failIcon.className = "fa-solid fa-circle-check text-rose-600";
             }
 
-            // Mark suitable mentor status checkboxes
             const mentorTypes = { none: 'mentor-none', group: 'mentor-group', merit: 'mentor-merit' };
             Object.values(mentorTypes).forEach(elId => {
                 const el = document.getElementById(elId);
@@ -2393,7 +2390,6 @@
                 document.getElementById('mentor-none').querySelector('i').className = "fa-solid fa-circle-check text-indigo-600";
             }
 
-            // Behavior note displaying
             document.getElementById('trainingeval-notes-display').innerText = evalData.notes || 'ความประพฤติสม่ำเสมอดีงาม เรียบร้อยเป็นที่น่าพึงใจ';
             document.getElementById('trainingeval-assessor-display').innerText = `ลงชื่อผู้ประเมิน: ${evalData.assessor || '...........................................'}`;
             document.getElementById('trainingeval-date-display').innerText = `วันที่ประเมิน: ${evalData.dateAssess || '26-06-2026'}`;
@@ -2483,7 +2479,6 @@
             applyFilters();
         }
 
-        // Collapsible Cloud Sources UI helpers
         let sourcesCollapsed = true;
         function toggleSourcesCollapse() {
             sourcesCollapsed = !sourcesCollapsed;
