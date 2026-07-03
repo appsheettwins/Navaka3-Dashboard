@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบสรุปสถิติและประเมินผลรวม 5 มิติ</title>
+    <title>ระบบสรุปสถิติและประเมินผลรวม</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts (Sarabun) -->
@@ -129,6 +129,9 @@
             </button>
             <button onclick="switchTab('attendance')" id="tab-attendance-btn" class="text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-sm md:text-base font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
                 <i class="fa-solid fa-clipboard-user"></i> สถิติการเช็คชื่อ
+            </button>
+            <button onclick="switchTab('grades')" id="tab-grades-btn" class="text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-sm md:text-base font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
+                <i class="fa-solid fa-graduation-cap"></i> ผลการเรียน
             </button>
             <button onclick="switchTab('trainingeval')" id="tab-trainingeval-btn" class="text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-sm md:text-base font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
                 <i class="fa-solid fa-scroll"></i> การประเมินช่วงอบรม
@@ -406,6 +409,103 @@
 
         </div>
 
+        <!-- ==================== TAB: ผลการเรียน (GRADES / GPA) ==================== -->
+        <div id="tab-grades" class="hidden space-y-6">
+
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg md:text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-sky-600"></i> ผลการเรียนและเกรดเฉลี่ย
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-0.5 font-medium">คะแนนรายวิชาและเกรดเฉลี่ย (GPA) แปลงจากคะแนนดิบ 0-100 ตามเกณฑ์ 8 ระดับ</p>
+                </div>
+            </div>
+
+            <!-- Filters + Term toggle -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mb-1">
+                    <i class="fa-solid fa-sliders text-indigo-600"></i> ค้นหา, กรอง และเลือกภาคเรียน
+                </h3>
+
+                <!-- Term toggle -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกภาคเรียน:</label>
+                    <div class="flex gap-2">
+                        <button onclick="selectGradesTerm('term1')" id="grades-term1-btn" class="px-4 py-1.5 border rounded-full text-sm font-bold transition duration-150 whitespace-nowrap bg-white hover:bg-slate-50 text-slate-700 border-slate-200">📘 เทอมแรก</button>
+                        <button onclick="selectGradesTerm('term2')" id="grades-term2-btn" class="px-4 py-1.5 border rounded-full text-sm font-bold transition duration-150 whitespace-nowrap bg-sky-600 text-white border-sky-600 shadow-sm">📗 เทอมหลัง</button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row md:items-start gap-4">
+                    <!-- Village buttons -->
+                    <div class="flex-1 min-w-0">
+                        <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่:</label>
+                        <div id="grades-village-container" class="flex gap-2 flex-wrap">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                    <!-- Search -->
+                    <div class="w-full md:w-64 flex-shrink-0">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">พิมพ์ค้นหาชื่อจริง/ฉายา</label>
+                        <div class="relative">
+                            <input type="text" id="grades-search-input" oninput="applyGradesFilters()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Hidden select for village value (used by applyGradesFilters) -->
+            <select id="grades-filter-village" class="hidden">
+                <option value="">ทั้งหมดทุกหมู่</option>
+            </select>
+
+            <!-- Summary cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 text-center">
+                    <p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide">จำนวนผู้เข้าอบรม</p>
+                    <p id="grades-summary-count" class="text-2xl font-black text-slate-900 mt-1">-</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 text-center">
+                    <p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide">GPA เฉลี่ยรวม</p>
+                    <p id="grades-summary-avg" class="text-2xl font-black text-sky-700 mt-1">-</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 text-center">
+                    <p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide">GPA สูงสุด</p>
+                    <p id="grades-summary-max" class="text-2xl font-black text-emerald-600 mt-1">-</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 text-center">
+                    <p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide">GPA ต่ำสุด</p>
+                    <p id="grades-summary-min" class="text-2xl font-black text-rose-600 mt-1">-</p>
+                </div>
+            </div>
+
+            <!-- Table View Content -->
+            <div id="grades-table-view-container" class="overflow-auto border border-slate-100 rounded-lg" style="max-height: 70vh;">
+                <table class="min-w-full divide-y divide-slate-200 text-sm">
+                    <thead class="text-slate-500 font-bold text-center">
+                        <tr id="grades-table-head-row">
+                            <th class="sticky top-0 z-10 bg-slate-50 px-4 py-3 text-left w-10">รหัส</th>
+                            <th class="sticky top-0 z-10 bg-slate-50 px-4 py-3 text-left">ชื่อ - ฉายา</th>
+                            <th class="sticky top-0 z-10 bg-slate-50 px-4 py-3 text-center w-12">หมู่</th>
+                            <!-- 5 subject columns injected dynamically -->
+                            <th class="sticky top-0 z-10 bg-sky-50 px-4 py-3 text-center">เกรดเฉลี่ย (GPA)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="grades-table-body" class="bg-white divide-y divide-slate-200 text-slate-700">
+                        <!-- Dynamic rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State alert -->
+            <div id="grades-no-data-alert" class="hidden text-center py-12">
+                <i class="fa-solid fa-magnifying-glass text-slate-200 text-4xl mb-3"></i>
+                <p class="text-slate-500 text-sm font-semibold">ไม่พบข้อมูลตามเงื่อนไขที่เลือกสืบค้น</p>
+                <button onclick="resetGradesFilters()" class="mt-2 text-indigo-600 hover:text-indigo-800 text-sm font-semibold underline">ล้างตัวกรอง</button>
+            </div>
+
+        </div>
+
         <!-- ==================== TAB 4: TRAINING-PERIOD EVALUATION (แบบประเมินพระนวกะช่วงอบรม) ==================== -->
         <div id="tab-trainingeval" class="hidden space-y-6">
 
@@ -671,6 +771,20 @@
                         <span id="modal-term1-gpa" class="text-lg font-black text-sky-700">-</span>
                     </div>
                 </div>
+
+                <!-- Term2 grades summary -->
+                <div class="border-t border-slate-100 pt-4 space-y-3">
+                    <h4 class="text-sm font-bold text-sky-900 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-graduation-cap text-sky-600"></i> ผลการเรียน เทอมหลัง
+                    </h4>
+                    <div id="modal-term2-subjects" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                        <!-- Injected dynamically -->
+                    </div>
+                    <div class="bg-sky-50 p-3 rounded-lg border border-sky-100 flex items-center justify-between">
+                        <span class="text-xs font-semibold text-sky-800">เกรดเฉลี่ยเทอมหลัง</span>
+                        <span id="modal-term2-gpa" class="text-lg font-black text-sky-700">-</span>
+                    </div>
+                </div>
             </div>
             
             <div class="pt-4 mt-4 border-t border-slate-100 flex justify-end">
@@ -849,6 +963,17 @@
             { key: 'thai', label: 'ภาษาไทยเพื่อการสื่อสาร' }
         ];
 
+        const TARGET_SHEET_NAME_TERM2 = 'Term2';
+
+        // Term2 subject columns E-I in the Term2 sheet (index 4-8), in order
+        const TERM2_SUBJECTS = [
+            { key: 'meditation2', label: 'สมาธิ 2' },
+            { key: 'sb303', label: 'แม่บทการฝึกอบรม SB303' },
+            { key: 'pd002', label: 'สร้างบารมีเป็นทีม PD002' },
+            { key: 'sb202', label: 'วัฒนธรรมชาวพุทธ SB202' },
+            { key: 'seminar', label: 'สัมมนาพัฒนาชีวิต' }
+        ];
+
         // Standard Thai 8-level score-to-grade-point conversion (0-100 score scale)
         function scoreToGradePoint(score) {
             if (score >= 80) return 4.0;
@@ -994,6 +1119,8 @@
         let personnelCurrentIndex = -1; // Index of the currently open person within personnelFilteredIds
         let personnelModalOpenId = null; // id of the person currently displayed in the detail modal, or null when closed
 
+        let gradesActiveTerm = 'term2'; // 'term1' or 'term2' — which term's grades tab is currently showing
+
         // --- INTERACTIVE FILTER SYSTEM STATUS ---
         let analyticsSelectedTopic = 'all';      
         let analyticsSelectedDate = '01/07/2026'; // Default selected date
@@ -1115,6 +1242,7 @@
             const urlPersonnel = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_PERSONAL}`;
             const urlEstimate = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_ESTIMATE}`;
             const urlTerm1 = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_TERM1}`;
+            const urlTerm2 = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_TERM2}`;
             
             const evalPromises = EVAL_TABS.map(tabName => {
                 const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_EVAL_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tabName)}`;
@@ -1133,10 +1261,11 @@
             });
 
             try {
-                const [personnelRes, estimateRes, term1Res, ...allOtherResults] = await Promise.all([
+                const [personnelRes, estimateRes, term1Res, term2Res, ...allOtherResults] = await Promise.all([
                     fetch(urlPersonnel).then(r => r.ok ? r.text() : null).catch(() => null),
                     fetch(urlEstimate).then(r => r.ok ? r.text() : null).catch(() => null),
                     fetch(urlTerm1).then(r => r.ok ? r.text() : null).catch(() => null),
+                    fetch(urlTerm2).then(r => r.ok ? r.text() : null).catch(() => null),
                     ...evalPromises,
                     ...attendancePromises
                 ]);
@@ -1153,6 +1282,11 @@
                 let term1Map = {};
                 if (term1Res) {
                     term1Map = parseTerm1JSON(term1Res);
+                }
+
+                let term2Map = {};
+                if (term2Res) {
+                    term2Map = parseTerm2JSON(term2Res);
                 }
 
                 const evalMaps = {};
@@ -1176,7 +1310,7 @@
                     }
                 });
 
-                compileData(rawPersonnel, evalMaps, rawAttendance, estimateMap, term1Map, false);
+                compileData(rawPersonnel, evalMaps, rawAttendance, estimateMap, term1Map, term2Map, false);
 
                 statusEl.innerHTML = `<span class="w-2 h-2 mr-1.5 bg-emerald-500 rounded-full"></span> ดึงข้อมูลสดสำเร็จ`;
                 statusEl.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800";
@@ -1185,7 +1319,7 @@
                 console.warn("API direct linking failed. Deploying beautiful simulated sandbox database.", err);
                 rawPersonnel = [...mockPersonnel];
                 rawAttendance = [...mockAttendanceRecords];
-                compileData(mockPersonnel, mockEvalSheets, mockAttendanceRecords, {}, {}, true);
+                compileData(mockPersonnel, mockEvalSheets, mockAttendanceRecords, {}, {}, {}, true);
 
                 statusEl.innerHTML = `<span class="w-2 h-2 mr-1.5 bg-amber-500 rounded-full"></span> โหมดออฟไลน์จำลอง`;
                 statusEl.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800";
@@ -1198,6 +1332,8 @@
             applyAttendanceFilters();
             initTrainingEvalFilterOptions();
             renderTrainingEvalDirectory();
+            initGradesFilterOptions();
+            applyGradesFilters();
         }
 
         function parsePersonnelJSON(responseText) {
@@ -1320,6 +1456,36 @@
             });
 
             return term1Map;
+        }
+
+        // Term2 sheet columns: A=รหัส B=หมู่ C=ชื่อ D=ฉายา E-I=5 subject scores (0-100 each)
+        function parseTerm2JSON(responseText) {
+            const jsonString = responseText.substring(responseText.indexOf('{'), responseText.lastIndexOf('}') + 1);
+            const json = JSON.parse(jsonString);
+            const rows = json.table.rows;
+            const term2Map = {};
+
+            rows.forEach(r => {
+                if (!r || !r.c) return;
+                const valOf = (idx) => {
+                    if (r.c && r.c[idx]) {
+                        return r.c[idx].v !== null && r.c[idx].v !== undefined ? r.c[idx].v : (r.c[idx].f || '');
+                    }
+                    return '';
+                };
+
+                const idVal = parseInt(valOf(0));
+                if (!isNaN(idVal) && idVal) {
+                    const scores = TERM2_SUBJECTS.map((subj, i) => parseFloat(valOf(4 + i)) || 0);
+                    const hasData = scores.some(s => s > 0);
+                    const gradePoints = scores.map(scoreToGradePoint);
+                    const gpa = hasData ? (gradePoints.reduce((s, x) => s + x, 0) / gradePoints.length) : null;
+
+                    term2Map[idVal] = { scores, gradePoints, gpa, hasData };
+                }
+            });
+
+            return term2Map;
         }
 
         function parseEvaluationJSON(responseText, tabName) {
@@ -1482,7 +1648,7 @@
             return records;
         }
 
-        function compileData(personnelList, evalMaps, attendanceList, estimateMap, term1Map, isMock = false) {
+        function compileData(personnelList, evalMaps, attendanceList, estimateMap, term1Map, term2Map, isMock = false) {
             if (isMock) {
                 availableDates = new Set(['25/06/2026', '26/06/2026', '27/06/2026', '28/06/2026', '29/06/2026', '01/07/2026']);
             } else {
@@ -1639,6 +1805,19 @@
                     term1Obj = { scores: mockScores, gradePoints: mockGradePoints, gpa: mockGpa, hasData: true };
                 }
 
+                // Bind Term2 (เทอมหลัง) subject grades
+                let term2Obj = {};
+                if (term2Map && term2Map[person.id] && term2Map[person.id].hasData) {
+                    term2Obj = term2Map[person.id];
+                } else {
+                    // Deterministic mock scores from person.id so sandbox mode still shows a GPA
+                    const base2 = 58 + ((person.id * 11) % 35);
+                    const mockScores2 = TERM2_SUBJECTS.map((s, i) => Math.min(100, Math.max(40, base2 + ((person.id + i * 5) % 13) - 6)));
+                    const mockGradePoints2 = mockScores2.map(scoreToGradePoint);
+                    const mockGpa2 = mockGradePoints2.reduce((s, x) => s + x, 0) / mockGradePoints2.length;
+                    term2Obj = { scores: mockScores2, gradePoints: mockGradePoints2, gpa: mockGpa2, hasData: true };
+                }
+
                 return {
                     ...person,
                     datesScores,
@@ -1664,7 +1843,8 @@
                         rate: attendRate
                     },
                     trainingScores: trainingScoresObj,
-                    term1Scores: term1Obj
+                    term1Scores: term1Obj,
+                    term2Scores: term2Obj
                 };
             });
         }
@@ -2130,6 +2310,11 @@
                     ? `<div class="font-black text-sky-700 text-xl leading-tight">${t1.gpa.toFixed(2)}</div>`
                     : `<span class="text-slate-400 text-xs">ยังไม่มีข้อมูล</span>`;
 
+                const t2 = p.term2Scores || null;
+                const term2Cell = (t2 && t2.hasData)
+                    ? `<div class="font-black text-sky-700 text-xl leading-tight">${t2.gpa.toFixed(2)}</div>`
+                    : `<span class="text-slate-400 text-xs">ยังไม่มีข้อมูล</span>`;
+
                 const tr = `
                     <tr class="hover:bg-slate-50 transition cursor-pointer text-center" onclick="openPersonnelProfile(${p.id})">
                         <td class="px-4 py-3 whitespace-nowrap text-slate-500 font-semibold text-left">${p.id}</td>
@@ -2157,8 +2342,8 @@
                         <td class="px-4 py-3 text-center bg-sky-50/20">
                             ${term1Cell}
                         </td>
-                        <td class="px-4 py-3 text-center bg-sky-50/20 text-slate-400 text-xs">
-                            ยังไม่มีข้อมูล
+                        <td class="px-4 py-3 text-center bg-sky-50/20">
+                            ${term2Cell}
                         </td>
                     </tr>
                 `;
@@ -2243,6 +2428,24 @@
                 } else {
                     term1Container.innerHTML = `<span class="text-slate-400 text-xs sm:col-span-2">ยังไม่มีข้อมูล</span>`;
                     term1GpaEl.innerText = '-';
+                }
+            }
+
+            const term2 = p.term2Scores || null;
+            const term2Container = document.getElementById('modal-term2-subjects');
+            const term2GpaEl = document.getElementById('modal-term2-gpa');
+            if (term2Container) {
+                if (term2 && term2.hasData) {
+                    term2Container.innerHTML = TERM2_SUBJECTS.map((subj, i) => `
+                        <div class="bg-white p-2 rounded border border-slate-100 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-500 font-semibold">${subj.label}</span>
+                            <span class="font-bold text-slate-700">${term2.scores[i]} <span class="text-[10px] text-slate-400 font-normal">(${term2.gradePoints[i].toFixed(1)})</span></span>
+                        </div>
+                    `).join('');
+                    term2GpaEl.innerText = term2.gpa.toFixed(2);
+                } else {
+                    term2Container.innerHTML = `<span class="text-slate-400 text-xs sm:col-span-2">ยังไม่มีข้อมูล</span>`;
+                    term2GpaEl.innerText = '-';
                 }
             }
 
@@ -2545,7 +2748,7 @@
         }
 
         function switchTab(tabId) {
-            const tabs = ['analytics', 'attendance', 'personnel', 'trainingeval', 'sources'];
+            const tabs = ['analytics', 'attendance', 'personnel', 'grades', 'trainingeval', 'sources'];
             tabs.forEach(t => {
                 const element = document.getElementById(`tab-${t}`);
                 const btn = document.getElementById(`tab-${t}-btn`);
@@ -2654,6 +2857,193 @@
             compiledPersonnel.forEach(p => { if (p.village) villageSet.add(p.village); });
             renderPersonnelVillageButtons(Array.from(villageSet));
             applyFilters();
+        }
+
+        // ==================== ผลการเรียน (GRADES / GPA) TAB ====================
+
+        function initGradesFilterOptions() {
+            const villageSet = new Set();
+            compiledPersonnel.forEach(item => {
+                if (item.village) villageSet.add(item.village);
+            });
+
+            const vSelect = document.getElementById('grades-filter-village');
+            if (vSelect) {
+                vSelect.innerHTML = '<option value="">ทั้งหมดทุกหมู่</option>';
+                const sortedVillages = Array.from(villageSet).sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
+                sortedVillages.forEach(v => {
+                    vSelect.innerHTML += `<option value="${v}">หมู่ที่ ${v}</option>`;
+                });
+            }
+
+            renderGradesVillageButtons(Array.from(villageSet));
+            updateGradesTermButtons();
+            renderGradesTableHead();
+        }
+
+        function renderGradesVillageButtons(villageList) {
+            const container = document.getElementById('grades-village-container');
+            if (!container) return;
+            container.innerHTML = '';
+            const currentVal = document.getElementById('grades-filter-village').value;
+
+            const allActive = currentVal === '';
+            container.innerHTML += `<button onclick="selectGradesVillage('')" class="px-4 py-1.5 border rounded-full text-sm transition duration-150 whitespace-nowrap ${allActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">🏘️ ทั้งหมด</button>`;
+
+            const sorted = [...villageList].sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
+            sorted.forEach(v => {
+                const isActive = currentVal === v;
+                container.innerHTML += `<button onclick="selectGradesVillage('${v}')" class="px-4 py-1.5 border rounded-full text-sm transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">หมู่ที่ ${v}</button>`;
+            });
+        }
+
+        function selectGradesVillage(v) {
+            document.getElementById('grades-filter-village').value = v;
+            const villageSet = new Set();
+            compiledPersonnel.forEach(p => { if (p.village) villageSet.add(p.village); });
+            renderGradesVillageButtons(Array.from(villageSet));
+            applyGradesFilters();
+        }
+
+        function selectGradesTerm(term) {
+            gradesActiveTerm = term;
+            updateGradesTermButtons();
+            renderGradesTableHead();
+            applyGradesFilters();
+        }
+
+        function updateGradesTermButtons() {
+            const t1Btn = document.getElementById('grades-term1-btn');
+            const t2Btn = document.getElementById('grades-term2-btn');
+            if (!t1Btn || !t2Btn) return;
+            const activeCls = "px-4 py-1.5 border rounded-full text-sm font-bold transition duration-150 whitespace-nowrap bg-sky-600 text-white border-sky-600 shadow-sm";
+            const inactiveCls = "px-4 py-1.5 border rounded-full text-sm font-bold transition duration-150 whitespace-nowrap bg-white hover:bg-slate-50 text-slate-700 border-slate-200";
+            t1Btn.className = gradesActiveTerm === 'term1' ? activeCls : inactiveCls;
+            t2Btn.className = gradesActiveTerm === 'term2' ? activeCls : inactiveCls;
+        }
+
+        function currentGradesSubjects() {
+            return gradesActiveTerm === 'term1' ? TERM1_SUBJECTS : TERM2_SUBJECTS;
+        }
+
+        function renderGradesTableHead() {
+            const row = document.getElementById('grades-table-head-row');
+            if (!row) return;
+            const subjects = currentGradesSubjects();
+            const subjectHeaders = subjects.map(s => `<th class="sticky top-0 z-10 bg-slate-50 px-3 py-3 text-center">${s.label}</th>`).join('');
+            row.innerHTML = `
+                <th class="sticky top-0 z-10 bg-slate-50 px-4 py-3 text-left w-10">รหัส</th>
+                <th class="sticky top-0 z-10 bg-slate-50 px-4 py-3 text-left">ชื่อ - ฉายา</th>
+                <th class="sticky top-0 z-10 bg-slate-50 px-4 py-3 text-center w-12">หมู่</th>
+                ${subjectHeaders}
+                <th class="sticky top-0 z-10 bg-sky-50 px-4 py-3 text-center">เกรดเฉลี่ย (GPA)</th>
+            `;
+        }
+
+        function applyGradesFilters() {
+            const village = document.getElementById('grades-filter-village') ? document.getElementById('grades-filter-village').value : '';
+            const search = document.getElementById('grades-search-input') ? document.getElementById('grades-search-input').value.trim().toLowerCase() : '';
+
+            let list = compiledPersonnel.filter(p => {
+                const matchVillage = !village || p.village === village;
+                const matchSearch = !search || (p.name && p.name.toLowerCase().includes(search)) || (p.honorific && p.honorific.toLowerCase().includes(search));
+                return matchVillage && matchSearch;
+            });
+
+            list.sort((a, b) => (a.id || 0) - (b.id || 0));
+
+            renderGradesTable(list);
+        }
+
+        function resetGradesFilters() {
+            document.getElementById('grades-filter-village').value = '';
+            document.getElementById('grades-search-input').value = '';
+            const villageSet = new Set();
+            compiledPersonnel.forEach(p => { if (p.village) villageSet.add(p.village); });
+            renderGradesVillageButtons(Array.from(villageSet));
+            applyGradesFilters();
+        }
+
+        function renderGradesTable(list) {
+            const tbody = document.getElementById('grades-table-body');
+            const noDataEl = document.getElementById('grades-no-data-alert');
+            const container = document.getElementById('grades-table-view-container');
+            if (!tbody) return;
+
+            if (!list.length) {
+                if (noDataEl) noDataEl.classList.remove('hidden');
+                if (container) container.classList.add('hidden');
+                tbody.innerHTML = '';
+                updateGradesSummary([]);
+                return;
+            } else {
+                if (noDataEl) noDataEl.classList.add('hidden');
+                if (container) container.classList.remove('hidden');
+            }
+
+            const subjects = currentGradesSubjects();
+            const gpaKey = gradesActiveTerm === 'term1' ? 'term1Scores' : 'term2Scores';
+
+            tbody.innerHTML = '';
+            const gpaValues = [];
+
+            list.forEach(p => {
+                const termData = p[gpaKey] || null;
+                const hasData = termData && termData.hasData;
+                const scoreCells = subjects.map((subj, i) => {
+                    if (!hasData) return `<td class="px-3 py-3 text-center text-slate-300 text-xs">-</td>`;
+                    const score = termData.scores[i];
+                    const gp = termData.gradePoints[i];
+                    return `<td class="px-3 py-3 text-center"><span class="font-semibold text-slate-700">${score}</span><span class="block text-[10px] text-slate-400">${gp.toFixed(1)}</span></td>`;
+                }).join('');
+
+                let gpaCell;
+                if (hasData) {
+                    gpaValues.push(termData.gpa);
+                    const gpaColor = termData.gpa >= 3.0 ? 'text-emerald-600' : (termData.gpa >= 2.0 ? 'text-sky-700' : 'text-rose-600');
+                    gpaCell = `<div class="font-black ${gpaColor} text-xl leading-tight">${termData.gpa.toFixed(2)}</div>`;
+                } else {
+                    gpaCell = `<span class="text-slate-400 text-xs">ยังไม่มีข้อมูล</span>`;
+                }
+
+                const tr = `
+                    <tr class="hover:bg-slate-50 transition cursor-pointer text-center" onclick="openPersonnelProfile(${p.id})">
+                        <td class="px-4 py-3 whitespace-nowrap text-slate-500 font-semibold text-left">${p.id}</td>
+                        <td class="px-4 py-3 whitespace-nowrap font-bold text-slate-900 text-left">${p.name}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-medium">หมู่ ${p.village}</span>
+                        </td>
+                        ${scoreCells}
+                        <td class="px-4 py-3 text-center bg-sky-50/20">
+                            ${gpaCell}
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += tr;
+            });
+
+            updateGradesSummary(gpaValues, list.length);
+        }
+
+        function updateGradesSummary(gpaValues, totalCount) {
+            const countEl = document.getElementById('grades-summary-count');
+            const avgEl = document.getElementById('grades-summary-avg');
+            const maxEl = document.getElementById('grades-summary-max');
+            const minEl = document.getElementById('grades-summary-min');
+            if (!countEl) return;
+
+            countEl.innerText = totalCount != null ? totalCount : (gpaValues.length || 0);
+
+            if (gpaValues.length) {
+                const avg = gpaValues.reduce((s, x) => s + x, 0) / gpaValues.length;
+                avgEl.innerText = avg.toFixed(2);
+                maxEl.innerText = Math.max(...gpaValues).toFixed(2);
+                minEl.innerText = Math.min(...gpaValues).toFixed(2);
+            } else {
+                avgEl.innerText = '-';
+                maxEl.innerText = '-';
+                minEl.innerText = '-';
+            }
         }
 
         let sourcesCollapsed = true;
