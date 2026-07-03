@@ -122,7 +122,7 @@
     <div class="sticky-tabs-locked bg-slate-100/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex space-x-2 overflow-x-auto no-scrollbar">
             <button onclick="switchTab('personnel')" id="tab-personnel-btn" class="text-slate-600 hover:text-indigo-600 px-4 py-2.5 rounded-lg text-sm md:text-base font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
-                <i class="fa-solid fa-users"></i> ผลรวมการประเมิน
+                <i class="fa-solid fa-address-book"></i> ผลรวมการประเมิน
             </button>
             <button onclick="switchTab('analytics')" id="tab-analytics-btn" class="bg-indigo-600 text-white shadow-sm px-4 py-2.5 rounded-lg text-sm md:text-base font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
                 <i class="fa-solid fa-chart-pie"></i> สถิติคะแนนความเป็นอยู่
@@ -151,13 +151,7 @@
                     <i class="fa-solid fa-sliders text-indigo-600"></i> ตัวกรองสถิติความเป็นอยู่รายวัน (Interactive Filter)
                 </h3>
                 
-                <!-- Topic Selection Row -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-2">มิติหัวข้อประเมิน:</label>
-                    <div id="analytics-topic-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
-                        <!-- Topics injected dynamically -->
-                    </div>
-                </div>
+                <!-- Topic Selection Row (REMOVED AS REQUESTED) -->
 
                 <!-- Date Selection Row - Showing 3 Latest Days -->
                 <div>
@@ -169,7 +163,7 @@
 
                 <!-- Village Selection Row -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
+                    <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่:</label>
                     <div id="analytics-village-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
                         <!-- Villages injected dynamically -->
                     </div>
@@ -181,19 +175,19 @@
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-slate-500">จำนวนบุคลากรทั้งหมด</p>
-                        <h3 id="stat-total" class="text-2xl font-bold text-slate-900 mt-1">-</h3>
+                        <h3 id="stat-total" class="text-3xl font-black text-slate-900 mt-1">-</h3>
                     </div>
-                    <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
-                        <i class="fa-solid fa-users text-xl"></i>
+                    <div class="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
+                        <i class="fa-solid fa-users text-2xl"></i>
                     </div>
                 </div>
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p id="label-avg-score" class="text-sm font-semibold text-slate-500">คะแนนเฉลี่ยรวม</p>
-                        <h3 id="stat-avg-score" class="text-2xl font-bold text-emerald-600 mt-1">-</h3>
+                        <h3 id="stat-avg-score" class="text-3xl font-black text-emerald-600 mt-1">-</h3>
                     </div>
-                    <div class="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
-                        <i class="fa-solid fa-star-half-stroke text-xl"></i>
+                    <div class="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
+                        <i class="fa-solid fa-star-half-stroke text-2xl"></i>
                     </div>
                 </div>
             </div>
@@ -202,12 +196,12 @@
             <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
                     <div>
-                        <h3 class="text-sm md:text-base font-bold text-slate-900 flex items-center gap-1.5">
+                        <h3 class="text-base font-bold text-slate-900 flex items-center gap-1.5">
                             <i class="fa-solid fa-address-book text-indigo-600"></i> ทำเนียบข้อมูลบุคลากรและคะแนนประเมินรายวัน
                         </h3>
                         <p class="text-[11px] text-slate-500 mt-0.5">แสดงผลลัพธ์รายชื่อและสรุปคะแนนประเมินความเป็นอยู่รายวัน แยกตามมิติ วันที่ และหมู่คณะที่เลือก</p>
                     </div>
-                    <span id="all-leader-count-badge" class="text-[11px] text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded font-bold">
+                    <span id="all-leader-count-badge" class="text-xs text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded font-bold">
                         - รายการ
                     </span>
                 </div>
@@ -215,11 +209,11 @@
                     <table class="min-w-full divide-y divide-slate-200 text-sm">
                         <thead class="bg-slate-50 font-bold text-slate-500 text-center">
                             <tr>
-                                <th class="px-4 py-2.5 w-14">รหัส</th>
-                                <th class="px-4 py-2.5 text-left">ชื่อ-ฉายา</th>
-                                <th class="px-4 py-2.5 w-20">หมู่คณะ</th>
-                                <th class="px-4 py-2.5 text-left">คะแนนดิบรายวัน (⛺ จำวัด | 🧺 ตะกร้า | 🏰 วิมาน | 🧣 ราวตาก | 🧥 ห่มดอง)</th>
-                                <th class="px-4 py-2.5 w-32 font-bold text-indigo-800" id="analytics-table-header-max">ผลประเมิน</th>
+                                <th class="px-4 py-3 w-14">รหัส</th>
+                                <th class="px-4 py-3 text-left">ชื่อ-ฉายา</th>
+                                <th class="px-4 py-3 w-20">หมู่</th>
+                                <th class="px-4 py-3 text-left">(⛺ จำวัด | 🧺 ตะกร้า | 🏰 วิมาน | 🧣 ราวตาก | 🧥 ห่มดอง)</th>
+                                <th class="px-4 py-3 w-32 font-bold text-indigo-800" id="analytics-table-header-max">คะแนนรวม</th>
                             </tr>
                         </thead>
                         <tbody id="leaderboard-tbody" class="bg-white divide-y divide-slate-100 text-center">
@@ -250,7 +244,7 @@
 
                 <!-- Row 2: Village Selection Buttons -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
+                    <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่:</label>
                     <div id="attend-village-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
                         <!-- Dynamic Villages -->
                     </div>
@@ -301,12 +295,12 @@
             <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100">
                 <div class="flex justify-between items-center mb-4">
                     <div>
-                        <h3 class="text-sm md:text-base font-bold text-slate-900 flex items-center gap-1.5">
+                        <h3 class="text-base font-bold text-slate-900 flex items-center gap-1.5">
                             <i class="fa-solid fa-clipboard-user text-indigo-600"></i> ตารางสถิติและสถานการณ์เช็คชื่อรายหมู่
                         </h3>
                         <p id="attendance-subtitle-date" class="text-[11px] text-slate-500 mt-0.5">ดึงผลรายชื่อบุคลากรจริงและแสดงข้อมูลสอดคล้องตามวันที่ประเมินหลัก</p>
                     </div>
-                    <span id="attendance-count-badge" class="text-[11px] text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded font-bold">
+                    <span id="attendance-count-badge" class="text-xs text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded font-bold">
                         - รายการ
                     </span>
                 </div>
@@ -376,7 +370,7 @@
                     </div>
                     <!-- Row 2: Village buttons -->
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
+                        <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่:</label>
                         <div id="personnel-village-container" class="flex gap-2 flex-wrap">
                             <!-- Injected dynamically -->
                         </div>
@@ -447,7 +441,7 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
+                        <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่:</label>
                         <div id="trainingeval-village-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
                             <!-- Injected dynamically -->
                         </div>
@@ -467,12 +461,12 @@
             <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100">
                 <div class="flex justify-between items-center mb-4">
                     <div>
-                        <h3 class="text-sm md:text-base font-bold text-slate-900 flex items-center gap-1.5">
+                        <h3 class="text-base font-bold text-slate-900 flex items-center gap-1.5">
                             <i class="fa-solid fa-address-card text-indigo-600"></i> รายชื่อพระนวกะสำหรับประเมินผลช่วงอบรม
                         </h3>
                         <p class="text-[11px] text-slate-500 mt-0.5">แตะที่รายชื่อเพื่อเปิดแบบประเมินฉบับเต็มตามรูปแบบเอกสารต้นฉบับ</p>
                     </div>
-                    <span id="trainingeval-count-badge" class="text-[11px] text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded font-bold">
+                    <span id="trainingeval-count-badge" class="text-xs text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded font-bold">
                         - รายการ
                     </span>
                 </div>
@@ -486,7 +480,6 @@
                                 <th class="px-4 py-2.5 w-20">หมู่</th>
                                 <th class="px-4 py-2.5 w-32">คะแนนรวม (100)</th>
                                 <th class="px-4 py-2.5 w-40">สรุปผลการประเมิน</th>
-                                <th class="px-4 py-2.5 w-24">พิมพ์/เปิด</th>
                             </tr>
                         </thead>
                         <tbody id="trainingeval-tbody" class="bg-white divide-y divide-slate-100 text-center">
@@ -625,7 +618,7 @@
                 <!-- Attendance breakdown -->
                 <div class="border-t border-slate-100 pt-4 space-y-3">
                     <h4 class="text-sm font-bold text-indigo-950 uppercase tracking-wider">รายละเอียดสถิติการเช็คชื่อเข้าเรียน</h4>
-                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 grid grid-cols-3 sm:grid-cols-5 gap-2 text-center text-sm">
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 grid grid-cols-5 gap-2 text-center text-sm">
                         <div class="bg-white p-2 rounded border border-slate-100">
                             <span class="block text-[11px] text-emerald-500">มา</span>
                             <span id="modal-attend-present" class="font-bold text-emerald-600">- ครั้ง</span>
@@ -642,8 +635,8 @@
                             <span class="block text-[11px] text-violet-500">ลากิจ</span>
                             <span id="modal-attend-leave" class="font-bold text-violet-600">- ครั้ง</span>
                         </div>
-                        <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-[11px] text-slate-500 font-semibold">รวมเช็คชื่อ</span>
+                        <div class="bg-white p-2 rounded border border-slate-200 bg-indigo-50/40">
+                            <span class="block text-[11px] text-indigo-700 font-bold">รวมเช็คชื่อ</span>
                             <span id="modal-attend-total" class="font-bold text-slate-950">- ครั้ง</span>
                         </div>
                     </div>
@@ -678,12 +671,30 @@
     <!-- Training-Period Evaluation Form Modal (แบบประเมินพระนวกะช่วงอบรม) -->
     <div id="trainingeval-modal" class="fixed inset-0 bg-slate-950 bg-opacity-60 z-50 flex items-center justify-center p-3 sm:p-4 hidden">
         <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full relative border border-slate-100 flex flex-col max-h-[95vh]">
+
+            <!-- Navigation arrows: anchored to modal card center, independent of inner scroll -->
+            <button id="trainingeval-nav-prev" onclick="navigateTrainingEval(-1)" title="รูปก่อนหน้า"
+                class="print:hidden absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-500 hover:text-indigo-600 hover:border-indigo-300 hover:shadow-lg active:scale-90 transition disabled:opacity-0 disabled:pointer-events-none">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button id="trainingeval-nav-next" onclick="navigateTrainingEval(1)" title="รูปถัดไป"
+                class="print:hidden absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-20 w-10 h-10 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-500 hover:text-indigo-600 hover:border-indigo-300 hover:shadow-lg active:scale-90 transition disabled:opacity-0 disabled:pointer-events-none">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
             <!-- Modal toolbar -->
             <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100 print:hidden">
                 <span class="text-sm font-bold text-slate-500 flex items-center gap-1.5">
                     <i class="fa-solid fa-scroll text-indigo-600"></i> แบบประเมินพระนวกะช่วงอบรม
                 </span>
                 <div class="flex items-center gap-2">
+                    <!-- Offset adjustment buttons -->
+                    <div class="inline-flex items-center gap-1 bg-slate-100 p-1 rounded-lg mr-2">
+                        <span class="text-[11px] text-slate-500 font-bold px-1">จัดตำแหน่ง:</span>
+                        <button onclick="adjustTrainingEvalOffset(-15)" class="px-2 py-1 bg-white hover:bg-slate-200 border border-slate-200 text-[11px] rounded font-bold" title="ขยับซ้าย"><i class="fa-solid fa-arrow-left"></i> ซ้าย</button>
+                        <button onclick="adjustTrainingEvalOffset(0)" class="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-[11px] rounded text-indigo-700 font-bold" title="จัดกลาง">จัดกึ่งกลาง</button>
+                        <button onclick="adjustTrainingEvalOffset(15)" class="px-2 py-1 bg-white hover:bg-slate-200 border border-slate-200 text-[11px] rounded font-bold" title="ขยับขวา">ขวา <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
                     <button onclick="toggleTrainingEvalModal(false)" class="text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-1.5 w-8 h-8 flex items-center justify-center">
                         <i class="fa-solid fa-xmark text-xl"></i>
                     </button>
@@ -691,83 +702,85 @@
             </div>
 
             <!-- Printable Form Body -->
-            <div id="trainingeval-print-area" class="overflow-y-auto custom-scrollbar p-6 space-y-4 text-slate-800 bg-white">
-                <!-- Form Header -->
-                <div class="text-center space-y-0.5 pb-1">
-                    <h3 class="text-base font-bold">แบบประเมินพระนวกะช่วงอบรม</h3>
-                    <p class="text-sm font-bold">โครงการอบรมพระนวกะ3 วิสามัญสาขาและพุทธบุตรอาสาประจำปี 2569</p>
-                    <p class="text-xs text-slate-600">ระหว่าง 8 มิถุนายน พ.ศ. 2569 - 30 เมษายน พ.ศ. 2570</p>
-                </div>
+            <div id="trainingeval-print-area" class="overflow-y-auto custom-scrollbar p-6 space-y-4 text-slate-800 bg-white flex justify-center items-start">
+                <div id="trainingeval-print-wrapper" class="transition-transform duration-200 w-full max-w-2xl" style="transform: translateX(0px);">
+                    <!-- Form Header -->
+                    <div class="text-center space-y-0.5 pb-1">
+                        <h3 class="text-base font-bold">แบบประเมินพระนวกะช่วงอบรม</h3>
+                        <p class="text-sm font-bold">โครงการอบรมพระนวกะ3 วิสามัญสาขาและพุทธบุตรอาสาประจำปี 2569</p>
+                        <p class="text-xs text-slate-600">ระหว่าง 8 มิถุนายน พ.ศ. 2569 - 30 เมษายน พ.ศ. 2570</p>
+                    </div>
 
-                <!-- Identity row: photo + name fields -->
-                <div class="flex items-start gap-4 border border-slate-200 rounded-lg p-3">
-                    <div class="w-20 h-24 rounded-md overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
-                        <img id="trainingeval-modal-img" src="" alt="avatar" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
-                        <div class="col-span-2"><span class="font-semibold text-slate-500">ชื่อ</span> <span id="trainingeval-field-firstname" class="font-bold">-</span></div>
-                        <div><span class="font-semibold text-slate-500">ฉายา</span> <span id="trainingeval-field-honorific" class="font-bold">-</span></div>
-                        <div><span class="font-semibold text-slate-500">นามสกุล</span> <span id="trainingeval-field-lastname" class="font-bold">-</span></div>
-                        <div><span class="font-semibold text-slate-500">กลุ่ม (หมู่)</span> <span id="trainingeval-field-village" class="font-bold">-</span></div>
-                        <div><span class="font-semibold text-slate-500">เลขที่</span> <span id="trainingeval-field-id" class="font-bold">-</span></div>
-                    </div>
-                </div>
-
-                <!-- Score table matching original PDF layout -->
-                <div class="overflow-x-auto rounded-lg border border-slate-200">
-                    <table class="min-w-full text-xs border-collapse">
-                        <thead class="bg-slate-50 font-bold text-slate-600">
-                            <tr>
-                                <th class="border border-slate-200 px-2 py-2 w-32 text-center">หัวข้อ</th>
-                                <th class="border border-slate-200 px-2 py-2 text-left">รายละเอียด</th>
-                                <th class="border border-slate-200 px-2 py-2 w-20 text-center">คะแนนเต็ม</th>
-                                <th class="border border-slate-200 px-2 py-2 w-24 text-center bg-amber-50">คะแนนที่ได้</th>
-                            </tr>
-                        </thead>
-                        <tbody id="trainingeval-score-tbody">
-                            <!-- Injected dynamically from TRAINING_EVAL_TOPICS -->
-                        </tbody>
-                        <tfoot>
-                            <tr class="font-bold bg-slate-50">
-                                <td colspan="2" class="border border-slate-200 px-2 py-2 text-right">รวม</td>
-                                <td class="border border-slate-200 px-2 py-2 text-center">100</td>
-                                <td class="border border-slate-200 px-2 py-2 text-center bg-amber-50 text-indigo-700 font-bold" id="trainingeval-total-score">-</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-
-                <!-- Result summary -->
-                <div class="space-y-2 text-xs pt-1">
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="font-semibold text-slate-500 w-full sm:w-auto">สรุปผลการประเมิน</span>
-                        <span id="badge-pass-check" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1">
-                            <i id="icon-pass-chk" class="fa-regular fa-circle text-slate-400"></i> ผ่าน (75 คะแนนขึ้นไป)
-                        </span>
-                        <span id="badge-fail-check" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1">
-                            <i id="icon-fail-chk" class="fa-regular fa-circle text-slate-400"></i> ไม่ผ่าน (ต่ำกว่า 75 คะแนน)
-                        </span>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="font-semibold text-slate-500 w-full sm:w-auto">ตำแหน่งพระพี่เลี้ยงที่เหมาะสม</span>
-                        <span id="mentor-none" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1"><i class="fa-regular fa-circle text-slate-400"></i> ไม่เหมาะสม</span>
-                        <span id="mentor-group" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1"><i class="fa-regular fa-circle text-slate-400"></i> พพล.กลุ่ม</span>
-                        <span id="mentor-merit" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1"><i class="fa-regular fa-circle text-slate-400"></i> พพล.บุญ</span>
-                    </div>
-                </div>
-
-                <!-- Behaviour notes + signature -->
-                <div class="space-y-3 text-xs pt-1">
-                    <div>
-                        <span class="font-semibold text-slate-500">รายละเอียดความประพฤติ</span>
-                        <div id="trainingeval-notes-display" class="border border-slate-100 p-2 bg-slate-50 rounded min-h-[40px] text-slate-700"></div>
-                    </div>
-                    <div class="flex flex-col items-end gap-1 pt-2">
-                        <div class="text-center">
-                            <span id="trainingeval-assessor-display">ลงชื่อผู้ประเมิน...........................................</span>
+                    <!-- Identity row: photo + name fields -->
+                    <div class="flex items-start gap-4 border border-slate-200 rounded-lg p-3">
+                        <div class="w-20 h-24 rounded-md overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
+                            <img id="trainingeval-modal-img" src="" alt="avatar" class="w-full h-full object-cover">
                         </div>
-                        <div class="text-center pr-2 font-mono text-[11px] text-slate-400">
-                            <span id="trainingeval-date-display">วันที่ประเมิน: 26-06-2026</span>
+                        <div class="flex-1 grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
+                            <div class="col-span-2"><span class="font-semibold text-slate-500">ชื่อ</span> <span id="trainingeval-field-firstname" class="font-bold">-</span></div>
+                            <div><span class="font-semibold text-slate-500">ฉายา</span> <span id="trainingeval-field-honorific" class="font-bold">-</span></div>
+                            <div><span class="font-semibold text-slate-500">นามสกุล</span> <span id="trainingeval-field-lastname" class="font-bold">-</span></div>
+                            <div><span class="font-semibold text-slate-500">กลุ่ม (หมู่)</span> <span id="trainingeval-field-village" class="font-bold">-</span></div>
+                            <div><span class="font-semibold text-slate-500">เลขที่</span> <span id="trainingeval-field-id" class="font-bold">-</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Score table matching original PDF layout -->
+                    <div class="overflow-x-auto rounded-lg border border-slate-200">
+                        <table class="min-w-full text-xs border-collapse">
+                            <thead class="bg-slate-50 font-bold text-slate-600">
+                                <tr>
+                                    <th class="border border-slate-200 px-2 py-2 w-32 text-center">หัวข้อ</th>
+                                    <th class="border border-slate-200 px-2 py-2 text-left">รายละเอียด</th>
+                                    <th class="border border-slate-200 px-2 py-2 w-20 text-center">คะแนนเต็ม</th>
+                                    <th class="border border-slate-200 px-2 py-2 w-24 text-center bg-amber-50">คะแนนที่ได้</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trainingeval-score-tbody">
+                                <!-- Injected dynamically from TRAINING_EVAL_TOPICS -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="font-bold bg-slate-50">
+                                    <td colspan="2" class="border border-slate-200 px-2 py-2 text-right">รวม</td>
+                                    <td class="border border-slate-200 px-2 py-2 text-center">100</td>
+                                    <td class="border border-slate-200 px-2 py-2 text-center bg-amber-50 text-indigo-700 font-bold" id="trainingeval-total-score">-</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Result summary -->
+                    <div class="space-y-2 text-xs pt-1">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="font-semibold text-slate-500 w-full sm:w-auto">สรุปผลการประเมิน</span>
+                            <span id="badge-pass-check" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1">
+                                <i id="icon-pass-chk" class="fa-regular fa-circle text-slate-400"></i> ผ่าน (75 คะแนนขึ้นไป)
+                            </span>
+                            <span id="badge-fail-check" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1">
+                                <i id="icon-fail-chk" class="fa-regular fa-circle text-slate-400"></i> ไม่ผ่าน (ต่ำกว่า 75 คะแนน)
+                            </span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="font-semibold text-slate-500 w-full sm:w-auto">ตำแหน่งพระพี่เลี้ยงที่เหมาะสม</span>
+                            <span id="mentor-none" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1"><i class="fa-regular fa-circle text-slate-400"></i> ไม่เหมาะสม</span>
+                            <span id="mentor-group" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1"><i class="fa-regular fa-circle text-slate-400"></i> พพล.กลุ่ม</span>
+                            <span id="mentor-merit" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1"><i class="fa-regular fa-circle text-slate-400"></i> พพล.บุญ</span>
+                        </div>
+                    </div>
+
+                    <!-- Behaviour notes + signature -->
+                    <div class="space-y-3 text-xs pt-1">
+                        <div>
+                            <span class="font-semibold text-slate-500">รายละเอียดความประพฤติ</span>
+                            <div id="trainingeval-notes-display" class="border border-slate-100 p-2 bg-slate-50 rounded min-h-[40px] text-slate-700"></div>
+                        </div>
+                        <div class="flex flex-col items-end gap-1 pt-2">
+                            <div class="text-center">
+                                <span id="trainingeval-assessor-display">ลงชื่อผู้ประเมิน...........................................</span>
+                            </div>
+                            <div class="text-center pr-2 font-mono text-[11px] text-slate-400">
+                                <span id="trainingeval-date-display">วันที่ประเมิน: 26-06-2026</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -910,6 +923,7 @@
         let filteredPersonnel = [];
         let rawAttendance = []; 
         let availableDates = new Set();
+        let trainingEvalOffset = 0; // Horizontal shift variable for page rendering
 
         // --- TRAINING-PERIOD EVALUATION FORM (แบบประเมินพระนวกะช่วงอบรม) ---
         const TRAINING_EVAL_TOPICS = [
@@ -936,6 +950,9 @@
         ];
         let trainingEvalSelectedVillage = '';
         let trainingEvalSelectedStatus = 'all'; // 'all', 'passed', 'failed'
+        let trainingEvalFilteredIds = []; // Ordered list of ids matching the currently applied filters
+        let trainingEvalCurrentIndex = -1; // Index of the currently open person within trainingEvalFilteredIds
+        let trainingEvalModalOpenId = null; // id of the person currently displayed in the modal, or null when closed
 
         // --- INTERACTIVE FILTER SYSTEM STATUS ---
         let analyticsSelectedTopic = 'all';      
@@ -1562,33 +1579,12 @@
                 dSelect.value = latestDate; // set selector to latest day
             }
 
-            renderAnalyticsTopicButtons();
             renderAnalyticsDateButtons(sortedDates);
             renderAnalyticsVillageButtons(Array.from(villageSet));
             renderPersonnelVillageButtons(Array.from(villageSet));
 
             renderAttendanceVillageButtons(Array.from(villageSet));
             renderAttendanceDateButtons(sortedDates);
-        }
-
-        function renderAnalyticsTopicButtons() {
-            const container = document.getElementById('analytics-topic-container');
-            container.innerHTML = '';
-
-            const topics = Object.keys(TOPIC_METRIC_MAP);
-            topics.forEach(tKey => {
-                const meta = TOPIC_METRIC_MAP[tKey];
-                const isActive = analyticsSelectedTopic === tKey;
-                const activeClass = "bg-indigo-600 text-white border-indigo-600 shadow-sm font-bold";
-                const inactiveClass = "bg-white hover:bg-slate-50 text-slate-700 border-slate-200";
-
-                const btn = `
-                    <button onclick="selectAnalyticsTopic('${tKey}')" class="px-4 py-2 border rounded-full text-sm transition duration-150 whitespace-nowrap ${isActive ? activeClass : inactiveClass}">
-                        ${meta.emoji} ${meta.name} (เต็ม ${meta.max})
-                    </button>
-                `;
-                container.innerHTML += btn;
-            });
         }
 
         function renderAnalyticsDateButtons(sortedDates) {
@@ -1794,10 +1790,10 @@
                     const match = records.find(r => r.round === roundName);
                     if (!match) return '<span class="text-slate-300">-</span>';
                     const status = match.status;
-                    if (status === 'มา') return '<span class="text-emerald-600 font-bold">มา</span>';
-                    if (status === 'สาย') return '<span class="text-amber-500 font-bold">สาย</span>';
-                    if (status === 'ลากิจ' || status === 'ลาป่วย' || status === 'ลา') return `<span class="text-blue-500 font-bold">${status}</span>`;
-                    return '<span class="text-rose-500 font-bold">ขาด</span>';
+                    if (status === 'มา') return '<span class="text-emerald-600 font-bold text-base">มา</span>';
+                    if (status === 'สาย') return '<span class="text-amber-500 font-bold text-base">สาย</span>';
+                    if (status === 'ลากิจ' || status === 'ลาป่วย' || status === 'ลา') return `<span class="text-blue-500 font-bold text-base">${status}</span>`;
+                    return '<span class="text-rose-500 font-bold text-base">ขาด</span>';
                 };
 
                 const statMorning = getStatusEmoji('เช้า');
@@ -1818,13 +1814,6 @@
                 `;
                 tbody.innerHTML += tr;
             });
-        }
-
-        function selectAnalyticsTopic(topicKey) {
-            analyticsSelectedTopic = topicKey;
-            renderAnalyticsTopicButtons();
-            calculateAnalyticsKPIs();
-            renderAnalyticsTable();
         }
 
         function selectAnalyticsVillage(villageVal) {
@@ -1907,7 +1896,7 @@
             const meta = TOPIC_METRIC_MAP[analyticsSelectedTopic];
             const maxCap = meta.max; // Tab 1 enforces single day maximum capacity
 
-            document.getElementById('analytics-table-header-max').innerText = `ผลการประเมิน (${meta.name} เต็ม ${maxCap})`;
+            document.getElementById('analytics-table-header-max').innerText = `คะแนนรวม`;
             document.getElementById('all-leader-count-badge').innerText = `${tableList.length} รายการ`;
 
             // Active date fallback
@@ -1938,15 +1927,21 @@
                     score = analyticsSelectedTopic === 'all' ? entry.total : (entry[analyticsSelectedTopic] || 0);
                 }
 
-                // Show breakdown for the selected single day instead of cumulative
-                const breakDownText = `⛺ ${entry ? entry.jumwat : 0} | 🧺 ${entry ? entry.takra : 0} | 🏰 ${entry ? entry.wiman : 0} | 🧣 ${entry ? entry.raotak : 0} | 🧥 ${entry ? entry.homdong : 0}`;
+                // Show breakdown for the selected single day instead of cumulative (Styled with LARGE fonts)
+                const breakDownText = `
+                    <span class="text-indigo-700 font-black text-lg">⛺ ${entry ? entry.jumwat : 0}</span>&nbsp;&nbsp; 
+                    <span class="text-blue-600 font-black text-lg">🧺 ${entry ? entry.takra : 0}</span>&nbsp;&nbsp; 
+                    <span class="text-cyan-600 font-black text-lg">🏰 ${entry ? entry.wiman : 0}</span>&nbsp;&nbsp; 
+                    <span class="text-amber-600 font-black text-lg">🧣 ${entry ? entry.raotak : 0}</span>&nbsp;&nbsp; 
+                    <span class="text-emerald-600 font-black text-lg">🧥 ${entry ? entry.homdong : 0}</span>
+                `;
 
                 const tr = `
                     <tr class="hover:bg-indigo-50/30 transition cursor-pointer text-center border-b border-slate-100" onclick="openPersonnelProfile(${p.id})">
                         <td class="px-4 py-3 font-semibold text-slate-500">#${p.id}</td>
                         <td class="px-4 py-3 text-left font-bold text-slate-900">${p.name}</td>
                         <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-semibold">หมู่ ${p.village}</span></td>
-                        <td class="px-4 py-3 text-left text-slate-500 font-mono text-[11px]">${breakDownText}</td>
+                        <td class="px-4 py-3 text-left font-mono">${breakDownText}</td>
                         <td class="px-4 py-3 font-black text-indigo-800 bg-indigo-50/10 text-lg">${score} / ${maxCap}</td>
                     </tr>
                 `;
@@ -1976,8 +1971,7 @@
             filteredPersonnel.forEach(p => {
                 const imgUrl = parseDriveImageUrl(p.image);
 
-                // Percentage based on days actually evaluated for this person (not the whole period),
-                // since some days/topics may not have been evaluated for everyone.
+                // Percentage based on days actually evaluated for this person (not the whole period)
                 const evaluatedDays = dateVal === 'all' ? (p.activeDaysCount || 0) : (p.activeTotal > 0 ? 1 : 0);
                 const personalMaxCap = 155 * (evaluatedDays || 1);
                 const livingPct = evaluatedDays > 0 ? Math.min((p.activeTotal / personalMaxCap) * 100, 100) : 0;
@@ -2124,6 +2118,17 @@
             `;
         }
 
+        function adjustTrainingEvalOffset(value) {
+            const wrapper = document.getElementById('trainingeval-print-wrapper');
+            if (!wrapper) return;
+            if (value === 0) {
+                trainingEvalOffset = 0;
+            } else {
+                trainingEvalOffset += value;
+            }
+            wrapper.style.transform = `translateX(${trainingEvalOffset}px)`;
+        }
+
         function selectTrainingEvalStatus(status) {
             trainingEvalSelectedStatus = status;
             renderTrainingEvalStatusButtons();
@@ -2181,6 +2186,14 @@
 
             list.sort((a, b) => (a.id || 0) - (b.id || 0));
 
+            // Keep track of the currently filtered order so the modal's prev/next arrows
+            // can navigate strictly within what the user currently sees (search + village + status filters).
+            trainingEvalFilteredIds = list.map(p => p.id);
+            if (trainingEvalModalOpenId != null) {
+                trainingEvalCurrentIndex = trainingEvalFilteredIds.indexOf(trainingEvalModalOpenId);
+            }
+            updateTrainingEvalNavButtons();
+
             if (badge) badge.innerText = `${list.length} รายการ`;
 
             // Always update state counts when search changes
@@ -2209,11 +2222,6 @@
                         <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-semibold">หมู่ ${p.village}</span></td>
                         <td class="px-4 py-3 font-mono font-bold text-indigo-900">${evalData.total} / 100</td>
                         <td class="px-4 py-3"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${badgeStyle}">${badgeLabel}</span></td>
-                        <td class="px-4 py-3 text-indigo-600 hover:text-indigo-950">
-                            <button class="bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-lg text-sm font-semibold flex items-center gap-1 mx-auto">
-                                <i class="fa-solid fa-print"></i> เปิด/พิมพ์
-                            </button>
-                        </td>
                     </tr>
                 `;
             }).join('');
@@ -2236,6 +2244,17 @@
             const source = (compiledPersonnel && compiledPersonnel.length) ? compiledPersonnel : rawPersonnel;
             const p = source.find(x => x.id === id);
             if (!p) return;
+
+            // Track which record is open and where it sits within the currently filtered list,
+            // so the left/right nav arrows always move relative to what's actually shown in the table.
+            trainingEvalModalOpenId = id;
+            if (!trainingEvalFilteredIds.length) trainingEvalFilteredIds = [id];
+            trainingEvalCurrentIndex = trainingEvalFilteredIds.indexOf(id);
+            updateTrainingEvalNavButtons();
+
+            // Reset translation offset on open
+            trainingEvalOffset = 0;
+            adjustTrainingEvalOffset(0);
 
             const evalData = p.trainingScores || { scores: [9,9,9,9,9,9,9,9,9,9], total: 90, passed: true, notes: '', mentorType: 'พพล.กลุ่ม', assessor: 'พระอาจารย์ผู้ประเมิน', dateAssess: '26-06-2026' };
 
@@ -2304,7 +2323,31 @@
             const modal = document.getElementById('trainingeval-modal');
             if (!modal) return;
             if (show) modal.classList.remove('hidden');
-            else modal.classList.add('hidden');
+            else {
+                modal.classList.add('hidden');
+                trainingEvalModalOpenId = null;
+                trainingEvalCurrentIndex = -1;
+            }
+        }
+
+        // Move to the previous (-1) or next (1) record within the currently filtered/searched list.
+        function navigateTrainingEval(direction) {
+            if (!trainingEvalFilteredIds.length || trainingEvalCurrentIndex === -1) return;
+            const newIndex = trainingEvalCurrentIndex + direction;
+            if (newIndex < 0 || newIndex >= trainingEvalFilteredIds.length) return; // already at an edge
+            const nextId = trainingEvalFilteredIds[newIndex];
+            if (nextId == null) return;
+            openTrainingEvalForm(nextId);
+        }
+
+        // Enable/disable the prev/next arrows based on position within the filtered list.
+        function updateTrainingEvalNavButtons() {
+            const prevBtn = document.getElementById('trainingeval-nav-prev');
+            const nextBtn = document.getElementById('trainingeval-nav-next');
+            if (!prevBtn || !nextBtn) return;
+            const total = trainingEvalFilteredIds.length;
+            prevBtn.disabled = total <= 1 || trainingEvalCurrentIndex <= 0;
+            nextBtn.disabled = total <= 1 || trainingEvalCurrentIndex === -1 || trainingEvalCurrentIndex >= total - 1;
         }
 
         function parseDriveImageUrl(driveUrl) {
@@ -2355,6 +2398,23 @@
                 toggleDetailModal(false);
                 toggleSandboxModal(false);
                 toggleTrainingEvalModal(false);
+            }
+
+            // Left/Right arrow keys switch between records while the training-eval modal is open,
+            // as long as focus isn't inside a text field (so typing/searching elsewhere isn't hijacked).
+            const trainingEvalModal = document.getElementById('trainingeval-modal');
+            const isTrainingEvalOpen = trainingEvalModal && !trainingEvalModal.classList.contains('hidden');
+            const activeTag = document.activeElement ? document.activeElement.tagName : '';
+            const isTypingContext = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT';
+
+            if (isTrainingEvalOpen && !isTypingContext) {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    navigateTrainingEval(-1);
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    navigateTrainingEval(1);
+                }
             }
         });
 
