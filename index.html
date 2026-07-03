@@ -98,15 +98,15 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <div class="p-2 bg-indigo-900 rounded-lg border border-indigo-800">
-                        <i class="fa-solid fa-medal text-2xl text-amber-400"></i>
+                        <i class="fa-solid fa-medal text-xl text-amber-400"></i>
                     </div>
                     <div>
                         <span class="font-bold text-lg md:text-xl block leading-tight">ระบบสรุปสถิติและประเมินผลรวม</span>
-                        <span class="text-xs md:text-sm text-indigo-200 block">วิเคราะห์ข้อมูลความประพฤติและระบบเช็คชื่อรายวันเชื่อมโยง Multi-Sheets</span>
+                        <span class="text-[11px] md:text-sm text-indigo-200 block">วิเคราะห์ข้อมูลความประพฤติและระบบเช็คชื่อรายวันเชื่อมโยง Multi-Sheets</span>
                     </div>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <span id="sync-status" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                    <span id="sync-status" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                         <span class="w-2 h-2 mr-1.5 bg-yellow-400 rounded-full animate-ping"></span>
                         กำลังเชื่อมคลาวด์...
                     </span>
@@ -118,11 +118,9 @@
         </div>
     </nav>
 
-    <!-- Main Content Container -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
-        
-        <!-- Double Sticky Tab Menu Container -->
-        <div class="sticky-tabs-locked bg-slate-100/95 backdrop-blur-md p-1.5 rounded-xl border border-slate-200 mb-6 flex space-x-2 overflow-x-auto no-scrollbar shadow-sm">
+    <!-- Sticky Tab Menu Bar - flush directly beneath the navbar, no gap -->
+    <div class="sticky-tabs-locked bg-slate-100/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex space-x-2 overflow-x-auto no-scrollbar">
             <button onclick="switchTab('analytics')" id="tab-analytics-btn" class="bg-indigo-600 text-white shadow-sm px-4 py-2.5 rounded-lg text-sm md:text-base font-semibold flex items-center gap-1.5 transition whitespace-nowrap">
                 <i class="fa-solid fa-chart-pie"></i> สถิติคะแนนความเป็นอยู่
             </button>
@@ -139,6 +137,10 @@
                 <i class="fa-solid fa-circle-nodes"></i> แหล่งข้อมูล
             </button>
         </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
 
         <!-- ==================== TAB 1: LIVING SCORE STATS ==================== -->
         <div id="tab-analytics" class="space-y-6">
@@ -151,7 +153,7 @@
                 
                 <!-- Topic Selection Row -->
                 <div>
-                    <label class="block text-sm font-semibold text-slate-500 mb-2">มิติหัวข้อประเมิน:</label>
+                    <label class="block text-xs font-semibold text-slate-500 mb-2">มิติหัวข้อประเมิน:</label>
                     <div id="analytics-topic-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
                         <!-- Topics injected dynamically -->
                     </div>
@@ -159,7 +161,7 @@
 
                 <!-- Date Selection Row - Showing 3 Latest Days -->
                 <div>
-                    <label class="block text-sm font-semibold text-slate-500 mb-2">ระบุวันที่ประเมินย้อนหลัง (3 วันล่าสุด):</label>
+                    <label class="block text-xs font-semibold text-slate-500 mb-2">ระบุวันที่ประเมินย้อนหลัง (3 วันล่าสุด):</label>
                     <div id="analytics-date-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
                         <!-- Dates (latest 3) injected dynamically -->
                     </div>
@@ -167,7 +169,7 @@
 
                 <!-- Village Selection Row -->
                 <div>
-                    <label class="block text-sm font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
+                    <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
                     <div id="analytics-village-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
                         <!-- Villages injected dynamically -->
                     </div>
@@ -179,7 +181,7 @@
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-slate-500">จำนวนบุคลากรทั้งหมด</p>
-                        <h3 id="stat-total" class="text-3xl font-bold text-slate-900 mt-1">-</h3>
+                        <h3 id="stat-total" class="text-2xl font-bold text-slate-900 mt-1">-</h3>
                     </div>
                     <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
                         <i class="fa-solid fa-users text-xl"></i>
@@ -188,7 +190,7 @@
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p id="label-avg-score" class="text-sm font-semibold text-slate-500">คะแนนเฉลี่ยรวม</p>
-                        <h3 id="stat-avg-score" class="text-3xl font-bold text-emerald-600 mt-1">-</h3>
+                        <h3 id="stat-avg-score" class="text-2xl font-bold text-emerald-600 mt-1">-</h3>
                     </div>
                     <div class="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
                         <i class="fa-solid fa-star-half-stroke text-xl"></i>
@@ -203,9 +205,9 @@
                         <h3 class="text-sm md:text-base font-bold text-slate-900 flex items-center gap-1.5">
                             <i class="fa-solid fa-address-book text-indigo-600"></i> ทำเนียบข้อมูลบุคลากรและคะแนนประเมินรายวัน
                         </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">แสดงผลลัพธ์รายชื่อและสรุปคะแนนประเมินความเป็นอยู่รายวัน แยกตามมิติ วันที่ และหมู่คณะที่เลือก</p>
+                        <p class="text-[11px] text-slate-500 mt-0.5">แสดงผลลัพธ์รายชื่อและสรุปคะแนนประเมินความเป็นอยู่รายวัน แยกตามมิติ วันที่ และหมู่คณะที่เลือก</p>
                     </div>
-                    <span id="all-leader-count-badge" class="text-xs text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded font-bold">
+                    <span id="all-leader-count-badge" class="text-[11px] text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded font-bold">
                         - รายการ
                     </span>
                 </div>
@@ -216,7 +218,6 @@
                                 <th class="px-4 py-2.5 w-14">รหัส</th>
                                 <th class="px-4 py-2.5 text-left">ชื่อ-ฉายา</th>
                                 <th class="px-4 py-2.5 w-20">หมู่คณะ</th>
-                                <th class="px-4 py-2.5 w-28">วันที่เลือกตรวจ</th>
                                 <th class="px-4 py-2.5 text-left">คะแนนดิบรายวัน (⛺ จำวัด | 🧺 ตะกร้า | 🏰 วิมาน | 🧣 ราวตาก | 🧥 ห่มดอง)</th>
                                 <th class="px-4 py-2.5 w-32 font-bold text-indigo-800" id="analytics-table-header-max">ผลประเมิน</th>
                             </tr>
@@ -241,7 +242,7 @@
                 
                 <!-- Row 1: Date Selection Buttons -->
                 <div>
-                    <label class="block text-sm font-semibold text-slate-500 mb-2">ระบุวันที่เช็คชื่อ (3 วันล่าสุด):</label>
+                    <label class="block text-xs font-semibold text-slate-500 mb-2">ระบุวันที่เช็คชื่อ (3 วันล่าสุด):</label>
                     <div id="attend-date-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
                         <!-- Dates (latest 3) injected dynamically -->
                     </div>
@@ -249,7 +250,7 @@
 
                 <!-- Row 2: Village Selection Buttons -->
                 <div>
-                    <label class="block text-sm font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
+                    <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
                     <div id="attend-village-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
                         <!-- Dynamic Villages -->
                     </div>
@@ -261,7 +262,7 @@
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-slate-500">รวมจำนวน "มา"</p>
-                        <h3 id="attend-present-kpi" class="text-2xl md:text-3xl font-bold text-emerald-600 mt-1">- ครั้ง</h3>
+                        <h3 id="attend-present-kpi" class="text-xl md:text-2xl font-bold text-emerald-600 mt-1">- ครั้ง</h3>
                     </div>
                     <div class="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
                         <i class="fa-solid fa-circle-check text-xl"></i>
@@ -270,7 +271,7 @@
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-slate-500">รวมจำนวน "สาย"</p>
-                        <h3 id="attend-late-kpi" class="text-2xl md:text-3xl font-bold text-amber-500 mt-1">- ครั้ง</h3>
+                        <h3 id="attend-late-kpi" class="text-xl md:text-2xl font-bold text-amber-500 mt-1">- ครั้ง</h3>
                     </div>
                     <div class="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center text-amber-500">
                         <i class="fa-solid fa-clock text-xl"></i>
@@ -279,7 +280,7 @@
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-slate-500">รวมจำนวน "ลาป่วย"</p>
-                        <h3 id="attend-sick-kpi" class="text-2xl md:text-3xl font-bold text-blue-600 mt-1">- ครั้ง</h3>
+                        <h3 id="attend-sick-kpi" class="text-xl md:text-2xl font-bold text-blue-600 mt-1">- ครั้ง</h3>
                     </div>
                     <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
                         <i class="fa-solid fa-hospital-user text-xl"></i>
@@ -288,7 +289,7 @@
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-slate-500">รวมจำนวน "ลากิจ"</p>
-                        <h3 id="attend-leave-kpi" class="text-2xl md:text-3xl font-bold text-violet-600 mt-1">- ครั้ง</h3>
+                        <h3 id="attend-leave-kpi" class="text-xl md:text-2xl font-bold text-violet-600 mt-1">- ครั้ง</h3>
                     </div>
                     <div class="w-10 h-10 bg-violet-50 rounded-lg flex items-center justify-center text-violet-600">
                         <i class="fa-solid fa-file-signature text-xl"></i>
@@ -303,9 +304,9 @@
                         <h3 class="text-sm md:text-base font-bold text-slate-900 flex items-center gap-1.5">
                             <i class="fa-solid fa-clipboard-user text-indigo-600"></i> ตารางสถิติและสถานการณ์เช็คชื่อรายหมู่
                         </h3>
-                        <p id="attendance-subtitle-date" class="text-xs text-slate-500 mt-0.5">ดึงผลรายชื่อบุคลากรจริงและแสดงข้อมูลสอดคล้องตามวันที่ประเมินหลัก</p>
+                        <p id="attendance-subtitle-date" class="text-[11px] text-slate-500 mt-0.5">ดึงผลรายชื่อบุคลากรจริงและแสดงข้อมูลสอดคล้องตามวันที่ประเมินหลัก</p>
                     </div>
-                    <span id="attendance-count-badge" class="text-xs text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded font-bold">
+                    <span id="attendance-count-badge" class="text-[11px] text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded font-bold">
                         - รายการ
                     </span>
                 </div>
@@ -366,14 +367,14 @@
                     <!-- Row 1: Search + Date -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-sm font-semibold text-slate-500 mb-1">พิมพ์ค้นหาชื่อจริง/ฉายา</label>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">พิมพ์ค้นหาชื่อจริง/ฉายา</label>
                             <div class="relative">
                                 <input type="text" id="search-input" oninput="applyFilters()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
                                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-sm"></i>
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-slate-600 mb-1 flex items-center gap-1">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1 flex items-center gap-1">
                                 <i class="fa-solid fa-calendar-days text-indigo-600"></i> เลือกวันที่ตรวจประเมิน (เรียงตามวันล่าสุด)
                             </label>
                             <select id="filter-date" onchange="syncGlobalDate(this.value)" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 font-semibold outline-none focus:ring-2 focus:ring-indigo-500">
@@ -383,7 +384,7 @@
                     </div>
                     <!-- Row 2: Village buttons -->
                     <div>
-                        <label class="block text-sm font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
+                        <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
                         <div id="personnel-village-container" class="flex gap-2 flex-wrap">
                             <!-- Injected dynamically -->
                         </div>
@@ -408,8 +409,10 @@
                                 <th class="px-4 py-3 text-left w-12">รูป</th>
                                 <th class="px-4 py-3 text-left">ชื่อ - ฉายา</th>
                                 <th class="px-4 py-3 text-center w-12">หมู่</th>
-                                <th class="px-4 py-3 text-center bg-amber-50/40">คะแนนประเมิน<br><span class="font-normal text-xs">(รวม / แยกมิติ)</span></th>
-                                <th class="px-4 py-3 text-center bg-indigo-50/40">ประวัติเช็คชื่อ<br><span class="font-normal text-xs">(มา/สาย/ลาป่วย/ลากิจ)</span></th>
+                                <th class="px-4 py-3 text-center bg-amber-50/40">คะแนนประเมิน<br><span class="font-normal text-[11px]">(รวม / แยกมิติ)</span></th>
+                                <th class="px-4 py-3 text-center bg-indigo-50/40">ประวัติเช็คชื่อ<br><span class="font-normal text-[11px]">(มา/สาย/ลาป่วย/ลากิจ)</span></th>
+                                <th class="px-4 py-3 text-center bg-emerald-50/40">คะแนนรวม<br><span class="font-normal text-[11px]">(ประเมินช่วงอบรม)</span></th>
+                                <th class="px-4 py-3 text-center bg-emerald-50/40">การประเมิน</th>
                             </tr>
                         </thead>
                         <tbody id="table-body" class="bg-white divide-y divide-slate-200 text-slate-700">
@@ -439,7 +442,7 @@
                 </div>
                 <div>
                     <h4 class="text-sm md:text-base font-bold text-indigo-950">แบบประเมินพระนวกะช่วงอบรม</h4>
-                    <p class="text-sm text-indigo-800/80 mt-0.5">ดึงข้อมูลคะแนนแยกวิทยฐานะ คัดตามรายหัวข้อ และดึงรูปภาพของพระนวกะแต่ละรูปจากทะเบียนประวัติหลัก (DATA1) และประเมินผลออนไลน์จากตารางชีต Estimate (คอลัมน์ E ถึง S) ของ Google Sheets อัตโนมัติ</p>
+                    <p class="text-xs text-indigo-800/80 mt-0.5">ดึงข้อมูลคะแนนแยกวิทยฐานะ คัดตามรายหัวข้อ และดึงรูปภาพของพระนวกะแต่ละรูปจากทะเบียนประวัติหลัก (DATA1) และประเมินผลออนไลน์จากตารางชีต Estimate (คอลัมน์ E ถึง S) ของ Google Sheets อัตโนมัติ</p>
                 </div>
             </div>
 
@@ -450,14 +453,14 @@
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-500 mb-1">พิมพ์ค้นหาชื่อจริง/ฉายา</label>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">พิมพ์ค้นหาชื่อจริง/ฉายา</label>
                         <div class="relative">
                             <input type="text" id="trainingeval-search-input" oninput="renderTrainingEvalDirectory()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-sm"></i>
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
+                        <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่คณะ:</label>
                         <div id="trainingeval-village-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
                             <!-- Injected dynamically -->
                         </div>
@@ -466,7 +469,7 @@
 
                 <!-- Training Eval Status Filter with counts -->
                 <div>
-                    <label class="block text-sm font-semibold text-slate-500 mb-2">สถานะผลการประเมินช่วงอบรม:</label>
+                    <label class="block text-xs font-semibold text-slate-500 mb-2">สถานะผลการประเมินช่วงอบรม:</label>
                     <div id="trainingeval-status-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
                         <!-- Injected dynamically (All, Pass, Fail with count) -->
                     </div>
@@ -480,9 +483,9 @@
                         <h3 class="text-sm md:text-base font-bold text-slate-900 flex items-center gap-1.5">
                             <i class="fa-solid fa-address-card text-indigo-600"></i> รายชื่อพระนวกะสำหรับประเมินผลช่วงอบรม
                         </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">แตะที่รายชื่อเพื่อเปิดแบบประเมินฉบับเต็มตามรูปแบบเอกสารต้นฉบับ</p>
+                        <p class="text-[11px] text-slate-500 mt-0.5">แตะที่รายชื่อเพื่อเปิดแบบประเมินฉบับเต็มตามรูปแบบเอกสารต้นฉบับ</p>
                     </div>
-                    <span id="trainingeval-count-badge" class="text-xs text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded font-bold">
+                    <span id="trainingeval-count-badge" class="text-[11px] text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded font-bold">
                         - รายการ
                     </span>
                 </div>
@@ -525,7 +528,7 @@
                         </div>
                         <div class="text-left">
                             <h3 class="font-bold text-slate-900 text-sm md:text-base uppercase tracking-wider">แหล่งข้อมูลเชื่อมโยงบนคลาวด์และไฟล์อ้างอิงจริง (Connected Cloud Sources)</h3>
-                            <p class="text-xs text-slate-500">รายชื่อ ID ของตาราง Google Sheets และชื่อชีตย่อยที่ดึงประเมินผลผ่านระบบออนไลน์</p>
+                            <p class="text-[11px] text-slate-500">รายชื่อ ID ของตาราง Google Sheets และชื่อชีตย่อยที่ดึงประเมินผลผ่านระบบออนไลน์</p>
                         </div>
                     </div>
                     <i id="sources-collapse-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200"></i>
@@ -535,18 +538,18 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-sm text-slate-700">
                         <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm">
                             <span class="font-bold block text-slate-900 mb-0.5">🗂️ 1. ทะเบียนประวัติหลัก & แฟ้ม Estimate:</span>
-                            <p class="text-xs text-slate-400 mb-2">ตารางประวัติหลัก (DATA1: คอลัมน์ A-F) และแผ่นสรุปประเมินช่วงอบรม (Estimate: คอลัมน์ E-S)</p>
-                            <span class="font-mono bg-indigo-100/60 text-indigo-950 px-2 py-1 rounded block mt-0.5 break-all text-xs">1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous</span>
+                            <p class="text-[11px] text-slate-400 mb-2">ตารางประวัติหลัก (DATA1: คอลัมน์ A-F) และแผ่นสรุปประเมินช่วงอบรม (Estimate: คอลัมน์ E-S)</p>
+                            <span class="font-mono bg-indigo-100/60 text-indigo-950 px-2 py-1 rounded block mt-0.5 break-all text-[11px]">1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous</span>
                         </div>
                         <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm">
                             <span class="font-bold block text-slate-900 mb-0.5">📝 2. บันทึกผลประเมิน 5 มิติ:</span>
-                            <p class="text-xs text-slate-400 mb-2">ไฟล์ประเมินความประพฤติรายวันแยกมิติ (จำวัด/ตะกร้า/วิมาน/ราวตาก/ห่มดอง)</p>
-                            <span class="font-mono bg-indigo-100/60 text-indigo-950 px-2 py-1 rounded block mt-0.5 break-all text-xs">1IEUWnX0dZo1wwN2gwHMVavECEKV9B7auBbnPA4bzusg</span>
+                            <p class="text-[11px] text-slate-400 mb-2">ไฟล์ประเมินความประพฤติรายวันแยกมิติ (จำวัด/ตะกร้า/วิมาน/ราวตาก/ห่มดอง)</p>
+                            <span class="font-mono bg-indigo-100/60 text-indigo-950 px-2 py-1 rounded block mt-0.5 break-all text-[11px]">1IEUWnX0dZo1wwN2gwHMVavECEKV9B7auBbnPA4bzusg</span>
                         </div>
                         <div class="p-4 bg-white rounded-xl border border-slate-100 shadow-sm">
                             <span class="font-bold block text-slate-900 mb-0.5">📋 3. ข้อมูลเช็คชื่อ:</span>
-                            <p class="text-xs text-slate-400 mb-2">ไฟล์บันทึกการเช็คชื่อเข้าอบรมและทำวัตรเช้า-ค่ำ 4 รอบเวลาแยกหมู่ 1-4</p>
-                            <span class="font-mono bg-indigo-100/60 text-indigo-950 px-2 py-1 rounded block mt-0.5 break-all text-xs">1sZmC8Z_CVy1AE-L__5IRpnaAMSLOAx4nxv_gslEr3Jw</span>
+                            <p class="text-[11px] text-slate-400 mb-2">ไฟล์บันทึกการเช็คชื่อเข้าอบรมและทำวัตรเช้า-ค่ำ 4 รอบเวลาแยกหมู่ 1-4</p>
+                            <span class="font-mono bg-indigo-100/60 text-indigo-950 px-2 py-1 rounded block mt-0.5 break-all text-[11px]">1sZmC8Z_CVy1AE-L__5IRpnaAMSLOAx4nxv_gslEr3Jw</span>
                         </div>
                     </div>
                 </div>
@@ -569,9 +572,9 @@
                         <img id="modal-img" src="" alt="avatar" class="w-full h-full object-cover">
                     </div>
                     <div class="text-center sm:text-left space-y-1">
-                        <span id="modal-tag-village" class="inline-flex px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold">หมู่ที่ -</span>
+                        <span id="modal-tag-village" class="inline-flex px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-bold">หมู่ที่ -</span>
                         <h3 id="modal-title-name" class="text-base font-bold text-slate-900 leading-tight">-</h3>
-                        <p id="modal-desc-sub" class="text-xs text-slate-500">-</p>
+                        <p id="modal-desc-sub" class="text-[11px] text-slate-500">-</p>
                         <div class="pt-1 flex flex-wrap gap-2 justify-center sm:justify-start">
                             <span id="modal-badge-score" class="text-sm font-bold px-2 py-0.5 rounded-lg bg-amber-500 text-white shadow-sm">- คะแนน</span>
                             <span id="modal-badge-attend" class="text-sm font-bold px-2 py-0.5 rounded-lg bg-indigo-600 text-white shadow-sm">- % เข้าประชุม</span>
@@ -585,7 +588,7 @@
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <div class="flex justify-between text-sm font-medium text-slate-700 mb-1">
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
                                 <span>⛺ 1. จุดจำวัด (เต็ม 50)</span>
                                 <span id="score-jumwat-val" class="font-bold">- / 50</span>
                             </div>
@@ -594,7 +597,7 @@
                             </div>
                         </div>
                         <div>
-                            <div class="flex justify-between text-sm font-medium text-slate-700 mb-1">
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
                                 <span>🧺 2. ตะกร้า (เต็ม 25)</span>
                                 <span id="score-takra-val" class="font-bold">- / 25</span>
                             </div>
@@ -603,7 +606,7 @@
                             </div>
                         </div>
                         <div>
-                            <div class="flex justify-between text-sm font-medium text-slate-700 mb-1">
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
                                 <span>🏰 3. วิมาน (เต็ม 25)</span>
                                 <span id="score-wiman-val" class="font-bold">- / 25</span>
                             </div>
@@ -612,7 +615,7 @@
                             </div>
                         </div>
                         <div>
-                            <div class="flex justify-between text-sm font-medium text-slate-700 mb-1">
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
                                 <span>🧣 4. ราวตาก (เต็ม 30)</span>
                                 <span id="score-raotak-val" class="font-bold">- / 30</span>
                             </div>
@@ -621,7 +624,7 @@
                             </div>
                         </div>
                         <div>
-                            <div class="flex justify-between text-sm font-medium text-slate-700 mb-1">
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
                                 <span>🧥 5. ห่มดอง (เต็ม 25)</span>
                                 <span id="score-homdong-val" class="font-bold">- / 25</span>
                             </div>
@@ -637,38 +640,40 @@
                     <h4 class="text-sm font-bold text-indigo-950 uppercase tracking-wider">รายละเอียดสถิติการเช็คชื่อเข้าเรียน</h4>
                     <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 grid grid-cols-3 sm:grid-cols-5 gap-2 text-center text-sm">
                         <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-xs text-emerald-500">มา</span>
+                            <span class="block text-[11px] text-emerald-500">มา</span>
                             <span id="modal-attend-present" class="font-bold text-emerald-600">- ครั้ง</span>
                         </div>
                         <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-xs text-amber-500">สาย</span>
+                            <span class="block text-[11px] text-amber-500">สาย</span>
                             <span id="modal-attend-late" class="font-bold text-amber-600">- ครั้ง</span>
                         </div>
                         <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-xs text-blue-500">ลาป่วย</span>
+                            <span class="block text-[11px] text-blue-500">ลาป่วย</span>
                             <span id="modal-attend-sick" class="font-bold text-blue-600">- ครั้ง</span>
                         </div>
                         <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-xs text-violet-500">ลากิจ</span>
+                            <span class="block text-[11px] text-violet-500">ลากิจ</span>
                             <span id="modal-attend-leave" class="font-bold text-violet-600">- ครั้ง</span>
                         </div>
                         <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-xs text-slate-500 font-semibold">รวมเช็คชื่อ</span>
+                            <span class="block text-[11px] text-slate-500 font-semibold">รวมเช็คชื่อ</span>
                             <span id="modal-attend-total" class="font-bold text-slate-950">- ครั้ง</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Training-period evaluation summary -->
+                <!-- Training-period evaluation summary (appended after attendance history) -->
                 <div class="border-t border-slate-100 pt-4 space-y-3">
-                    <h4 class="text-sm font-bold text-indigo-950 uppercase tracking-wider">ผลการประเมินช่วงอบรม</h4>
+                    <h4 class="text-sm font-bold text-indigo-950 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-scroll text-indigo-600"></i> ผลการประเมินช่วงอบรม
+                    </h4>
                     <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 grid grid-cols-2 gap-2 text-center text-sm">
                         <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-xs text-slate-500 font-semibold">คะแนนประเมิน</span>
-                            <span id="modal-trainingeval-score" class="font-bold text-indigo-700">- คะแนน</span>
+                            <span class="block text-[11px] text-slate-500 font-semibold">คะแนนประเมินช่วงอบรม</span>
+                            <span id="modal-trainingeval-score" class="font-bold text-indigo-700">- / 100</span>
                         </div>
                         <div class="bg-white p-2 rounded border border-slate-100">
-                            <span class="block text-xs text-slate-500 font-semibold">ผลการประเมิน</span>
+                            <span class="block text-[11px] text-slate-500 font-semibold">ผลการประเมิน</span>
                             <span id="modal-trainingeval-result" class="font-bold">-</span>
                         </div>
                     </div>
@@ -692,7 +697,7 @@
                     <i class="fa-solid fa-scroll text-indigo-600"></i> แบบประเมินพระนวกะช่วงอบรม
                 </span>
                 <div class="flex items-center gap-2">
-                    <button onclick="window.print()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1">
+                    <button onclick="window.print()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1">
                         <i class="fa-solid fa-print"></i> พิมพ์แบบฟอร์ม
                     </button>
                     <button onclick="toggleTrainingEvalModal(false)" class="text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-1.5 w-8 h-8 flex items-center justify-center">
@@ -707,7 +712,7 @@
                 <div class="text-center space-y-0.5 pb-1">
                     <h3 class="text-base font-bold">แบบประเมินพระนวกะช่วงอบรม</h3>
                     <p class="text-sm font-bold">โครงการอบรมพระนวกะ3 วิสามัญสาขาและพุทธบุตรอาสาประจำปี 2569</p>
-                    <p class="text-sm text-slate-600">ระหว่าง 8 มิถุนายน พ.ศ. 2569 - 30 เมษายน พ.ศ. 2570</p>
+                    <p class="text-xs text-slate-600">ระหว่าง 8 มิถุนายน พ.ศ. 2569 - 30 เมษายน พ.ศ. 2570</p>
                 </div>
 
                 <!-- Identity row: photo + name fields -->
@@ -715,7 +720,7 @@
                     <div class="w-20 h-24 rounded-md overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
                         <img id="trainingeval-modal-img" src="" alt="avatar" class="w-full h-full object-cover">
                     </div>
-                    <div class="flex-1 grid grid-cols-2 gap-x-3 gap-y-1.5 text-sm">
+                    <div class="flex-1 grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
                         <div class="col-span-2"><span class="font-semibold text-slate-500">ชื่อ</span> <span id="trainingeval-field-firstname" class="font-bold">-</span></div>
                         <div><span class="font-semibold text-slate-500">ฉายา</span> <span id="trainingeval-field-honorific" class="font-bold">-</span></div>
                         <div><span class="font-semibold text-slate-500">นามสกุล</span> <span id="trainingeval-field-lastname" class="font-bold">-</span></div>
@@ -726,7 +731,7 @@
 
                 <!-- Score table matching original PDF layout -->
                 <div class="overflow-x-auto rounded-lg border border-slate-200">
-                    <table class="min-w-full text-sm border-collapse">
+                    <table class="min-w-full text-xs border-collapse">
                         <thead class="bg-slate-50 font-bold text-slate-600">
                             <tr>
                                 <th class="border border-slate-200 px-2 py-2 w-32 text-center">หัวข้อ</th>
@@ -749,7 +754,7 @@
                 </div>
 
                 <!-- Result summary -->
-                <div class="space-y-2 text-sm pt-1">
+                <div class="space-y-2 text-xs pt-1">
                     <div class="flex flex-wrap items-center gap-2">
                         <span class="font-semibold text-slate-500 w-full sm:w-auto">สรุปผลการประเมิน</span>
                         <span id="badge-pass-check" class="inline-flex items-center gap-1.5 border border-slate-300 rounded-full px-3 py-1">
@@ -768,7 +773,7 @@
                 </div>
 
                 <!-- Behaviour notes + signature -->
-                <div class="space-y-3 text-sm pt-1">
+                <div class="space-y-3 text-xs pt-1">
                     <div>
                         <span class="font-semibold text-slate-500">รายละเอียดความประพฤติ</span>
                         <div id="trainingeval-notes-display" class="border border-slate-100 p-2 bg-slate-50 rounded min-h-[40px] text-slate-700"></div>
@@ -777,7 +782,7 @@
                         <div class="text-center">
                             <span id="trainingeval-assessor-display">ลงชื่อผู้ประเมิน...........................................</span>
                         </div>
-                        <div class="text-center pr-2 font-mono text-xs text-slate-400">
+                        <div class="text-center pr-2 font-mono text-[11px] text-slate-400">
                             <span id="trainingeval-date-display">วันที่ประเมิน: 26-06-2026</span>
                         </div>
                     </div>
@@ -800,10 +805,10 @@
             </button>
             <div class="text-center">
                 <div class="w-14 h-14 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-200">
-                    <i class="fa-solid fa-triangle-exclamation text-2xl text-amber-500"></i>
+                    <i class="fa-solid fa-triangle-exclamation text-xl text-amber-500"></i>
                 </div>
                 <h3 class="text-lg font-bold text-slate-900 mb-2">เปิดการทำงานด้วย Sandbox Simulation Mode</h3>
-                <p class="text-slate-500 text-sm mb-6 leading-relaxed text-left">
+                <p class="text-slate-500 text-xs mb-6 leading-relaxed text-left">
                     แอปพลิเคชันสลับมาใช้ <strong>"ระบบจำลองฐานข้อมูลจริงจากไฟล์อ้างอิง Navaka3-Check.xlsx"</strong> เพื่อให้ท่านตรวจสอบสถิติจำนวนครั้ง และการประเมินผลช่วงอบรมได้สมบูรณ์ในโหมดจำลองออฟไลน์
                 </p>
                 <button onclick="toggleSandboxModal(false)" class="bg-indigo-900 hover:bg-indigo-850 text-white font-semibold py-2 rounded-lg text-sm w-full transition shadow-sm">
@@ -815,7 +820,7 @@
 
     <!-- Footer of System -->
     <footer class="bg-white border-t border-slate-200 py-4 text-center mt-auto print:hidden">
-        <p class="text-xs text-slate-400">© 2026 ระบบสรุปสถิติและประเมินผลพฤติกรรมคู่ระบบเช็คชื่อรายวัน. พัฒนาร่วมกันผ่าน Google Apps Script & Visualization API.</p>
+        <p class="text-[11px] text-slate-400">© 2026 ระบบสรุปสถิติและประเมินผลพฤติกรรมคู่ระบบเช็คชื่อรายวัน. พัฒนาร่วมกันผ่าน Google Apps Script & Visualization API.</p>
     </footer>
 
     <script>
@@ -1064,7 +1069,7 @@
         async function fetchAllData() {
             const statusEl = document.getElementById('sync-status');
             statusEl.innerHTML = `<span class="w-2 h-2 mr-1.5 bg-yellow-400 rounded-full animate-ping"></span> กำลังดึงข้อมูล Multi-Sheets...`;
-            statusEl.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800";
+            statusEl.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800";
 
             const urlPersonnel = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_PERSONAL}`;
             const urlEstimate = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_ESTIMATE}`;
@@ -1126,7 +1131,7 @@
                 compileData(rawPersonnel, evalMaps, rawAttendance, estimateMap, false);
 
                 statusEl.innerHTML = `<span class="w-2 h-2 mr-1.5 bg-emerald-500 rounded-full"></span> ดึงข้อมูลสดสำเร็จ`;
-                statusEl.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800";
+                statusEl.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800";
 
             } catch (err) {
                 console.warn("API direct linking failed. Deploying beautiful simulated sandbox database.", err);
@@ -1135,7 +1140,7 @@
                 compileData(mockPersonnel, mockEvalSheets, mockAttendanceRecords, {}, true);
 
                 statusEl.innerHTML = `<span class="w-2 h-2 mr-1.5 bg-amber-500 rounded-full"></span> โหมดออฟไลน์จำลอง`;
-                statusEl.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-amber-100 text-amber-800";
+                statusEl.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800";
                 
                 toggleSandboxModal(true);
             }
@@ -1939,7 +1944,7 @@
             });
 
             if (tableList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-slate-400 font-semibold text-center">ไม่มีสถิติข้อมูลตามตัวเลือกหมู่คณะที่เลือก</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-slate-400 font-semibold text-center">ไม่มีสถิติข้อมูลตามตัวเลือกหมู่คณะที่เลือก</td></tr>`;
                 return;
             }
 
@@ -1958,9 +1963,8 @@
                         <td class="px-4 py-3 font-semibold text-slate-500">#${p.id}</td>
                         <td class="px-4 py-3 text-left font-bold text-slate-900">${p.name}</td>
                         <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-semibold">หมู่ ${p.village}</span></td>
-                        <td class="px-4 py-3 font-semibold text-indigo-600">${activeDate}</td>
-                        <td class="px-4 py-3 text-left text-slate-500 font-mono text-xs">${breakDownText}</td>
-                        <td class="px-4 py-3 font-black text-indigo-800 bg-indigo-50/10 text-sm">${score} / ${maxCap}</td>
+                        <td class="px-4 py-3 text-left text-slate-500 font-mono text-[11px]">${breakDownText}</td>
+                        <td class="px-4 py-3 font-black text-indigo-800 bg-indigo-50/10 text-lg">${score} / ${maxCap}</td>
                     </tr>
                 `;
                 tbody.innerHTML += tr;
@@ -2037,24 +2041,24 @@
                     <div onclick="openPersonnelProfile(${p.id})" class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md border border-slate-100 transition duration-150 cursor-pointer flex flex-col hover:-translate-y-0.5">
                         <div class="relative bg-slate-50 h-44 w-full flex items-center justify-center overflow-hidden border-b border-slate-100">
                             <img src="${imgUrl}" alt="${p.name}" class="object-cover w-full h-full" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=60';">
-                            <span class="absolute top-2.5 left-2.5 bg-indigo-950 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow-sm">หมู่ที่ ${p.village}</span>
-                            <span class="absolute bottom-2.5 right-2.5 ${ratingColor} text-xs font-black px-2 py-0.5 rounded shadow-sm">${scoreSummary}</span>
+                            <span class="absolute top-2.5 left-2.5 bg-indigo-950 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">หมู่ที่ ${p.village}</span>
+                            <span class="absolute bottom-2.5 right-2.5 ${ratingColor} text-[11px] font-black px-2 py-0.5 rounded shadow-sm">${scoreSummary}</span>
                         </div>
                         <div class="p-4 flex-grow flex flex-col justify-between space-y-3">
                             <div>
                                 <h4 class="font-bold text-slate-900 text-sm leading-snug line-clamp-2 mb-2" title="${p.name}">${p.name}</h4>
-                                <div class="space-y-1.5 pt-1 text-sm">
-                                    <div class="flex justify-between items-center text-xs text-slate-500">
+                                <div class="space-y-1.5 pt-1 text-xs">
+                                    <div class="flex justify-between items-center text-[11px] text-slate-500">
                                         <span>⛺ คะแนนมิติรวม:</span>
                                         <strong class="text-indigo-600 font-mono">${p.activeTotal} / ${maxCap}</strong>
                                     </div>
-                                    <div class="flex justify-between items-center text-xs text-slate-500">
+                                    <div class="flex justify-between items-center text-[11px] text-slate-500">
                                         <span>📋 ประวัติการมาเช็คชื่อ:</span>
                                         <strong class="text-indigo-600 font-mono">${attendSummary}</strong>
                                     </div>
                                 </div>
                             </div>
-                            <div class="border-t border-slate-50 pt-2 flex justify-between items-center text-xs font-bold text-indigo-700">
+                            <div class="border-t border-slate-50 pt-2 flex justify-between items-center text-[11px] font-bold text-indigo-700">
                                 <span>รหัส: #${p.id}</span>
                                 <span>${performanceText}</span>
                             </div>
@@ -2081,6 +2085,14 @@
                 const at = p.attendanceSummary;
                 const attendSummary = `<span class="text-emerald-600">มา ${at.present}</span> <span class="text-amber-500">สาย ${at.late}</span> <span class="text-blue-500">ลาป่วย ${at.sickLeave||0}</span> <span class="text-violet-500">ลากิจ ${at.casualLeave||0}</span>`;
 
+                const trainingEval = p.trainingScores || null;
+                const trainingScoreText = trainingEval ? `${trainingEval.total} / 100` : '-';
+                const trainingResultBadge = trainingEval
+                    ? (trainingEval.passed
+                        ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700"><i class="fa-solid fa-circle-check"></i> ผ่านเกณฑ์</span>`
+                        : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700"><i class="fa-solid fa-triangle-exclamation"></i> ไม่ผ่านเกณฑ์</span>`)
+                    : `<span class="text-slate-400 text-[11px]">ยังไม่มีข้อมูล</span>`;
+
                 const tr = `
                     <tr class="hover:bg-slate-50 transition cursor-pointer text-center" onclick="openPersonnelProfile(${p.id})">
                         <td class="px-4 py-3 whitespace-nowrap text-slate-500 font-semibold text-left">${p.id}</td>
@@ -2095,11 +2107,13 @@
                         </td>
                         <td class="px-4 py-3 text-center font-semibold text-slate-700 bg-amber-50/20">
                             <div class="font-bold text-indigo-800">${scoreSummary}</div>
-                            <div class="text-xs font-mono mt-0.5">${scoreBreakdown}</div>
+                            <div class="text-[11px] font-mono mt-0.5">${scoreBreakdown}</div>
                         </td>
                         <td class="px-4 py-3 text-center bg-indigo-50/10">
-                            <div class="text-xs font-semibold space-x-1">${attendSummary}</div>
+                            <div class="text-[11px] font-semibold space-x-1">${attendSummary}</div>
                         </td>
+                        <td class="px-4 py-3 text-center font-bold text-indigo-700 bg-emerald-50/20">${trainingScoreText}</td>
+                        <td class="px-4 py-3 text-center bg-emerald-50/20">${trainingResultBadge}</td>
                     </tr>
                 `;
                 tbody.innerHTML += tr;
@@ -2139,17 +2153,22 @@
             document.getElementById('modal-attend-sick').innerText = `${p.attendanceSummary.sickLeave || 0} ครั้ง`;
             document.getElementById('modal-attend-leave').innerText = `${p.attendanceSummary.casualLeave || 0} ครั้ง`;
 
-            const trainEval = p.trainingScores || null;
-            const trainScoreEl = document.getElementById('modal-trainingeval-score');
-            const trainResultEl = document.getElementById('modal-trainingeval-result');
-            if (trainEval) {
-                trainScoreEl.innerText = `${trainEval.total} คะแนน`;
-                trainResultEl.innerText = trainEval.passed ? '🟢 ผ่าน' : '🔴 ไม่ผ่าน';
-                trainResultEl.className = `font-bold ${trainEval.passed ? 'text-emerald-600' : 'text-rose-600'}`;
+            const trainingEval = p.trainingScores || null;
+            const scoreEl = document.getElementById('modal-trainingeval-score');
+            const resultEl = document.getElementById('modal-trainingeval-result');
+            if (trainingEval) {
+                scoreEl.innerText = `${trainingEval.total} / 100`;
+                if (trainingEval.passed) {
+                    resultEl.innerText = 'ผ่านเกณฑ์';
+                    resultEl.className = 'font-bold text-emerald-600';
+                } else {
+                    resultEl.innerText = 'ไม่ผ่านเกณฑ์';
+                    resultEl.className = 'font-bold text-rose-600';
+                }
             } else {
-                trainScoreEl.innerText = '- คะแนน';
-                trainResultEl.innerText = '- ยังไม่มีข้อมูล';
-                trainResultEl.className = 'font-bold text-slate-400';
+                scoreEl.innerText = '- / 100';
+                resultEl.innerText = 'ยังไม่มีข้อมูล';
+                resultEl.className = 'font-bold text-slate-400';
             }
 
             toggleDetailModal(true);
@@ -2330,7 +2349,7 @@
                         <td class="px-4 py-3 text-left font-bold text-slate-900">${p.name}</td>
                         <td class="px-4 py-3"><span class="inline-flex px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-semibold">หมู่ ${p.village}</span></td>
                         <td class="px-4 py-3 font-mono font-bold text-indigo-900">${evalData.total} / 100</td>
-                        <td class="px-4 py-3"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold ${badgeStyle}">${badgeLabel}</span></td>
+                        <td class="px-4 py-3"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${badgeStyle}">${badgeLabel}</span></td>
                         <td class="px-4 py-3 text-indigo-600 hover:text-indigo-950">
                             <button class="bg-indigo-50 hover:bg-indigo-100 p-1.5 rounded-lg text-sm font-semibold flex items-center gap-1 mx-auto">
                                 <i class="fa-solid fa-print"></i> เปิด/พิมพ์
