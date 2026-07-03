@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบสรุปสถิติและประเมินผลรวม 5 มิติ</title>
+    <title>ระบบสรุปสถิติและประเมินผลรวม</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts (Sarabun) -->
@@ -101,8 +101,8 @@
                         <i class="fa-solid fa-medal text-xl text-amber-400"></i>
                     </div>
                     <div>
-                        <span class="font-bold text-lg md:text-xl block leading-tight">ระบบสรุปสถิติและประเมินผลรวม</span>
-                        <span class="text-[11px] md:text-sm text-indigo-200 block">วิเคราะห์ข้อมูลความประพฤติและระบบเช็คชื่อรายวันเชื่อมโยง Multi-Sheets</span>
+                        <span class="font-bold text-lg md:text-xl block leading-tight">สรุปสถิติและประเมินผลการอบรม</span>
+                        <span class="text-[11px] md:text-sm text-indigo-200 block">โครงการอบรมพระนวกะ 3 เส้นทางวิสามัญสาขาและพุทธบุตรอาสา</span>
                     </div>
                 </div>
                 <div class="flex items-center space-x-3">
@@ -344,20 +344,20 @@
                 </div>
 
                 <!-- Filters specifically inside Tab 3 -->
-                <div class="space-y-4 mb-6 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                    <!-- Row 1: Search only (date selector removed — totals are always shown cumulatively) -->
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">พิมพ์ค้นหาชื่อจริง/ฉายา</label>
-                        <div class="relative max-w-md">
-                            <input type="text" id="search-input" oninput="applyFilters()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-sm"></i>
-                        </div>
-                    </div>
-                    <!-- Row 2: Village buttons -->
-                    <div>
+                <div class="flex flex-col md:flex-row md:items-start gap-4 mb-6 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                    <!-- Village buttons -->
+                    <div class="flex-1 min-w-0">
                         <label class="block text-xs font-semibold text-slate-500 mb-2">เลือกหมู่:</label>
                         <div id="personnel-village-container" class="flex gap-2 flex-wrap">
                             <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                    <!-- Search -->
+                    <div class="w-full md:w-64 flex-shrink-0">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">พิมพ์ค้นหาชื่อจริง/ฉายา</label>
+                        <div class="relative">
+                            <input type="text" id="search-input" oninput="applyFilters()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-sm"></i>
                         </div>
                     </div>
                 </div>
@@ -694,12 +694,16 @@
                         <div class="w-20 h-24 rounded-md overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
                             <img id="trainingeval-modal-img" src="" alt="avatar" class="w-full h-full object-cover">
                         </div>
-                        <div class="flex-1 grid grid-cols-2 gap-x-3 gap-y-1.5 text-sm md:text-base">
-                            <div class="col-span-2"><span class="font-semibold text-slate-500">ชื่อ</span> <span id="trainingeval-field-firstname" class="font-bold text-base md:text-lg">-</span></div>
-                            <div><span class="font-semibold text-slate-500">ฉายา</span> <span id="trainingeval-field-honorific" class="font-bold text-base md:text-lg">-</span></div>
-                            <div><span class="font-semibold text-slate-500">นามสกุล</span> <span id="trainingeval-field-lastname" class="font-bold text-base md:text-lg">-</span></div>
-                            <div><span class="font-semibold text-slate-500">กลุ่ม (หมู่)</span> <span id="trainingeval-field-village" class="font-bold text-base md:text-lg">-</span></div>
-                            <div><span class="font-semibold text-slate-500">เลขที่</span> <span id="trainingeval-field-id" class="font-bold text-base md:text-lg">-</span></div>
+                        <div class="flex-1 space-y-1.5 text-sm md:text-base">
+                            <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                                <span><span class="font-semibold text-slate-500">ชื่อ</span> <span id="trainingeval-field-firstname" class="font-bold text-base md:text-lg">-</span></span>
+                                <span><span class="font-semibold text-slate-500">ฉายา</span> <span id="trainingeval-field-honorific" class="font-bold text-base md:text-lg">-</span></span>
+                                <span><span class="font-semibold text-slate-500">นามสกุล</span> <span id="trainingeval-field-lastname" class="font-bold text-base md:text-lg">-</span></span>
+                            </div>
+                            <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                                <span><span class="font-semibold text-slate-500">หมู่</span> <span id="trainingeval-field-village" class="font-bold text-base md:text-lg">-</span></span>
+                                <span><span class="font-semibold text-slate-500">เลขที่</span> <span id="trainingeval-field-id" class="font-bold text-base md:text-lg">-</span></span>
+                            </div>
                         </div>
                     </div>
                 </div>
