@@ -225,28 +225,6 @@
                 </div>
             </div>
 
-            <!-- KPI Dashboard -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-base font-bold text-slate-500">จำนวนบุคลากรทั้งหมด</p>
-                        <h3 id="stat-total" class="text-3xl font-black text-slate-900 mt-1">-</h3>
-                    </div>
-                    <div class="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
-                        <i class="fa-solid fa-users text-2xl"></i>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
-                    <div>
-                        <p id="label-avg-score" class="text-base font-bold text-slate-500">คะแนนเฉลี่ยรวม</p>
-                        <h3 id="stat-avg-score" class="text-3xl font-black text-emerald-600 mt-1">-</h3>
-                    </div>
-                    <div class="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
-                        <i class="fa-solid fa-star-half-stroke text-2xl"></i>
-                    </div>
-                </div>
-            </div>
-
             <!-- Full Personnel Evaluation Directory -->
             <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
@@ -296,46 +274,6 @@
                 <div>
                     <div id="attend-village-container" class="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
                         <!-- Dynamic Villages -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Attendance KPIs -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-base font-bold text-slate-500">รวมจำนวน "มา"</p>
-                        <h3 id="attend-present-kpi" class="text-3xl font-black text-emerald-600 mt-1">- ครั้ง</h3>
-                    </div>
-                    <div class="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
-                        <i class="fa-solid fa-circle-check text-2xl"></i>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-base font-bold text-slate-500">รวมจำนวน "สาย"</p>
-                        <h3 id="attend-late-kpi" class="text-3xl font-black text-amber-500 mt-1">- ครั้ง</h3>
-                    </div>
-                    <div class="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center text-amber-500">
-                        <i class="fa-solid fa-clock text-2xl"></i>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-base font-bold text-slate-500">รวมจำนวน "ลาป่วย"</p>
-                        <h3 id="attend-sick-kpi" class="text-3xl font-black text-blue-600 mt-1">- ครั้ง</h3>
-                    </div>
-                    <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
-                        <i class="fa-solid fa-hospital-user text-2xl"></i>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-base font-bold text-slate-500">รวมจำนวน "ลากิจ"</p>
-                        <h3 id="attend-leave-kpi" class="text-3xl font-black text-violet-600 mt-1">- ครั้ง</h3>
-                    </div>
-                    <div class="w-12 h-12 bg-violet-50 rounded-lg flex items-center justify-center text-violet-600">
-                        <i class="fa-solid fa-file-signature text-2xl"></i>
                     </div>
                 </div>
             </div>
@@ -478,26 +416,6 @@
             <select id="grades-filter-village" class="hidden">
                 <option value="">ทั้งหมดทุกหมู่</option>
             </select>
-
-            <!-- Summary cards -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 text-center">
-                    <p class="text-xs md:text-sm text-slate-400 font-extrabold uppercase tracking-wide">จำนวนผู้เข้าอบรม</p>
-                    <p id="grades-summary-count" class="text-3xl font-black text-slate-900 mt-1.5">-</p>
-                </div>
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 text-center">
-                    <p class="text-xs md:text-sm text-slate-400 font-extrabold uppercase tracking-wide">GPA เฉลี่ยรวม</p>
-                    <p id="grades-summary-avg" class="text-3xl font-black text-sky-700 mt-1.5">-</p>
-                </div>
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 text-center">
-                    <p class="text-xs md:text-sm text-slate-400 font-extrabold uppercase tracking-wide">GPA สูงสุด</p>
-                    <p id="grades-summary-max" class="text-3xl font-black text-emerald-600 mt-1.5">-</p>
-                </div>
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 text-center">
-                    <p class="text-xs md:text-sm text-slate-400 font-extrabold uppercase tracking-wide">GPA ต่ำสุด</p>
-                    <p id="grades-summary-min" class="text-3xl font-black text-rose-600 mt-1.5">-</p>
-                </div>
-            </div>
 
             <!-- Table View Content -->
             <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
@@ -2184,10 +2102,7 @@
                 });
             });
 
-            document.getElementById('attend-present-kpi').innerText = `${presentCount} ครั้ง`;
-            document.getElementById('attend-late-kpi').innerText = `${lateCount} ครั้ง`;
-            document.getElementById('attend-sick-kpi').innerText = `${sickCount} ครั้ง`;
-            document.getElementById('attend-leave-kpi').innerText = `${leaveCount} ครั้ง`;
+            // Attendance KPI summary cards removed from this tab by request (more room for the table).
 
             const tbody = document.getElementById('attendance-tbody');
             tbody.innerHTML = '';
@@ -2259,45 +2174,8 @@
         }
 
         function calculateAnalyticsKPIs() {
-            const analyticsFilteredList = compiledPersonnel.filter(p => {
-                return !analyticsSelectedVillage || p.village === analyticsSelectedVillage;
-            });
-
-            const total = analyticsFilteredList.length;
-            document.getElementById('stat-total').innerText = total + " ราย";
-
-            const meta = TOPIC_METRIC_MAP[analyticsSelectedTopic];
-            const maxCap = meta.max; 
-
-            document.getElementById('label-avg-score').innerHTML = `คะแนนเฉลี่ยรวม`;
-
-            if (total === 0) {
-                document.getElementById('stat-avg-score').innerText = "-";
-                return;
-            }
-
-            let activeDate = analyticsSelectedDate;
-            if (activeDate === 'all') {
-                const sortedDates = Array.from(availableDates).sort((a, b) => parseDate(a) - parseDate(b));
-                activeDate = sortedDates[sortedDates.length - 1];
-            }
-
-            let sumScore = 0;
-            analyticsFilteredList.forEach(p => {
-                let score = 0;
-                const entry = p.datesScores[activeDate];
-                if (entry && entry.hasRealEntry) {
-                    if (analyticsSelectedTopic === 'all') {
-                        score = entry.total;
-                    } else {
-                        score = entry[analyticsSelectedTopic] || 0;
-                    }
-                }
-                sumScore += score;
-            });
-
-            const avgScore = (sumScore / total).toFixed(1);
-            document.getElementById('stat-avg-score').innerText = `${avgScore} / ${maxCap}`;
+            // KPI summary cards removed from this tab by request (more room for the table).
+            return;
         }
 
         function renderAnalyticsTable() {
