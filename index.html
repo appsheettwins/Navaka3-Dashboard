@@ -132,15 +132,15 @@
 <body class="min-h-screen text-slate-800 flex flex-col text-sm md:text-base">
 
     <!-- Left Sidebar Navigation: desktop-fixed, mobile slide-in drawer -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-indigo-950 text-white flex flex-col shadow-2xl -translate-x-full md:translate-x-0 print:hidden">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-60 bg-indigo-950 text-white flex flex-col shadow-2xl -translate-x-full md:translate-x-0 print:hidden">
         <!-- Brand / Title -->
-        <div class="flex items-center gap-3 px-5 py-5 border-b border-indigo-900/80 shrink-0">
-            <div class="p-2.5 bg-indigo-900 rounded-lg border border-indigo-800 shrink-0">
-                <i class="fa-solid fa-medal text-2xl text-amber-400"></i>
+        <div class="flex items-center gap-2.5 px-4 py-4 border-b border-indigo-900/80 shrink-0">
+            <div class="p-2 bg-indigo-900 rounded-lg border border-indigo-800 shrink-0">
+                <i class="fa-solid fa-medal text-lg text-amber-400"></i>
             </div>
             <div class="min-w-0">
-                <span class="font-extrabold text-base leading-tight block">สรุปสถิติและประเมินผลการอบรม</span>
-                <span class="text-xs text-indigo-300 block leading-snug mt-0.5">โครงการอบรมพระนวกะ 3 เส้นทางวิสามัญสาขาและพุทธบุตรอาสา</span>
+                <span class="font-extrabold text-sm leading-tight block">สรุปสถิติและประเมินผลการอบรม</span>
+                <span class="text-[11px] text-indigo-300 block leading-snug mt-0.5">โครงการอบรมพระนวกะ 3 เส้นทางวิสามัญสาขาและพุทธบุตรอาสา</span>
             </div>
             <button onclick="toggleSidebar(false)" class="md:hidden ml-auto text-indigo-300 hover:text-white shrink-0 p-1">
                 <i class="fa-solid fa-xmark text-xl"></i>
@@ -148,37 +148,37 @@
         </div>
 
         <!-- Navigation links (moved here from the top bar for a calmer, roomier header) -->
-        <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 py-4 space-y-1.5">
-            <button onclick="switchTab('personnel')" id="tab-personnel-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition">
-                <i class="fa-solid fa-address-book w-5 text-center"></i> สรุปประเมิน
+        <nav class="flex-1 overflow-y-auto custom-scrollbar px-2.5 py-3 space-y-1">
+            <button onclick="switchTab('personnel')" id="tab-personnel-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
+                <i class="fa-solid fa-address-book w-4 text-center text-sm"></i> สรุปประเมิน
             </button>
-            <button onclick="switchTab('analytics')" id="tab-analytics-btn" class="w-full text-left bg-indigo-600 text-white shadow-sm px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition">
-                <i class="fa-solid fa-chart-pie w-5 text-center"></i> ความเป็นอยู่
+            <button onclick="switchTab('analytics')" id="tab-analytics-btn" class="w-full text-left bg-indigo-600 text-white shadow-sm px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
+                <i class="fa-solid fa-chart-pie w-4 text-center text-sm"></i> ความเป็นอยู่
             </button>
-            <button onclick="switchTab('attendance')" id="tab-attendance-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition">
-                <i class="fa-solid fa-clipboard-user w-5 text-center"></i> เช็คชื่อ
+            <button onclick="switchTab('attendance')" id="tab-attendance-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
+                <i class="fa-solid fa-clipboard-user w-4 text-center text-sm"></i> เช็คชื่อ
             </button>
-            <button onclick="switchTab('grades')" id="tab-grades-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition">
-                <i class="fa-solid fa-graduation-cap w-5 text-center"></i> ผลการเรียน
+            <button onclick="switchTab('grades')" id="tab-grades-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
+                <i class="fa-solid fa-graduation-cap w-4 text-center text-sm"></i> ผลการเรียน
             </button>
-            <button onclick="switchTab('trainingeval')" id="tab-trainingeval-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition">
-                <i class="fa-solid fa-scroll w-5 text-center"></i> คะแนนอบรม
+            <button onclick="switchTab('trainingeval')" id="tab-trainingeval-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
+                <i class="fa-solid fa-scroll w-4 text-center text-sm"></i> คะแนนอบรม
             </button>
-            <button onclick="switchTab('sources')" id="tab-sources-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition">
-                <i class="fa-solid fa-circle-nodes w-5 text-center"></i> แหล่งข้อมูล
+            <button onclick="switchTab('sources')" id="tab-sources-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
+                <i class="fa-solid fa-circle-nodes w-4 text-center text-sm"></i> แหล่งข้อมูล
             </button>
         </nav>
 
         <!-- Sync status, refresh, and light/dark toggle -->
-        <div class="px-4 py-4 border-t border-indigo-900/80 space-y-3 shrink-0">
-            <span id="sync-status" class="w-full inline-flex items-center justify-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
+        <div class="px-3 py-3 border-t border-indigo-900/80 space-y-2.5 shrink-0">
+            <span id="sync-status" class="w-full inline-flex items-center justify-center px-3 py-1.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
                 <span class="w-2.5 h-2.5 mr-2 bg-yellow-400 rounded-full animate-ping"></span>
                 กำลังเชื่อมคลาวด์...
             </span>
-            <button onclick="fetchAllData()" class="w-full bg-indigo-800 hover:bg-indigo-700 px-4 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 active:scale-95">
+            <button onclick="fetchAllData()" class="w-full bg-indigo-800 hover:bg-indigo-700 px-3 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 active:scale-95">
                 <i class="fa-solid fa-rotate-right"></i> ดึงข้อมูล
             </button>
-            <button id="theme-toggle-btn" onclick="toggleDarkMode()" class="w-full bg-indigo-900 hover:bg-indigo-800 border border-indigo-800 px-4 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 active:scale-95">
+            <button id="theme-toggle-btn" onclick="toggleDarkMode()" class="w-full bg-indigo-900 hover:bg-indigo-800 border border-indigo-800 px-3 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 active:scale-95">
                 <i id="theme-toggle-icon" class="fa-solid fa-moon text-amber-300"></i>
                 <span id="theme-toggle-label">โหมดกลางคืน</span>
             </button>
@@ -189,7 +189,7 @@
     <div id="sidebar-overlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden print:hidden"></div>
 
     <!-- Content column, offset by the sidebar's width on desktop -->
-    <div class="flex flex-col min-h-screen w-full md:pl-72">
+    <div class="flex flex-col min-h-screen w-full md:pl-60">
 
         <!-- Slim mobile top bar: only the hamburger + title + quick theme toggle (frees up space on desktop) -->
         <div id="mobile-topbar" class="md:hidden sticky top-0 z-20 bg-indigo-950 text-white h-14 flex items-center gap-3 px-4 shadow-lg print:hidden">
@@ -230,19 +230,19 @@
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p class="text-base font-bold text-slate-500">จำนวนบุคลากรทั้งหมด</p>
-                        <h3 id="stat-total" class="text-4xl font-black text-slate-900 mt-1">-</h3>
+                        <h3 id="stat-total" class="text-3xl font-black text-slate-900 mt-1">-</h3>
                     </div>
-                    <div class="w-14 h-14 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
-                        <i class="fa-solid fa-users text-3xl"></i>
+                    <div class="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600">
+                        <i class="fa-solid fa-users text-2xl"></i>
                     </div>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p id="label-avg-score" class="text-base font-bold text-slate-500">คะแนนเฉลี่ยรวม</p>
-                        <h3 id="stat-avg-score" class="text-4xl font-black text-emerald-600 mt-1">-</h3>
+                        <h3 id="stat-avg-score" class="text-3xl font-black text-emerald-600 mt-1">-</h3>
                     </div>
-                    <div class="w-14 h-14 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
-                        <i class="fa-solid fa-star-half-stroke text-3xl"></i>
+                    <div class="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
+                        <i class="fa-solid fa-star-half-stroke text-2xl"></i>
                     </div>
                 </div>
             </div>
@@ -265,8 +265,8 @@
                         <thead class="bg-slate-50 font-bold text-slate-500 text-center">
                             <tr>
                                 <th class="px-5 py-4 w-16">รหัส</th>
-                                <th class="px-5 py-4 text-left">ชื่อ-ฉายา</th>
                                 <th class="px-5 py-4 w-24">หมู่</th>
+                                <th class="px-5 py-4 text-left">ชื่อ-ฉายา</th>
                                 <th class="px-5 py-4 text-left">(⛺ จำวัด | 🧺 ตะกร้า | 🏰 วิมาน | 🧣 ราวตาก | 🧥 ห่มดอง)</th>
                                 <th class="px-5 py-4 w-40 font-bold text-indigo-800" id="analytics-table-header-max">คะแนนรวม</th>
                             </tr>
@@ -305,7 +305,7 @@
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p class="text-base font-bold text-slate-500">รวมจำนวน "มา"</p>
-                        <h3 id="attend-present-kpi" class="text-2xl md:text-3xl font-black text-emerald-600 mt-1">- ครั้ง</h3>
+                        <h3 id="attend-present-kpi" class="text-3xl font-black text-emerald-600 mt-1">- ครั้ง</h3>
                     </div>
                     <div class="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
                         <i class="fa-solid fa-circle-check text-2xl"></i>
@@ -314,7 +314,7 @@
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p class="text-base font-bold text-slate-500">รวมจำนวน "สาย"</p>
-                        <h3 id="attend-late-kpi" class="text-2xl md:text-3xl font-black text-amber-500 mt-1">- ครั้ง</h3>
+                        <h3 id="attend-late-kpi" class="text-3xl font-black text-amber-500 mt-1">- ครั้ง</h3>
                     </div>
                     <div class="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center text-amber-500">
                         <i class="fa-solid fa-clock text-2xl"></i>
@@ -323,7 +323,7 @@
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p class="text-base font-bold text-slate-500">รวมจำนวน "ลาป่วย"</p>
-                        <h3 id="attend-sick-kpi" class="text-2xl md:text-3xl font-black text-blue-600 mt-1">- ครั้ง</h3>
+                        <h3 id="attend-sick-kpi" class="text-3xl font-black text-blue-600 mt-1">- ครั้ง</h3>
                     </div>
                     <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
                         <i class="fa-solid fa-hospital-user text-2xl"></i>
@@ -332,7 +332,7 @@
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                     <div>
                         <p class="text-base font-bold text-slate-500">รวมจำนวน "ลากิจ"</p>
-                        <h3 id="attend-leave-kpi" class="text-2xl md:text-3xl font-black text-violet-600 mt-1">- ครั้ง</h3>
+                        <h3 id="attend-leave-kpi" class="text-3xl font-black text-violet-600 mt-1">- ครั้ง</h3>
                     </div>
                     <div class="w-12 h-12 bg-violet-50 rounded-lg flex items-center justify-center text-violet-600">
                         <i class="fa-solid fa-file-signature text-2xl"></i>
@@ -359,8 +359,8 @@
                         <thead class="bg-slate-50 font-bold text-slate-500 text-center">
                             <tr>
                                 <th class="px-5 py-3.5 w-16">รหัส</th>
-                                <th class="px-5 py-3.5 text-left">ชื่อ-ฉายา</th>
                                 <th class="px-5 py-3.5 w-24">หมู่</th>
+                                <th class="px-5 py-3.5 text-left">ชื่อ-ฉายา</th>
                                 <th class="px-5 py-3.5 w-32">เช้า</th>
                                 <th class="px-5 py-3.5 w-32">สาย</th>
                                 <th class="px-5 py-3.5 w-32">บ่าย</th>
@@ -378,48 +378,60 @@
 
         <!-- ==================== TAB 3: COMBINED EVALUATION SUMMARY ==================== -->
         <div id="tab-personnel" class="hidden space-y-6">
-            
-            <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
 
-                <!-- Filters specifically inside Tab 3 (Labels Removed as requested) -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4 mb-6">
-                    <div class="flex flex-col md:flex-row md:items-center gap-5">
-                        <!-- Village buttons -->
-                        <div class="flex-1 min-w-0">
-                            <div id="personnel-village-container" class="flex gap-2.5 flex-wrap">
-                                <!-- Injected dynamically -->
-                            </div>
+            <!-- Filters (Labels Removed as requested) -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center gap-5">
+                    <!-- Village buttons -->
+                    <div class="flex-1 min-w-0">
+                        <div id="personnel-village-container" class="flex gap-2.5 flex-wrap">
+                            <!-- Injected dynamically -->
                         </div>
-                        <!-- Search -->
-                        <div class="w-full md:w-80 flex-shrink-0">
-                            <div class="relative">
-                                <input type="text" id="search-input" oninput="applyFilters()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:ring-2 focus:ring-indigo-500 outline-none bg-white font-bold">
-                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-4 text-slate-400 text-base"></i>
-                            </div>
+                    </div>
+                    <!-- Search -->
+                    <div class="w-full md:w-80 flex-shrink-0">
+                        <div class="relative">
+                            <input type="text" id="search-input" oninput="applyFilters()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:ring-2 focus:ring-indigo-500 outline-none bg-white font-bold">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-4 text-slate-400 text-base"></i>
                         </div>
                     </div>
                 </div>
-                <!-- Hidden select for village value (used by applyFilters) -->
-                <select id="filter-village" class="hidden">
-                    <option value="">ทั้งหมดทุกหมู่</option>
-                </select>
-                <!-- Hidden select for date value (kept for Tab 1/2 compatibility; not shown here since Tab 3 always shows cumulative totals) -->
-                <select id="filter-date" class="hidden"></select>
+            </div>
+            <!-- Hidden select for village value (used by applyFilters) -->
+            <select id="filter-village" class="hidden">
+                <option value="">ทั้งหมดทุกหมู่</option>
+            </select>
+            <!-- Hidden select for date value (kept for Tab 1/2 compatibility; not shown here since Tab 3 always shows cumulative totals) -->
+            <select id="filter-date" class="hidden"></select>
+
+            <!-- Full Personnel Summary Directory -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-address-book text-indigo-600"></i> สรุปประเมินผลรวมรายบุคคล
+                        </h3>
+                        <p class="text-xs md:text-sm text-slate-500 mt-1">แสดงผลรวมความเป็นอยู่ การเช็คชื่อ คะแนนอบรม และผลการเรียนของแต่ละบุคคล</p>
+                    </div>
+                    <span id="personnel-count-badge" class="text-sm text-indigo-700 bg-indigo-50 px-3.5 py-1.5 rounded-lg font-bold">
+                        - รายการ
+                    </span>
+                </div>
 
                 <!-- Table View Content (table-only, gallery view removed) -->
-                <div id="table-view-container" class="overflow-auto border border-slate-100 rounded-lg" style="max-height: 70vh;">
+                <div id="table-view-container" class="overflow-x-auto rounded-lg border border-slate-100 custom-scrollbar">
                     <table class="min-w-full divide-y divide-slate-200 text-base">
-                        <thead class="text-slate-500 font-extrabold text-center">
+                        <thead class="bg-slate-50 font-extrabold text-slate-500 text-center">
                             <tr>
-                                <th class="sticky top-0 z-10 bg-slate-50 px-5 py-4 text-left w-14">รหัส</th>
-                                <th class="sticky top-0 z-10 bg-slate-50 px-5 py-4 text-left w-16">รูป</th>
-                                <th class="sticky top-0 z-10 bg-slate-50 px-5 py-4 text-left">ชื่อ - ฉายา</th>
-                                <th class="sticky top-0 z-10 bg-slate-50 px-5 py-4 text-center w-16">หมู่</th>
-                                <th class="sticky top-0 z-10 bg-amber-50 px-5 py-4 text-center">ความเป็นอยู่<br><span class="font-bold text-xs text-amber-700">(% จากวันที่ประเมินจริง)</span></th>
-                                <th class="sticky top-0 z-10 bg-indigo-50 px-5 py-4 text-center">ประวัติเช็คชื่อ<br><span class="font-bold text-xs text-indigo-700">(มา/สาย/ลาป่วย/ลากิจ)</span></th>
-                                <th class="sticky top-0 z-10 bg-emerald-50 px-5 py-4 text-center">คะแนนรวม<br><span class="font-bold text-xs text-emerald-700">(ประเมินช่วงอบรม)</span></th>
-                                <th class="sticky top-0 z-10 bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย<br><span class="font-bold text-xs text-sky-700">(เทอมแรก)</span></th>
-                                <th class="sticky top-0 z-10 bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย<br><span class="font-bold text-xs text-sky-700">(เทอมสอง)</span></th>
+                                <th class="px-5 py-4 text-left w-14">รหัส</th>
+                                <th class="px-5 py-4 text-left w-16">รูป</th>
+                                <th class="px-5 py-4 text-center w-16">หมู่</th>
+                                <th class="px-5 py-4 text-left">ชื่อ - ฉายา</th>
+                                <th class="bg-amber-50 px-5 py-4 text-center">ความเป็นอยู่<br><span class="font-bold text-xs text-amber-700">(% จากวันที่ประเมินจริง)</span></th>
+                                <th class="bg-indigo-50 px-5 py-4 text-center">ประวัติเช็คชื่อ<br><span class="font-bold text-xs text-indigo-700">(มา/สาย/ลาป่วย/ลากิจ)</span></th>
+                                <th class="bg-emerald-50 px-5 py-4 text-center">คะแนนรวม<br><span class="font-bold text-xs text-emerald-700">(ประเมินช่วงอบรม)</span></th>
+                                <th class="bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย<br><span class="font-bold text-xs text-sky-700">(เทอมแรก)</span></th>
+                                <th class="bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย<br><span class="font-bold text-xs text-sky-700">(เทอมสอง)</span></th>
                             </tr>
                         </thead>
                         <tbody id="table-body" class="bg-white divide-y divide-slate-200 text-slate-700 font-medium">
@@ -434,7 +446,6 @@
                     <p class="text-slate-500 text-base font-bold">ไม่พบข้อมูลตามเงื่อนไขที่เลือกสืบค้น</p>
                     <button onclick="resetFilters()" class="mt-3 text-indigo-600 hover:text-indigo-800 text-base font-bold underline">ล้างตัวกรอง</button>
                 </div>
-
             </div>
 
         </div>
@@ -489,28 +500,38 @@
             </div>
 
             <!-- Table View Content -->
-            <div id="grades-table-view-container" class="overflow-auto border border-slate-100 rounded-lg" style="max-height: 70vh;">
-                <table class="min-w-full divide-y divide-slate-200 text-base">
-                    <thead class="text-slate-500 font-extrabold text-center">
-                        <tr id="grades-table-head-row">
-                            <th class="sticky top-0 z-10 bg-slate-50 px-5 py-4 text-left w-14">รหัส</th>
-                            <th class="sticky top-0 z-10 bg-slate-50 px-5 py-4 text-left">ชื่อ - ฉายา</th>
-                            <th class="sticky top-0 z-10 bg-slate-50 px-5 py-4 text-center w-16">หมู่</th>
-                            <!-- 5 subject columns injected dynamically -->
-                            <th class="sticky top-0 z-10 bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย (GPA)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="grades-table-body" class="bg-white divide-y divide-slate-200 text-slate-700 font-medium">
-                        <!-- Dynamic rows -->
-                    </tbody>
-                </table>
-            </div>
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-graduation-cap text-indigo-600"></i> ตารางผลการเรียนรายบุคคล
+                        </h3>
+                        <p class="text-xs md:text-sm text-slate-500 mt-1">แสดงคะแนนรายวิชาและเกรดเฉลี่ยตามเทอมที่เลือก</p>
+                    </div>
+                </div>
+                <div id="grades-table-view-container" class="overflow-x-auto rounded-lg border border-slate-100 custom-scrollbar">
+                    <table class="min-w-full divide-y divide-slate-200 text-base">
+                        <thead class="bg-slate-50 font-extrabold text-slate-500 text-center">
+                            <tr id="grades-table-head-row">
+                                <th class="px-5 py-4 text-left w-14">รหัส</th>
+                                <th class="px-5 py-4 text-center w-16">หมู่</th>
+                                <th class="px-5 py-4 text-left">ชื่อ - ฉายา</th>
+                                <!-- 5 subject columns injected dynamically -->
+                                <th class="bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย (GPA)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="grades-table-body" class="bg-white divide-y divide-slate-200 text-slate-700 font-medium">
+                            <!-- Dynamic rows -->
+                        </tbody>
+                    </table>
+                </div>
 
-            <!-- Empty State alert -->
-            <div id="grades-no-data-alert" class="hidden text-center py-12">
-                <i class="fa-solid fa-magnifying-glass text-slate-200 text-5xl mb-4"></i>
-                <p class="text-slate-500 text-base font-bold">ไม่พบข้อมูลตามเงื่อนไขที่เลือกสืบค้น</p>
-                <button onclick="resetGradesFilters()" class="mt-3 text-indigo-600 hover:text-indigo-800 text-base font-bold underline">ล้างตัวกรอง</button>
+                <!-- Empty State alert -->
+                <div id="grades-no-data-alert" class="hidden text-center py-12">
+                    <i class="fa-solid fa-magnifying-glass text-slate-200 text-5xl mb-4"></i>
+                    <p class="text-slate-500 text-base font-bold">ไม่พบข้อมูลตามเงื่อนไขที่เลือกสืบค้น</p>
+                    <button onclick="resetGradesFilters()" class="mt-3 text-indigo-600 hover:text-indigo-800 text-base font-bold underline">ล้างตัวกรอง</button>
+                </div>
             </div>
 
         </div>
@@ -558,8 +579,8 @@
                         <thead class="bg-slate-50 font-bold text-slate-500 text-center">
                             <tr>
                                 <th class="px-5 py-3.5 w-16">รหัส</th>
-                                <th class="px-5 py-3.5 text-left">ชื่อ-ฉายา</th>
                                 <th class="px-5 py-3.5 w-24">หมู่</th>
+                                <th class="px-5 py-3.5 text-left">ชื่อ-ฉายา</th>
                                 <th class="px-5 py-3.5 w-40">คะแนนรวม (100)</th>
                                 <th class="px-5 py-3.5 w-52">สรุปผลการประเมิน</th>
                             </tr>
@@ -1313,6 +1334,19 @@
             return cleanA.includes(cleanB) || cleanB.includes(cleanA);
         }
 
+        async function fetchWithRetry(url, retries = 2, delayMs = 700) {
+            for (let attempt = 0; attempt <= retries; attempt++) {
+                try {
+                    const res = await fetch(url, { cache: 'no-store' });
+                    if (res.ok) return await res.text();
+                } catch (err) {
+                    if (attempt === retries) throw err;
+                }
+                if (attempt < retries) await new Promise(r => setTimeout(r, delayMs));
+            }
+            return null;
+        }
+
         async function fetchAllData() {
             const statusEl = document.getElementById('sync-status');
             statusEl.innerHTML = `<span class="w-2.5 h-2.5 mr-2 bg-yellow-400 rounded-full animate-ping"></span> กำลังดึงข้อมูล Multi-Sheets...`;
@@ -1325,7 +1359,7 @@
             
             const evalPromises = EVAL_TABS.map(tabName => {
                 const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_EVAL_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tabName)}`;
-                return fetch(url).then(res => res.text()).then(txt => ({ tabName, text: txt })).catch(err => {
+                return fetchWithRetry(url).then(txt => ({ tabName, text: txt })).catch(err => {
                     console.error(`Error fetching evaluation tab ${tabName}:`, err);
                     return { tabName, text: null, error: true };
                 });
@@ -1333,7 +1367,7 @@
 
             const attendancePromises = ATTENDANCE_TABS.map(tabName => {
                 const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ATTENDANCE_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tabName)}`;
-                return fetch(url).then(res => res.text()).then(txt => ({ tabName, text: txt })).catch(err => {
+                return fetchWithRetry(url).then(txt => ({ tabName, text: txt })).catch(err => {
                     console.error(`Error fetching attendance tab ${tabName}:`, err);
                     return { tabName, text: null, error: true };
                 });
@@ -1341,10 +1375,10 @@
 
             try {
                 const [personnelRes, estimateRes, term1Res, term2Res, ...allOtherResults] = await Promise.all([
-                    fetch(urlPersonnel).then(r => r.ok ? r.text() : null).catch(() => null),
-                    fetch(urlEstimate).then(r => r.ok ? r.text() : null).catch(() => null),
-                    fetch(urlTerm1).then(r => r.ok ? r.text() : null).catch(() => null),
-                    fetch(urlTerm2).then(r => r.ok ? r.text() : null).catch(() => null),
+                    fetchWithRetry(urlPersonnel).catch(() => null),
+                    fetchWithRetry(urlEstimate).catch(() => null),
+                    fetchWithRetry(urlTerm1).catch(() => null),
+                    fetchWithRetry(urlTerm2).catch(() => null),
                     ...evalPromises,
                     ...attendancePromises
                 ]);
@@ -2186,8 +2220,8 @@
                 const tr = `
                     <tr class="hover:bg-indigo-50/20 transition cursor-pointer text-center text-base font-bold" onclick="openPersonnelProfile(${p.id}, 'attendance')">
                         <td class="px-5 py-4 font-black text-slate-500">#${p.id}</td>
-                        <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg">${p.name}</td>
                         <td class="px-5 py-4"><span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold">หมู่ ${p.village}</span></td>
+                        <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg">${p.name}</td>
                         <td class="px-5 py-4">${statMorning}</td>
                         <td class="px-5 py-4">${statLateMorning}</td>
                         <td class="px-5 py-4">${statAfternoon}</td>
@@ -2308,20 +2342,20 @@
                 }
 
                 const breakDownText = `
-                    <span class="text-indigo-700 font-black text-xl">⛺ ${entry ? entry.jumwat : 0}</span>&nbsp;&nbsp;&nbsp; 
-                    <span class="text-blue-600 font-black text-xl">🧺 ${entry ? entry.takra : 0}</span>&nbsp;&nbsp;&nbsp; 
-                    <span class="text-cyan-600 font-black text-xl">🏰 ${entry ? entry.wiman : 0}</span>&nbsp;&nbsp;&nbsp; 
-                    <span class="text-amber-600 font-black text-xl">🧣 ${entry ? entry.raotak : 0}</span>&nbsp;&nbsp;&nbsp; 
-                    <span class="text-emerald-600 font-black text-xl">🧥 ${entry ? entry.homdong : 0}</span>
+                    <span class="text-indigo-700 font-black text-base">⛺ ${entry ? entry.jumwat : 0}</span>&nbsp;&nbsp;&nbsp; 
+                    <span class="text-blue-600 font-black text-base">🧺 ${entry ? entry.takra : 0}</span>&nbsp;&nbsp;&nbsp; 
+                    <span class="text-cyan-600 font-black text-base">🏰 ${entry ? entry.wiman : 0}</span>&nbsp;&nbsp;&nbsp; 
+                    <span class="text-amber-600 font-black text-base">🧣 ${entry ? entry.raotak : 0}</span>&nbsp;&nbsp;&nbsp; 
+                    <span class="text-emerald-600 font-black text-base">🧥 ${entry ? entry.homdong : 0}</span>
                 `;
 
                 const tr = `
                     <tr class="hover:bg-indigo-50/30 transition cursor-pointer text-center border-b border-slate-100 text-base font-bold" onclick="openPersonnelProfile(${p.id}, 'analytics')">
                         <td class="px-5 py-4 font-black text-slate-500">#${p.id}</td>
-                        <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg">${p.name}</td>
                         <td class="px-5 py-4"><span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold">หมู่ ${p.village}</span></td>
+                        <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg">${p.name}</td>
                         <td class="px-5 py-4 text-left font-mono">${breakDownText}</td>
-                        <td class="px-5 py-4 font-black text-indigo-800 bg-indigo-50/10 text-xl">${score} / ${maxCap}</td>
+                        <td class="px-5 py-4 font-black text-indigo-800 bg-indigo-50/10 text-2xl">${score} / ${maxCap}</td>
                     </tr>
                 `;
                 tbody.innerHTML += tr;
@@ -2330,6 +2364,8 @@
 
         function renderDirectoryView() {
             const noDataEl = document.getElementById('no-data-alert');
+            const badge = document.getElementById('personnel-count-badge');
+            if (badge) badge.innerText = `${filteredPersonnel.length} รายการ`;
             if (filteredPersonnel.length === 0) {
                 noDataEl.classList.remove('hidden');
                 document.getElementById('table-body').innerHTML = '';
@@ -2377,16 +2413,16 @@
 
                 const tr = `
                     <tr class="hover:bg-slate-50 transition cursor-pointer text-center text-base" onclick="openPersonnelProfile(${p.id})">
-                        <td class="px-5 py-4 whitespace-nowrap text-slate-500 font-bold text-left">${p.id}</td>
+                        <td class="px-5 py-4 whitespace-nowrap text-slate-500 font-black text-left">${p.id}</td>
                         <td class="px-5 py-4 whitespace-nowrap text-left">
                             <div class="w-10 h-10 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shadow-sm">
                                 <img src="${imgUrl}" alt="${p.name}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=60';">
                             </div>
                         </td>
-                        <td class="px-5 py-4 whitespace-nowrap font-extrabold text-slate-900 text-lg text-left">${p.name}</td>
                         <td class="px-5 py-4 whitespace-nowrap">
                             <span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold">หมู่ ${p.village}</span>
                         </td>
+                        <td class="px-5 py-4 whitespace-nowrap font-extrabold text-slate-900 text-lg text-left">${p.name}</td>
                         <td class="px-5 py-4 text-center font-bold text-slate-700 bg-amber-50/20">
                             <div class="font-black text-indigo-800 text-2xl leading-tight">${scoreSummary}</div>
                             <div class="text-xs font-mono mt-1">${scoreBreakdown}</div>
@@ -2955,9 +2991,9 @@
                 return `
                     <tr class="hover:bg-indigo-50/20 transition cursor-pointer text-center text-base" onclick="openTrainingEvalForm(${p.id})">
                         <td class="px-5 py-4 font-black text-slate-500">#${p.id}</td>
-                        <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg">${p.name || ''}</td>
                         <td class="px-5 py-4"><span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold">หมู่ ${p.village}</span></td>
-                        <td class="px-5 py-4 font-mono font-black text-indigo-900 text-lg">${evalData.total} / 100</td>
+                        <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg">${p.name || ''}</td>
+                        <td class="px-5 py-4 font-mono font-black text-indigo-900 text-2xl">${evalData.total} / 100</td>
                         <td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs md:text-sm font-black ${badgeStyle}">${badgeLabel}</span></td>
                     </tr>
                 `;
@@ -3136,9 +3172,10 @@
         }
 
         function toggleSandboxModal(show) {
+            // Sandbox popup notice disabled by request — always keep it hidden.
+            // Live data fetching itself is unaffected; this only suppresses the pop-up message.
             const modal = document.getElementById('sandbox-modal');
-            if (show) modal.classList.remove('hidden');
-            else modal.classList.add('hidden');
+            if (modal) modal.classList.add('hidden');
         }
 
         function toggleDetailModal(show) {
@@ -3307,14 +3344,14 @@
             const row = document.getElementById('grades-table-head-row');
             if (!row) return;
             const subjects = currentGradesSubjects();
-            const subjectHeaders = subjects.map(s => `<th class="sticky top-0 z-10 bg-slate-50 px-4 py-4 text-center font-extrabold">${s.label}</th>`).join('');
+            const subjectHeaders = subjects.map(s => `<th class="bg-slate-50 px-4 py-4 text-center font-extrabold">${s.label}</th>`).join('');
             row.innerHTML = `
-                <th class="sticky top-0 z-10 bg-slate-50 px-5 py-4 text-left w-14 font-extrabold">รหัส</th>
-                <th class="sticky top-0 z-10 bg-slate-50 px-5 py-4 text-center w-16 font-extrabold">หมู่</th>
-                <th class="sticky top-0 z-10 bg-slate-50 px-5 py-4 text-left font-extrabold">ชื่อ - ฉายา</th>
-                <th class="sticky top-0 z-10 bg-sky-50 px-5 py-4 text-center font-extrabold">เกรดเฉลี่ยรวม<br><span class="font-bold text-xs text-sky-800">(GPA ทั้งสองเทอม)</span></th>
+                <th class="bg-slate-50 px-5 py-4 text-left w-14 font-extrabold">รหัส</th>
+                <th class="bg-slate-50 px-5 py-4 text-center w-16 font-extrabold">หมู่</th>
+                <th class="bg-slate-50 px-5 py-4 text-left font-extrabold">ชื่อ - ฉายา</th>
+                <th class="bg-sky-50 px-5 py-4 text-center font-extrabold">เกรดเฉลี่ยรวม<br><span class="font-bold text-xs text-sky-800">(GPA ทั้งสองเทอม)</span></th>
                 ${subjectHeaders}
-                <th class="sticky top-0 z-10 bg-sky-50 px-5 py-4 text-center font-extrabold">เกรดเฉลี่ย (GPA)</th>
+                <th class="bg-sky-50 px-5 py-4 text-center font-extrabold">เกรดเฉลี่ย (GPA)</th>
             `;
         }
 
@@ -3377,7 +3414,7 @@
 
                 const combinedGpa = computeCombinedGpa(p);
                 const combinedGpaCell = combinedGpa != null
-                    ? `<div class="font-black text-sky-700 text-xl leading-tight">${combinedGpa.toFixed(2)}</div>`
+                    ? `<div class="font-black text-sky-700 text-2xl leading-tight">${combinedGpa.toFixed(2)}</div>`
                     : `<span class="text-slate-400 text-sm font-semibold">ยังไม่มีข้อมูล</span>`;
 
                 const tr = `
