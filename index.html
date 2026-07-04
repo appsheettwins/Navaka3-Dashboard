@@ -451,23 +451,25 @@
         <!-- ==================== TAB 4: TRAINING-PERIOD EVALUATION (แบบประเมินพระนวกะช่วงอบรม) ==================== -->
         <div id="tab-trainingeval" class="hidden space-y-6">
 
-            <!-- Filter / search panel (Rearranged: Status Toggle on Left, Villages in Middle, Search on Far Right) -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-center">
-                    <!-- Training Eval Status Filter with counts (Left) -->
-                    <div id="trainingeval-status-container" class="flex gap-2.5 flex-wrap">
+            <!-- Filter / search panel (single row, balanced like the ผลการเรียน tab) -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3">
+                <div class="flex flex-col md:flex-row md:items-center gap-4">
+                    <!-- Training Eval Status Filter with counts -->
+                    <div id="trainingeval-status-container" class="flex gap-2.5 flex-shrink-0">
                         <!-- Injected dynamically (All, Pass, Fail with count) -->
                     </div>
 
-                    <!-- Village buttons (Middle) -->
-                    <div id="trainingeval-village-container" class="flex gap-2.5 flex-wrap justify-start lg:justify-center">
+                    <!-- Village buttons -->
+                    <div id="trainingeval-village-container" class="flex gap-2.5 flex-wrap flex-1 min-w-0">
                         <!-- Injected dynamically -->
                     </div>
 
-                    <!-- Search Input (Far Right) -->
-                    <div class="relative w-full">
+                    <!-- Search Input -->
+                    <div class="w-full md:w-80 flex-shrink-0">
+                    <div class="relative">
                         <input type="text" id="trainingeval-search-input" oninput="renderTrainingEvalDirectory()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:ring-2 focus:ring-indigo-500 outline-none bg-white font-bold">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-4 text-slate-400 text-base"></i>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -2857,8 +2859,8 @@
                     ? "bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm" 
                     : "bg-rose-50 text-rose-700 border border-rose-200 shadow-sm";
                 const badgeLabel = evalData.passed 
-                    ? `<i class="fa-solid fa-circle-check"></i> ผ่านเกณฑ์ (${evalData.total} คะแนน)` 
-                    : `<i class="fa-solid fa-triangle-exclamation"></i> ไม่ผ่านเกณฑ์ (${evalData.total} คะแนน)`;
+                    ? `<i class="fa-solid fa-circle-check"></i> ผ่านเกณฑ์` 
+                    : `<i class="fa-solid fa-triangle-exclamation"></i> ไม่ผ่านเกณฑ์`;
 
                 return `
                     <tr class="hover:bg-indigo-50/20 transition cursor-pointer text-center text-base" onclick="openTrainingEvalForm(${p.id})">
