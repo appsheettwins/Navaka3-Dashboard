@@ -6,6 +6,10 @@
     <title>สรุปสถิติและประเมินผลการอบรม</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Enable class-based dark mode (toggled via the moon/sun button)
+        tailwind.config = { darkMode: 'class' };
+    </script>
     <!-- Google Fonts (Sarabun) -->
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome for premium vector icons -->
@@ -35,26 +39,61 @@
             scrollbar-width: none;
         }
 
-        /* Locked Layout structure when scrolling down */
-        .sticky-nav-locked {
-            position: sticky;
-            top: 0;
-            z-index: 50;
+        /* Sidebar drawer transition (mobile) */
+        #sidebar {
+            transition: transform 0.25s ease;
         }
-        .sticky-tabs-locked {
-            position: sticky;
-            top: 4rem; /* h-16 which matches the navigation bar height */
-            z-index: 40;
+        #sidebar-overlay {
+            transition: opacity 0.2s ease;
         }
+
+        /* Smooth theme switching */
+        body, .bg-white, .bg-slate-50, .bg-slate-100, .bg-slate-200 {
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        /* ==================== DARK MODE (โหมดกลางคืน) ==================== */
+        html.dark body {
+            background-color: #0b1220;
+            color: #e2e8f0;
+        }
+        html.dark .bg-white { background-color: #131c2e !important; }
+        html.dark .bg-slate-50 { background-color: #0f1729 !important; }
+        html.dark .bg-slate-50\/50 { background-color: rgba(15,23,41,0.5) !important; }
+        html.dark .bg-slate-100 { background-color: #1a2438 !important; }
+        html.dark .bg-slate-100\/95 { background-color: rgba(26,36,56,0.95) !important; }
+        html.dark .bg-slate-200 { background-color: #24304a !important; }
+        html.dark .bg-slate-950 { background-color: #05070d !important; }
+        html.dark .border-slate-100 { border-color: #232f47 !important; }
+        html.dark .border-slate-200 { border-color: #2b3855 !important; }
+        html.dark .border-slate-300 { border-color: #34415f !important; }
+        html.dark .text-slate-200 { color: #cbd5e1 !important; }
+        html.dark .text-slate-300 { color: #94a3b8 !important; }
+        html.dark .text-slate-400 { color: #7d8bab !important; }
+        html.dark .text-slate-500 { color: #9aa8c4 !important; }
+        html.dark .text-slate-600 { color: #b6c2da !important; }
+        html.dark .text-slate-700 { color: #cbd5e1 !important; }
+        html.dark .text-slate-800 { color: #e2e8f0 !important; }
+        html.dark .text-slate-900 { color: #f1f5f9 !important; }
+        html.dark .text-slate-950 { color: #ffffff !important; }
+        html.dark .custom-scrollbar::-webkit-scrollbar-track { background: #0f1729; }
+        html.dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #34415f; }
+        html.dark input, html.dark select, html.dark textarea {
+            background-color: #131c2e;
+            color: #e2e8f0;
+            border-color: #2b3855;
+        }
+        html.dark input::placeholder { color: #64748b; }
 
         /* Print stylesheet optimization */
         @media print {
+            html.dark body,
             body {
                 background-color: white !important;
                 color: black !important;
             }
             /* Hide non-printable items when triggering printer */
-            nav, footer, .sticky, button, .print\:hidden, #detail-modal, #sandbox-modal {
+            aside, #sidebar-overlay, #mobile-topbar, footer, .sticky, button, .print\:hidden, #detail-modal, #sandbox-modal {
                 display: none !important;
             }
             /* Reset modal positioning to print nicely in full screen */
@@ -92,55 +131,76 @@
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col text-sm md:text-base">
 
-    <!-- Top Nav Bar - Locked position when scrolling -->
-    <nav class="bg-indigo-950 text-white shadow-lg sticky-nav-locked h-16 flex items-center">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="p-2.5 bg-indigo-900 rounded-lg border border-indigo-800">
-                        <i class="fa-solid fa-medal text-2xl text-amber-400"></i>
-                    </div>
-                    <div>
-                        <span class="font-extrabold text-xl md:text-2xl block leading-tight">สรุปสถิติและประเมินผลการอบรม</span>
-                        <span class="text-xs md:text-sm text-indigo-200 block">โครงการอบรมพระนวกะ 3 เส้นทางวิสามัญสาขาและพุทธบุตรอาสา</span>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <span id="sync-status" class="inline-flex items-center px-3.5 py-1 rounded-full text-xs md:text-sm font-bold bg-yellow-100 text-yellow-800">
-                        <span class="w-2.5 h-2.5 mr-2 bg-yellow-400 rounded-full animate-ping"></span>
-                        กำลังเชื่อมคลาวด์...
-                    </span>
-                    <button onclick="fetchAllData()" class="bg-indigo-800 hover:bg-indigo-700 px-4 py-2 rounded-lg text-sm md:text-base font-bold transition flex items-center gap-2 active:scale-95">
-                        <i class="fa-solid fa-rotate-right"></i> ดึงข้อมูล
-                    </button>
-                </div>
+    <!-- Left Sidebar Navigation: desktop-fixed, mobile slide-in drawer -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-indigo-950 text-white flex flex-col shadow-2xl -translate-x-full md:translate-x-0 print:hidden">
+        <!-- Brand / Title -->
+        <div class="flex items-center gap-3 px-5 py-5 border-b border-indigo-900/80 shrink-0">
+            <div class="p-2.5 bg-indigo-900 rounded-lg border border-indigo-800 shrink-0">
+                <i class="fa-solid fa-medal text-2xl text-amber-400"></i>
             </div>
+            <div class="min-w-0">
+                <span class="font-extrabold text-base leading-tight block">สรุปสถิติและประเมินผลการอบรม</span>
+                <span class="text-xs text-indigo-300 block leading-snug mt-0.5">โครงการอบรมพระนวกะ 3 เส้นทางวิสามัญสาขาและพุทธบุตรอาสา</span>
+            </div>
+            <button onclick="toggleSidebar(false)" class="md:hidden ml-auto text-indigo-300 hover:text-white shrink-0 p-1">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
         </div>
-    </nav>
 
-    <!-- Sticky Tab Menu Bar - flush directly beneath the navbar, no gap -->
-    <div class="sticky-tabs-locked bg-slate-100/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex space-x-3 overflow-x-auto no-scrollbar">
-            <button onclick="switchTab('personnel')" id="tab-personnel-btn" class="text-slate-600 hover:text-indigo-600 px-5 py-3 rounded-lg text-base md:text-lg font-bold flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-address-book"></i> สรุปประเมิน
+        <!-- Navigation links (moved here from the top bar for a calmer, roomier header) -->
+        <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 py-4 space-y-1.5">
+            <button onclick="switchTab('personnel')" id="tab-personnel-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition">
+                <i class="fa-solid fa-address-book w-5 text-center"></i> สรุปประเมิน
             </button>
-            <button onclick="switchTab('analytics')" id="tab-analytics-btn" class="bg-indigo-600 text-white shadow-sm px-5 py-3 rounded-lg text-base md:text-lg font-bold flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-chart-pie"></i> ความเป็นอยู่
+            <button onclick="switchTab('analytics')" id="tab-analytics-btn" class="w-full text-left bg-indigo-600 text-white shadow-sm px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition">
+                <i class="fa-solid fa-chart-pie w-5 text-center"></i> ความเป็นอยู่
             </button>
-            <button onclick="switchTab('attendance')" id="tab-attendance-btn" class="text-slate-600 hover:text-indigo-600 px-5 py-3 rounded-lg text-base md:text-lg font-bold flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-clipboard-user"></i> เช็คชื่อ
+            <button onclick="switchTab('attendance')" id="tab-attendance-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition">
+                <i class="fa-solid fa-clipboard-user w-5 text-center"></i> เช็คชื่อ
             </button>
-            <button onclick="switchTab('grades')" id="tab-grades-btn" class="text-slate-600 hover:text-indigo-600 px-5 py-3 rounded-lg text-base md:text-lg font-bold flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-graduation-cap"></i> ผลการเรียน
+            <button onclick="switchTab('grades')" id="tab-grades-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition">
+                <i class="fa-solid fa-graduation-cap w-5 text-center"></i> ผลการเรียน
             </button>
-            <button onclick="switchTab('trainingeval')" id="tab-trainingeval-btn" class="text-slate-600 hover:text-indigo-600 px-5 py-3 rounded-lg text-base md:text-lg font-bold flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-scroll"></i> คะแนนอบรม
+            <button onclick="switchTab('trainingeval')" id="tab-trainingeval-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition">
+                <i class="fa-solid fa-scroll w-5 text-center"></i> คะแนนอบรม
             </button>
-            <button onclick="switchTab('sources')" id="tab-sources-btn" class="text-slate-600 hover:text-indigo-600 px-5 py-3 rounded-lg text-base md:text-lg font-bold flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-circle-nodes"></i> แหล่งข้อมูล
+            <button onclick="switchTab('sources')" id="tab-sources-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition">
+                <i class="fa-solid fa-circle-nodes w-5 text-center"></i> แหล่งข้อมูล
+            </button>
+        </nav>
+
+        <!-- Sync status, refresh, and light/dark toggle -->
+        <div class="px-4 py-4 border-t border-indigo-900/80 space-y-3 shrink-0">
+            <span id="sync-status" class="w-full inline-flex items-center justify-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
+                <span class="w-2.5 h-2.5 mr-2 bg-yellow-400 rounded-full animate-ping"></span>
+                กำลังเชื่อมคลาวด์...
+            </span>
+            <button onclick="fetchAllData()" class="w-full bg-indigo-800 hover:bg-indigo-700 px-4 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 active:scale-95">
+                <i class="fa-solid fa-rotate-right"></i> ดึงข้อมูล
+            </button>
+            <button id="theme-toggle-btn" onclick="toggleDarkMode()" class="w-full bg-indigo-900 hover:bg-indigo-800 border border-indigo-800 px-4 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 active:scale-95">
+                <i id="theme-toggle-icon" class="fa-solid fa-moon text-amber-300"></i>
+                <span id="theme-toggle-label">โหมดกลางคืน</span>
             </button>
         </div>
-    </div>
+    </aside>
+
+    <!-- Mobile drawer backdrop -->
+    <div id="sidebar-overlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden print:hidden"></div>
+
+    <!-- Content column, offset by the sidebar's width on desktop -->
+    <div class="flex flex-col min-h-screen w-full md:pl-72">
+
+        <!-- Slim mobile top bar: only the hamburger + title + quick theme toggle (frees up space on desktop) -->
+        <div id="mobile-topbar" class="md:hidden sticky top-0 z-20 bg-indigo-950 text-white h-14 flex items-center gap-3 px-4 shadow-lg print:hidden">
+            <button onclick="toggleSidebar(true)" class="text-white shrink-0 p-1">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            <span class="font-bold text-sm truncate flex-1">สรุปสถิติและประเมินผลการอบรม</span>
+            <button onclick="toggleDarkMode()" class="text-white shrink-0 p-1">
+                <i id="theme-toggle-icon-mobile" class="fa-solid fa-moon text-amber-300 text-lg"></i>
+            </button>
+        </div>
 
     <!-- Main Content Container -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
@@ -963,6 +1023,8 @@
     <footer class="bg-white border-t border-slate-200 py-5 text-center mt-auto print:hidden">
         <p class="text-xs md:text-sm text-slate-400 font-semibold">© 2026 สรุปสถิติและประเมินผลการอบรม โครงการอบรมพระนวกะ 3 เส้นทางวิสามัญสาขาและพุทธบุตรอาสา . พัฒนาโดยพระบริพัตร ฐิโตภาโส </p>
     </footer>
+
+    </div> <!-- /content column offset by sidebar -->
 
     <script>
         const SPREADSHEET_PERSONAL_ID = '1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous';
@@ -3040,12 +3102,37 @@
                 const btn = document.getElementById(`tab-${t}-btn`);
                 if (t === tabId) {
                     element.classList.remove('hidden');
-                    btn.className = "bg-indigo-600 text-white shadow-sm px-5 py-3 rounded-lg text-base md:text-lg font-black flex items-center gap-2 transition whitespace-nowrap";
+                    btn.className = "w-full text-left bg-indigo-600 text-white shadow-sm px-4 py-3 rounded-lg text-base font-black flex items-center gap-3 transition";
                 } else {
                     element.classList.add('hidden');
-                    btn.className = "text-slate-600 hover:text-indigo-600 px-5 py-3 rounded-lg text-base md:text-lg font-bold flex items-center gap-2 transition whitespace-nowrap";
+                    btn.className = "w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition";
                 }
             });
+            // Auto-close the drawer on mobile after picking a section
+            if (window.innerWidth < 768) toggleSidebar(false);
+        }
+
+        function toggleSidebar(show) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (!sidebar || !overlay) return;
+            if (show) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-toggle-icon');
+            const iconMobile = document.getElementById('theme-toggle-icon-mobile');
+            const label = document.getElementById('theme-toggle-label');
+            if (icon) icon.className = isDark ? 'fa-solid fa-sun text-amber-300' : 'fa-solid fa-moon text-amber-300';
+            if (iconMobile) iconMobile.className = isDark ? 'fa-solid fa-sun text-amber-300 text-lg' : 'fa-solid fa-moon text-amber-300 text-lg';
+            if (label) label.textContent = isDark ? 'โหมดกลางวัน' : 'โหมดกลางคืน';
         }
 
         function toggleSandboxModal(show) {
