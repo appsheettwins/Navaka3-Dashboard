@@ -152,6 +152,9 @@
             <button onclick="switchTab('personnel')" id="tab-personnel-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
                 <i class="fa-solid fa-address-book w-4 text-center text-sm"></i> สรุปประเมิน
             </button>
+            <button onclick="switchTab('novice')" id="tab-novice-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
+                <i class="fa-solid fa-id-card w-4 text-center text-sm"></i> ข้อมูลพระนวกะ
+            </button>
             <button onclick="switchTab('analytics')" id="tab-analytics-btn" class="w-full text-left bg-indigo-600 text-white shadow-sm px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
                 <i class="fa-solid fa-chart-pie w-4 text-center text-sm"></i> ความเป็นอยู่
             </button>
@@ -377,6 +380,54 @@
                     <i class="fa-solid fa-magnifying-glass text-slate-200 text-5xl mb-4"></i>
                     <p class="text-slate-500 text-base font-bold">ไม่พบข้อมูลตามเงื่อนไขที่เลือกสืบค้น</p>
                     <button onclick="resetFilters()" class="mt-3 text-indigo-600 hover:text-indigo-800 text-base font-bold underline">ล้างตัวกรอง</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== TAB: ข้อมูลพระนวกะ (NOVICE INFO) ==================== -->
+        <div id="tab-novice" class="hidden space-y-6">
+
+            <!-- Filter / search panel -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3">
+                <div class="flex flex-col md:flex-row md:items-center gap-4">
+                    <!-- Village buttons -->
+                    <div id="novice-village-container" class="flex gap-2.5 flex-nowrap overflow-x-auto no-scrollbar scroll-smooth flex-1 min-w-0">
+                        <!-- Injected dynamically -->
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="w-full md:w-80 flex-shrink-0">
+                        <div class="relative">
+                            <input type="text" id="novice-search-input" oninput="applyNoviceFilters()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:ring-2 focus:ring-indigo-500 outline-none bg-white font-bold">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-4 text-slate-400 text-base"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Directory -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-id-card text-indigo-600"></i> ทำเนียบข้อมูลพระนวกะ
+                        </h3>
+                        <p class="text-xs md:text-sm text-slate-500 mt-1">ข้อมูลประวัติส่วนบุคคล การอุปสมบท การศึกษา และบทสัมภาษณ์ของพระนวกะแต่ละรูป</p>
+                    </div>
+                    <span id="novice-count-badge" class="text-sm text-indigo-700 bg-indigo-50 px-3.5 py-1.5 rounded-lg font-bold">
+                        - รายการ
+                    </span>
+                </div>
+
+                <div id="novice-directory-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    <!-- Dynamic cards -->
+                </div>
+
+                <!-- Empty State alert -->
+                <div id="novice-no-data-alert" class="hidden text-center py-12">
+                    <i class="fa-solid fa-magnifying-glass text-slate-200 text-5xl mb-4"></i>
+                    <p class="text-slate-500 text-base font-bold">ไม่พบข้อมูลตามเงื่อนไขที่เลือกสืบค้น</p>
                 </div>
             </div>
 
@@ -933,6 +984,88 @@
         </div>
     </div>
 
+    <!-- Novice Info Profile Modal (ข้อมูลพระนวกะ) -->
+    <div id="novice-modal" class="fixed inset-0 bg-slate-950 bg-opacity-60 z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full relative border border-slate-100 flex flex-col max-h-[95vh]">
+
+            <!-- Navigation arrows -->
+            <button id="novice-nav-prev" onclick="navigateNoviceProfile(-1)" title="รายการก่อนหน้า"
+                class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-500 hover:text-indigo-600 hover:border-indigo-300 hover:shadow-lg active:scale-90 transition disabled:opacity-0 disabled:pointer-events-none">
+                <i class="fa-solid fa-chevron-left text-base"></i>
+            </button>
+            <button id="novice-nav-next" onclick="navigateNoviceProfile(1)" title="รายการถัดไป"
+                class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-20 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-500 hover:text-indigo-600 hover:border-indigo-300 hover:shadow-lg active:scale-90 transition disabled:opacity-0 disabled:pointer-events-none">
+                <i class="fa-solid fa-chevron-right text-base"></i>
+            </button>
+
+            <!-- Modal toolbar -->
+            <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100">
+                <span class="text-sm font-black text-slate-500 flex items-center gap-1.5">
+                    <i class="fa-solid fa-id-card text-indigo-600"></i> ข้อมูลพระนวกะ
+                </span>
+                <button onclick="toggleNoviceModal(false)" class="text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-2 w-9 h-9 flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="overflow-y-auto custom-scrollbar p-6 space-y-5 text-slate-800 bg-white">
+
+                <!-- Identity row -->
+                <div class="flex flex-col sm:flex-row gap-4 items-center sm:items-start pb-5 border-b border-slate-200">
+                    <div class="w-28 h-28 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0 shadow-sm">
+                        <img id="novice-modal-img" src="" alt="avatar" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-center sm:text-left space-y-1.5">
+                        <span id="novice-field-village" class="inline-flex px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-black">หมู่ -</span>
+                        <h3 id="novice-field-name" class="text-lg md:text-xl font-extrabold text-slate-900 leading-tight">-</h3>
+                        <p class="text-xs md:text-sm text-slate-500 font-bold">เลขที่ <span id="novice-field-id">-</span> &bull; อายุ <span id="novice-field-age">-</span> ปี</p>
+                    </div>
+                </div>
+
+                <!-- ข้อมูลการอุปสมบท -->
+                <div class="bg-amber-50 border border-amber-100 rounded-xl p-4 space-y-3">
+                    <h4 class="text-sm font-black text-amber-700 flex items-center gap-2"><i class="fa-solid fa-om"></i> ข้อมูลการอุปสมบท</h4>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div><p class="text-xs text-amber-700/70 font-bold mb-0.5">วันเดือนปีบวช</p><p id="novice-field-ordinationdate" class="font-extrabold text-slate-800">-</p></div>
+                        <div><p class="text-xs text-amber-700/70 font-bold mb-0.5">เวลาบวช</p><p id="novice-field-ordinationtime" class="font-extrabold text-slate-800">-</p></div>
+                        <div><p class="text-xs text-amber-700/70 font-bold mb-0.5">พรรษา</p><p id="novice-field-phansa" class="font-extrabold text-slate-800">-</p></div>
+                        <div><p class="text-xs text-amber-700/70 font-bold mb-0.5">โครงการบวช</p><p id="novice-field-project" class="font-extrabold text-slate-800">-</p></div>
+                    </div>
+                </div>
+
+                <!-- วุฒิการศึกษา -->
+                <div class="bg-sky-50 border border-sky-100 rounded-xl p-4 space-y-2">
+                    <h4 class="text-sm font-black text-sky-700 flex items-center gap-2"><i class="fa-solid fa-graduation-cap"></i> วุฒิการศึกษา</h4>
+                    <p id="novice-field-education" class="font-extrabold text-slate-800 text-sm">-</p>
+                </div>
+
+                <!-- ข้อมูลร่างกาย -->
+                <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-4 space-y-3">
+                    <h4 class="text-sm font-black text-emerald-700 flex items-center gap-2"><i class="fa-solid fa-ruler-vertical"></i> ข้อมูลร่างกาย</h4>
+                    <div class="grid grid-cols-3 gap-3 text-sm">
+                        <div><p class="text-xs text-emerald-700/70 font-bold mb-0.5">ส่วนสูง</p><p id="novice-field-height" class="font-extrabold text-slate-800">-</p></div>
+                        <div><p class="text-xs text-emerald-700/70 font-bold mb-0.5">น้ำหนัก</p><p id="novice-field-weight" class="font-extrabold text-slate-800">-</p></div>
+                        <div><p class="text-xs text-emerald-700/70 font-bold mb-0.5">รอยสัก</p><p id="novice-field-tattoo" class="font-extrabold text-slate-800">-</p></div>
+                    </div>
+                </div>
+
+                <!-- บทสัมภาษณ์ -->
+                <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 space-y-2">
+                    <h4 class="text-sm font-black text-indigo-700 flex items-center gap-2"><i class="fa-solid fa-quote-left"></i> บทสัมภาษณ์</h4>
+                    <p id="novice-field-interview" class="text-slate-800 text-sm leading-relaxed whitespace-pre-line">-</p>
+                </div>
+
+            </div>
+
+            <div class="pt-3 pb-4 px-5 border-t border-slate-100 flex justify-end">
+                <button onclick="toggleNoviceModal(false)" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-extrabold rounded-lg shadow-sm transition">
+                    ปิดหน้าต่างนี้
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Sandbox Informational Modal -->
     <div id="sandbox-modal" class="fixed inset-0 bg-slate-950 bg-opacity-65 z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative border border-slate-100">
@@ -964,6 +1097,7 @@
     <script>
         const SPREADSHEET_PERSONAL_ID = '1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous';
         const TARGET_SHEET_NAME_PERSONAL = 'DATA1';
+        const TARGET_SHEET_NAME_NOVICE = 'DATA2';
         const TARGET_SHEET_NAME_ESTIMATE = 'Estimate';
         const TARGET_SHEET_NAME_TERM1 = 'Term1';
 
@@ -1098,6 +1232,12 @@
         let rawAttendance = []; 
         let availableDates = new Set();
         let trainingEvalOffset = 0; // Horizontal shift variable for page rendering
+
+        // --- NOVICE INFO (ข้อมูลพระนวกะ) ---
+        let rawNovice = [];
+        let filteredNovice = [];
+        let noviceSelectedVillage = '';
+        let currentNoviceId = null;
 
         // --- TRAINING-PERIOD EVALUATION FORM (แบบประเมินพระนวกะช่วงอบรม) ---
         const TRAINING_EVAL_TOPICS = [
@@ -1267,6 +1407,7 @@
             statusEl.className = "inline-flex items-center px-3.5 py-1 rounded-full text-xs md:text-sm font-bold bg-yellow-100 text-yellow-800";
 
             const urlPersonnel = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_PERSONAL}`;
+            const urlNovice = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_NOVICE}`;
             const urlEstimate = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_ESTIMATE}`;
             const urlTerm1 = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_TERM1}`;
             const urlTerm2 = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_TERM2}`;
@@ -1288,8 +1429,9 @@
             });
 
             try {
-                const [personnelRes, estimateRes, term1Res, term2Res, ...allOtherResults] = await Promise.all([
+                const [personnelRes, noviceRes, estimateRes, term1Res, term2Res, ...allOtherResults] = await Promise.all([
                     fetchWithRetry(urlPersonnel).catch(() => null),
+                    fetchWithRetry(urlNovice).catch(() => null),
                     fetchWithRetry(urlEstimate).catch(() => null),
                     fetchWithRetry(urlTerm1).catch(() => null),
                     fetchWithRetry(urlTerm2).catch(() => null),
@@ -1300,6 +1442,8 @@
                 if (!personnelRes) throw new Error("Could not acquire personnel records.");
 
                 rawPersonnel = parsePersonnelJSON(personnelRes);
+
+                rawNovice = noviceRes ? parseNoviceJSON(noviceRes) : [];
                 
                 let estimateMap = {};
                 if (estimateRes) {
@@ -1346,6 +1490,7 @@
                 console.warn("API direct linking failed. Deploying beautiful simulated sandbox database.", err);
                 rawPersonnel = [...mockPersonnel];
                 rawAttendance = [...mockAttendanceRecords];
+                rawNovice = [];
                 compileData(mockPersonnel, mockEvalSheets, mockAttendanceRecords, {}, {}, {}, true);
 
                 statusEl.innerHTML = `<span class="w-2.5 h-2.5 mr-2 bg-amber-500 rounded-full"></span> โหมดออฟไลน์จำลอง`;
@@ -1361,6 +1506,75 @@
             renderTrainingEvalDirectory();
             initGradesFilterOptions();
             applyGradesFilters();
+            initNoviceFilterOptions();
+            applyNoviceFilters();
+        }
+
+        function parseNoviceJSON(responseText) {
+            const jsonString = responseText.substring(responseText.indexOf('{'), responseText.lastIndexOf('}') + 1);
+            const json = JSON.parse(jsonString);
+            const rows = json.table.rows;
+
+            return rows.map(r => {
+                const cells = r.c;
+                const valOf = (idx) => {
+                    if (cells && cells[idx]) {
+                        return cells[idx].v !== null && cells[idx].v !== undefined ? cells[idx].v : (cells[idx].f || '');
+                    }
+                    return '';
+                };
+                // Prefer the sheet's own formatted text for date/time-like cells (handles gviz Date() serials)
+                const fValOf = (idx) => {
+                    if (cells && cells[idx]) {
+                        if (cells[idx].f !== undefined && cells[idx].f !== null && cells[idx].f !== '') return cells[idx].f;
+                        if (cells[idx].v !== null && cells[idx].v !== undefined) return String(cells[idx].v);
+                    }
+                    return '';
+                };
+
+                const idVal = parseInt(valOf(0)) || 0;
+                const villageVal = String(valOf(1) || '').trim();
+                const imageVal = String(valOf(2) || '').trim();
+                const firstNameVal = String(valOf(3) || '').trim();
+                const honorificVal = String(valOf(4) || '').trim();
+                const lastNameVal = String(valOf(5) || '').trim();
+                const ageVal = String(valOf(6) || '').trim();
+                const ordinationDateVal = fValOf(7);
+                const ordinationTimeVal = fValOf(8);
+                const phansaVal = String(valOf(9) || '').trim();
+                const ordinationProjectVal = String(valOf(10) || '').trim();
+                const educationVal = String(valOf(11) || '').trim();
+                const heightVal = String(valOf(12) || '').trim();
+                const weightVal = String(valOf(13) || '').trim();
+                const tattooVal = String(valOf(14) || '').trim();
+                const interviewVal = String(valOf(15) || '').trim();
+
+                let fullName = '';
+                if (firstNameVal) {
+                    const hasPrefix = firstNameVal.startsWith('พระ');
+                    fullName = `${hasPrefix ? '' : 'พระ'}${firstNameVal} ${honorificVal} ${lastNameVal}`.trim().replace(/\s+/g, ' ');
+                }
+
+                return {
+                    id: idVal,
+                    village: villageVal,
+                    image: imageVal,
+                    firstname: firstNameVal,
+                    honorific: honorificVal,
+                    lastname: lastNameVal,
+                    name: fullName,
+                    age: ageVal,
+                    ordinationDate: ordinationDateVal,
+                    ordinationTime: ordinationTimeVal,
+                    phansa: phansaVal,
+                    ordinationProject: ordinationProjectVal,
+                    education: educationVal,
+                    height: heightVal,
+                    weight: weightVal,
+                    tattoo: tattooVal,
+                    interview: interviewVal
+                };
+            }).filter(item => item.id && item.name);
         }
 
         function parsePersonnelJSON(responseText) {
@@ -3006,7 +3220,7 @@
         }
 
         function switchTab(tabId) {
-            const tabs = ['analytics', 'attendance', 'personnel', 'grades', 'trainingeval', 'sources'];
+            const tabs = ['analytics', 'attendance', 'personnel', 'novice', 'grades', 'trainingeval', 'sources'];
             tabs.forEach(t => {
                 const element = document.getElementById(`tab-${t}`);
                 const btn = document.getElementById(`tab-${t}-btn`);
@@ -3345,6 +3559,145 @@
             } else {
                 content.classList.remove('hidden');
                 icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // ==================== NOVICE INFO (ข้อมูลพระนวกะ) ====================
+
+        function initNoviceFilterOptions() {
+            const villageSet = new Set();
+            rawNovice.forEach(item => {
+                if (item.village) villageSet.add(item.village);
+            });
+            const sortedVillages = Array.from(villageSet).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+            renderNoviceVillageButtons(sortedVillages);
+        }
+
+        function renderNoviceVillageButtons(villageList) {
+            const container = document.getElementById('novice-village-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const isAllActive = noviceSelectedVillage === '';
+            container.innerHTML += `<button onclick="selectNoviceVillage('')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isAllActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">ทั้งหมดทุกหมู่</button>`;
+
+            villageList.forEach(v => {
+                const isActive = noviceSelectedVillage === v;
+                container.innerHTML += `<button onclick="selectNoviceVillage('${v}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">หมู่&nbsp;${v}</button>`;
+            });
+        }
+
+        function selectNoviceVillage(v) {
+            noviceSelectedVillage = v;
+            initNoviceFilterOptions();
+            applyNoviceFilters();
+        }
+
+        function applyNoviceFilters() {
+            const searchInput = document.getElementById('novice-search-input');
+            const search = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+            let list = rawNovice.filter(p => {
+                const matchVillage = !noviceSelectedVillage || p.village === noviceSelectedVillage;
+                const matchSearch = !search ||
+                    (p.name && p.name.toLowerCase().includes(search)) ||
+                    (p.honorific && p.honorific.toLowerCase().includes(search));
+                return matchVillage && matchSearch;
+            });
+
+            list.sort((a, b) => (a.id || 0) - (b.id || 0));
+            filteredNovice = list;
+
+            renderNoviceDirectory(list);
+        }
+
+        function renderNoviceDirectory(list) {
+            const grid = document.getElementById('novice-directory-grid');
+            const noDataEl = document.getElementById('novice-no-data-alert');
+            const countBadge = document.getElementById('novice-count-badge');
+            if (!grid) return;
+
+            if (countBadge) countBadge.innerText = `${list.length} รายการ`;
+
+            if (!list.length) {
+                grid.innerHTML = '';
+                grid.classList.add('hidden');
+                if (noDataEl) noDataEl.classList.remove('hidden');
+                return;
+            }
+            grid.classList.remove('hidden');
+            if (noDataEl) noDataEl.classList.add('hidden');
+
+            grid.innerHTML = list.map(p => {
+                const imgUrl = parseDriveImageUrl(p.image);
+                return `
+                    <div onclick="openNoviceProfile(${p.id})" class="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-indigo-300 transition cursor-pointer overflow-hidden group">
+                        <div class="aspect-square w-full bg-slate-100 overflow-hidden">
+                            <img src="${imgUrl}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544717305-2782549b5136?w=200&auto=format&fit=crop&q=60';">
+                        </div>
+                        <div class="p-4 space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-black text-slate-400">${p.id}</span>
+                                <span class="inline-flex px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-black whitespace-nowrap">หมู่&nbsp;${p.village || '-'}</span>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900 text-base leading-snug line-clamp-2">${p.name}</h4>
+                            <p class="text-xs text-slate-500 font-bold"><i class="fa-solid fa-cake-candles text-amber-500 mr-1"></i>อายุ ${p.age || '-'} ปี</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openNoviceProfile(id) {
+            const p = rawNovice.find(x => x.id === id);
+            if (!p) return;
+            currentNoviceId = id;
+
+            document.getElementById('novice-modal-img').src = parseDriveImageUrl(p.image);
+            document.getElementById('novice-field-village').innerText = `หมู่ ${p.village || '-'}`;
+            document.getElementById('novice-field-name').innerText = p.name || '-';
+            document.getElementById('novice-field-id').innerText = p.id;
+            document.getElementById('novice-field-age').innerText = p.age || '-';
+            document.getElementById('novice-field-ordinationdate').innerText = p.ordinationDate || '-';
+            document.getElementById('novice-field-ordinationtime').innerText = p.ordinationTime || '-';
+            document.getElementById('novice-field-phansa').innerText = p.phansa || '-';
+            document.getElementById('novice-field-project').innerText = p.ordinationProject || '-';
+            document.getElementById('novice-field-education').innerText = p.education || '-';
+            document.getElementById('novice-field-height').innerText = p.height ? `${p.height} ซม.` : '-';
+            document.getElementById('novice-field-weight').innerText = p.weight ? `${p.weight} กก.` : '-';
+            document.getElementById('novice-field-tattoo').innerText = p.tattoo || 'ไม่มี';
+            document.getElementById('novice-field-interview').innerText = p.interview || 'ไม่มีข้อมูลบทสัมภาษณ์';
+
+            updateNoviceNavButtons();
+            toggleNoviceModal(true);
+        }
+
+        function updateNoviceNavButtons() {
+            const prevBtn = document.getElementById('novice-nav-prev');
+            const nextBtn = document.getElementById('novice-nav-next');
+            if (!prevBtn || !nextBtn) return;
+            const list = filteredNovice.length ? filteredNovice : rawNovice;
+            const idx = list.findIndex(x => x.id === currentNoviceId);
+            prevBtn.disabled = idx <= 0;
+            nextBtn.disabled = idx === -1 || idx >= list.length - 1;
+        }
+
+        function navigateNoviceProfile(direction) {
+            const list = filteredNovice.length ? filteredNovice : rawNovice;
+            const idx = list.findIndex(x => x.id === currentNoviceId);
+            const newIdx = idx + direction;
+            if (newIdx < 0 || newIdx >= list.length) return;
+            openNoviceProfile(list[newIdx].id);
+        }
+
+        function toggleNoviceModal(show) {
+            const modal = document.getElementById('novice-modal');
+            if (!modal) return;
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+                currentNoviceId = null;
             }
         }
     </script>
