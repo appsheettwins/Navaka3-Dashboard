@@ -1920,7 +1920,7 @@
                 const isActive = analyticsSelectedDate === date;
                 const btn = `
                     <button onclick="syncGlobalDate('${date}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
-                        📆 วันที่ ${date}
+                        วันที่ ${date}
                     </button>
                 `;
                 container.innerHTML += btn;
@@ -1938,7 +1938,7 @@
                 const isActive = analyticsSelectedDate === date;
                 const btn = `
                     <button onclick="syncGlobalDate('${date}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
-                        📆 วันที่ ${date}
+                        วันที่ ${date}
                     </button>
                 `;
                 container.innerHTML += btn;
@@ -1962,7 +1962,7 @@
                 const isActive = analyticsSelectedVillage === v;
                 const btn = `
                     <button onclick="selectAnalyticsVillage('${v}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
-                        หมู่ที่ ${v}
+                        หมู่&nbsp;${v}
                     </button>
                 `;
                 container.innerHTML += btn;
@@ -1986,7 +1986,7 @@
                 const isActive = attendanceSelectedVillage === v;
                 const btn = `
                     <button onclick="selectAttendanceVillage('${v}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
-                        หมู่ที่ ${v}
+                        หมู่&nbsp;${v}
                     </button>
                 `;
                 container.innerHTML += btn;
@@ -2129,8 +2129,8 @@
                 const statNight = getStatusEmoji('ค่ำ');
 
                 const tr = `
-                    <tr class="hover:bg-indigo-50/20 transition cursor-pointer text-center text-base font-bold" onclick="openPersonnelProfile(${p.id}, 'attendance')">
-                        <td class="px-5 py-4 font-black text-slate-500">#${p.id}</td>
+                    <tr class="hover:bg-indigo-50/40 transition cursor-pointer text-center text-base font-bold" onclick="openPersonnelProfile(${p.id}, 'attendance')">
+                        <td class="px-5 py-4 font-black text-slate-500">${p.id}</td>
                         <td class="px-5 py-4"><span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold">หมู่ ${p.village}</span></td>
                         <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg">${p.name}</td>
                         <td class="px-5 py-4">${statMorning}</td>
@@ -2224,8 +2224,8 @@
                 `;
 
                 const tr = `
-                    <tr class="hover:bg-indigo-50/30 transition cursor-pointer text-center border-b border-slate-100 text-base font-bold" onclick="openPersonnelProfile(${p.id}, 'analytics')">
-                        <td class="px-5 py-4 font-black text-slate-500">#${p.id}</td>
+                    <tr class="hover:bg-indigo-50/40 transition cursor-pointer text-center border-b border-slate-100 text-base font-bold" onclick="openPersonnelProfile(${p.id}, 'analytics')">
+                        <td class="px-5 py-4 font-black text-slate-500">${p.id}</td>
                         <td class="px-5 py-4"><span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold">หมู่ ${p.village}</span></td>
                         <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg">${p.name}</td>
                         <td class="px-5 py-4 text-left font-mono">${breakDownText}</td>
@@ -2286,7 +2286,7 @@
                     : `<span class="text-slate-400 text-sm font-semibold">ยังไม่มีข้อมูล</span>`;
 
                 const tr = `
-                    <tr class="hover:bg-slate-50 transition cursor-pointer text-center text-base" onclick="openPersonnelProfile(${p.id})">
+                    <tr class="hover:bg-indigo-50/40 transition cursor-pointer text-center text-base" onclick="openPersonnelProfile(${p.id})">
                         <td class="px-5 py-4 whitespace-nowrap text-slate-500 font-black text-left">${p.id}</td>
                         <td class="px-5 py-4 whitespace-nowrap text-left">
                             <div class="w-10 h-10 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shadow-sm">
@@ -2798,7 +2798,7 @@
             const sorted = [...villageList].sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
             sorted.forEach(v => {
                 const isActive = trainingEvalSelectedVillage === v;
-                container.innerHTML += `<button onclick="selectTrainingEvalVillage('${v}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">หมู่ที่ ${v}</button>`;
+                container.innerHTML += `<button onclick="selectTrainingEvalVillage('${v}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">หมู่&nbsp;${v}</button>`;
             });
         }
 
@@ -2863,8 +2863,8 @@
                     : `<i class="fa-solid fa-triangle-exclamation"></i> ไม่ผ่านเกณฑ์`;
 
                 return `
-                    <tr class="hover:bg-indigo-50/20 transition cursor-pointer text-center text-base" onclick="openTrainingEvalForm(${p.id})">
-                        <td class="px-5 py-4 font-black text-slate-500">#${p.id}</td>
+                    <tr class="hover:bg-indigo-50/40 transition cursor-pointer text-center text-base" onclick="openTrainingEvalForm(${p.id})">
+                        <td class="px-5 py-4 font-black text-slate-500">${p.id}</td>
                         <td class="px-5 py-4"><span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold">หมู่ ${p.village}</span></td>
                         <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg">${p.name || ''}</td>
                         <td class="px-5 py-4 font-mono font-black text-indigo-900 text-2xl">${evalData.total} / 100</td>
@@ -3127,7 +3127,7 @@
             const sorted = [...villageList].sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
             sorted.forEach(v => {
                 const isActive = currentVal === v;
-                container.innerHTML += `<button onclick="selectPersonnelVillage('${v}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">หมู่ที่ ${v}</button>`;
+                container.innerHTML += `<button onclick="selectPersonnelVillage('${v}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">หมู่&nbsp;${v}</button>`;
             });
         }
 
@@ -3172,7 +3172,7 @@
             const sorted = [...villageList].sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
             sorted.forEach(v => {
                 const isActive = currentVal === v;
-                container.innerHTML += `<button onclick="selectGradesVillage('${v}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">หมู่ที่ ${v}</button>`;
+                container.innerHTML += `<button onclick="selectGradesVillage('${v}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">หมู่&nbsp;${v}</button>`;
             });
         }
 
@@ -3292,7 +3292,7 @@
                     : `<span class="text-slate-400 text-sm font-semibold">ยังไม่มีข้อมูล</span>`;
 
                 const tr = `
-                    <tr class="hover:bg-slate-50 transition cursor-pointer text-center text-base" onclick="openPersonnelProfile(${p.id}, 'grades')">
+                    <tr class="hover:bg-indigo-50/40 transition cursor-pointer text-center text-base" onclick="openPersonnelProfile(${p.id}, 'grades')">
                         <td class="px-5 py-4 whitespace-nowrap text-slate-500 font-bold text-left">${p.id}</td>
                         <td class="px-5 py-4 whitespace-nowrap">
                             <span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold">หมู่ ${p.village}</span>
