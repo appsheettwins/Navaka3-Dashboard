@@ -370,6 +370,7 @@
                                 <th class="bg-emerald-50 px-5 py-4 text-center whitespace-nowrap min-w-[7.5rem]">คะแนนรวม<br><span class="font-bold text-xs text-emerald-700">(ประเมินช่วงอบรม)</span></th>
                                 <th class="bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย<br><span class="font-bold text-xs text-sky-700">(เทอมแรก)</span></th>
                                 <th class="bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย<br><span class="font-bold text-xs text-sky-700">(เทอมสอง)</span></th>
+                                <th class="bg-violet-50 px-5 py-4 text-center whitespace-nowrap">สรุปบทสวดมนต์<br><span class="font-bold text-xs text-violet-700">(ผ่าน/ทั้งหมด)</span></th>
                             </tr>
                         </thead>
                         <tbody id="table-body" class="bg-white divide-y divide-slate-200 text-slate-700 font-medium">
@@ -2805,6 +2806,15 @@
                     ? `<div class="font-black text-sky-700 text-2xl leading-tight">${t2.gpa.toFixed(2)}</div>`
                     : `<span class="text-slate-400 text-sm font-semibold">ยังไม่มีข้อมูล</span>`;
 
+                const pray = p.prayScores || { total: 0, totalTopics: PRAY_TOTAL_TOPICS };
+                const prayTotal = pray.total || 0;
+                const prayMax = pray.totalTopics || PRAY_TOTAL_TOPICS;
+                const prayFull = prayMax > 0 && prayTotal === prayMax;
+                const prayCell = `
+                    <div class="font-black ${prayFull ? 'text-emerald-600' : 'text-violet-700'} text-2xl leading-tight">${prayTotal}/${prayMax}</div>
+                    <div class="text-xs text-slate-400 mt-1 hover:underline">แตะดูรายละเอียด</div>
+                `;
+
                 const tr = `
                     <tr class="hover:bg-indigo-50/40 transition cursor-pointer text-center text-base" onclick="openPersonnelProfile(${p.id})">
                         <td class="px-5 py-4 whitespace-nowrap text-slate-500 font-black text-left">${p.id}</td>
@@ -2834,6 +2844,9 @@
                         </td>
                         <td class="px-5 py-4 text-center bg-sky-50/20">
                             ${term2Cell}
+                        </td>
+                        <td class="px-5 py-4 text-center bg-violet-50/20 cursor-pointer" onclick="event.stopPropagation(); openPrayModal(${p.id});">
+                            ${prayCell}
                         </td>
                     </tr>
                 `;
@@ -3946,7 +3959,7 @@
                     const isFull = totalPeople > 0 && passedCount === totalPeople;
                     return `
                         <div class="flex items-center justify-between gap-2 py-1.5 border-b border-slate-50 last:border-0">
-                            <span class="text-xs text-slate-600 font-semibold truncate flex-1 min-w-0" title="${label}">${i + 1}. ${label}</span>
+                            <span class="text-xs ${isFull ? 'text-emerald-600' : 'text-slate-600'} font-semibold truncate flex-1 min-w-0" title="${label}">${i + 1}. ${label}</span>
                             <span class="text-xs font-bold ${isFull ? 'text-emerald-600' : 'text-slate-700'} shrink-0">${passedCount}/${totalPeople}</span>
                         </div>
                     `;
@@ -4039,7 +4052,7 @@
                                 ? '<i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i>'
                                 : '<i class="fa-regular fa-circle text-slate-300 text-xs"></i>'}
                         </span>
-                        <span class="text-xs font-semibold ${s.passed ? 'text-slate-700' : 'text-slate-400'} flex-1 min-w-0 truncate" title="${s.label}">${i + 1}. ${s.label}</span>
+                        <span class="text-xs font-semibold ${s.passed ? 'text-emerald-600' : 'text-slate-400'} flex-1 min-w-0 truncate" title="${s.label}">${i + 1}. ${s.label}</span>
                     </div>
                 `).join('');
 
