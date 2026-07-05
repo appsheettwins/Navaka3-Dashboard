@@ -368,7 +368,7 @@
             </div>
             <!-- Hidden select for village value (used by applyFilters) -->
             <select id="filter-village" class="hidden">
-                <option value="">ทั้งหมดทุกหมู่</option>
+                <option value="">ทั้งหมด</option>
             </select>
             <!-- Hidden select for date value (kept for Tab 1/2 compatibility; not shown here since Tab 3 always shows cumulative totals) -->
             <select id="filter-date" class="hidden"></select>
@@ -495,7 +495,7 @@
             </div>
             <!-- Hidden select for village value (used by applyGradesFilters) -->
             <select id="grades-filter-village" class="hidden">
-                <option value="">ทั้งหมดทุกหมู่</option>
+                <option value="">ทั้งหมด</option>
             </select>
 
             <!-- Table View Content -->
@@ -555,7 +555,7 @@
             </div>
             <!-- Hidden select for village value (used by applyPrayFilters) -->
             <select id="pray-filter-village" class="hidden">
-                <option value="">ทั้งหมดทุกหมู่</option>
+                <option value="">ทั้งหมด</option>
             </select>
 
             <!-- Topic-by-topic pass count summary, grouped by category -->
@@ -998,7 +998,7 @@
                     </div>
                     <div>
                         <span class="text-xs md:text-sm text-slate-500 font-extrabold block mb-1.5">รายละเอียดความประพฤติ</span>
-                        <div id="modal-trainingeval-notes" class="border-2 border-indigo-200 p-4 bg-slate-50 rounded-lg min-h-[50px] text-base leading-relaxed text-slate-800 font-semibold">-</div>
+                        <div id="modal-trainingeval-notes" class="border-2 border-indigo-200 p-4 bg-slate-50 rounded-lg min-h-[50px] tex-xl leading-relaxed text-slate-800 font-semibold">-</div>
                     </div>
                 </div>
 
@@ -1228,7 +1228,7 @@
                 <!-- บทสัมภาษณ์ -->
                 <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 space-y-2">
                     <h4 class="text-sm font-black text-indigo-700 flex items-center gap-2"><i class="fa-solid fa-quote-left"></i> บทสัมภาษณ์</h4>
-                    <p id="novice-field-interview" class="text-slate-800 text-sm leading-relaxed whitespace-pre-line">-</p>
+                    <p id="novice-field-interview" class="text-slate-800 text-lg leading-relaxed whitespace-pre-line">-</p>
                 </div>
 
             </div>
@@ -2515,7 +2515,7 @@
             });
 
             const vSelect = document.getElementById('filter-village');
-            vSelect.innerHTML = '<option value="">ทั้งหมดทุกหมู่</option>';
+            vSelect.innerHTML = '<option value="">ทั้งหมด</option>';
 
             const sortedVillages = Array.from(villageSet).sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
             sortedVillages.forEach(v => {
@@ -2590,7 +2590,7 @@
             const isAllActive = analyticsSelectedVillage === '';
             const allBtn = `
                 <button onclick="selectAnalyticsVillage('')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isAllActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
-                    ทั้งหมดทุกหมู่
+                    ทั้งหมด
                 </button>
             `;
             container.innerHTML += allBtn;
@@ -2614,7 +2614,7 @@
             const isAllActive = attendanceSelectedVillage === '';
             const allBtn = `
                 <button onclick="selectAttendanceVillage('')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isAllActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
-                    ทั้งหมดทุกหมู่
+                    ทั้งหมด
                 </button>
             `;
             container.innerHTML += allBtn;
@@ -3829,7 +3829,7 @@
 
             const vSelect = document.getElementById('grades-filter-village');
             if (vSelect) {
-                vSelect.innerHTML = '<option value="">ทั้งหมดทุกหมู่</option>';
+                vSelect.innerHTML = '<option value="">ทั้งหมด</option>';
                 const sortedVillages = Array.from(villageSet).sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
                 sortedVillages.forEach(v => {
                     vSelect.innerHTML += `<option value="${v}">หมู่ที่ ${v}</option>`;
@@ -4030,7 +4030,7 @@
 
             const vSelect = document.getElementById('pray-filter-village');
             if (vSelect) {
-                vSelect.innerHTML = '<option value="">ทั้งหมดทุกหมู่</option>';
+                vSelect.innerHTML = '<option value="">ทั้งหมด</option>';
                 const sortedVillages = Array.from(villageSet).sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
                 sortedVillages.forEach(v => {
                     vSelect.innerHTML += `<option value="${v}">หมู่ที่ ${v}</option>`;
@@ -4047,7 +4047,7 @@
             const currentVal = document.getElementById('pray-filter-village').value;
 
             const allActive = currentVal === '';
-            container.innerHTML += `<button onclick="selectPrayVillage('')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${allActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">ทั้งหมดทุกหมู่</button>`;
+            container.innerHTML += `<button onclick="selectPrayVillage('')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${allActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">ทั้งหมด</button>`;
 
             const sorted = [...villageList].sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
             sorted.forEach(v => {
@@ -4292,7 +4292,7 @@
             container.innerHTML = '';
 
             const isAllActive = noviceSelectedVillage === '';
-            container.innerHTML += `<button onclick="selectNoviceVillage('')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isAllActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">ทั้งหมดทุกหมู่</button>`;
+            container.innerHTML += `<button onclick="selectNoviceVillage('')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isAllActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">ทั้งหมด</button>`;
 
             villageList.forEach(v => {
                 const isActive = noviceSelectedVillage === v;
