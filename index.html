@@ -364,7 +364,7 @@
                                 <th class="px-5 py-4 text-left">ชื่อ - ฉายา</th>
                                 <th class="bg-amber-50 px-5 py-4 text-center">ความเป็นอยู่<br><span class="font-bold text-xs text-amber-700">(% จากวันที่ประเมินจริง)</span></th>
                                 <th class="bg-indigo-50 px-5 py-4 text-center">ประวัติเช็คชื่อ<br><span class="font-bold text-xs text-indigo-700">(มา/สาย/ลาป่วย/ลากิจ)</span></th>
-                                <th class="bg-emerald-50 px-5 py-4 text-center">คะแนนรวม<br><span class="font-bold text-xs text-emerald-700">(ประเมินช่วงอบรม)</span></th>
+                                <th class="bg-emerald-50 px-5 py-4 text-center whitespace-nowrap min-w-[7.5rem]">คะแนนรวม<br><span class="font-bold text-xs text-emerald-700">(ประเมินช่วงอบรม)</span></th>
                                 <th class="bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย<br><span class="font-bold text-xs text-sky-700">(เทอมแรก)</span></th>
                                 <th class="bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย<br><span class="font-bold text-xs text-sky-700">(เทอมสอง)</span></th>
                             </tr>
@@ -2490,7 +2490,7 @@
                 const attendSummary = `<span class="text-emerald-600 font-extrabold">มา ${at.present}</span> <span class="text-amber-500 font-extrabold">สาย ${at.late}</span> <span class="text-blue-500 font-extrabold">ลาป่วย ${at.sickLeave||0}</span> <span class="text-violet-500 font-extrabold">ลากิจ ${at.casualLeave||0}</span>`;
 
                 const trainingEval = p.trainingScores || null;
-                const trainingScoreText = trainingEval ? `${trainingEval.total} / 100` : '-';
+                const trainingScoreText = trainingEval ? `${trainingEval.total}\u00A0/\u00A0100` : '-';
                 const trainingResultBadge = trainingEval
                     ? (trainingEval.passed
                         ? `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-700"><i class="fa-solid fa-circle-check"></i> ผ่านเกณฑ์</span>`
@@ -2527,8 +2527,8 @@
                             <div class="font-black text-indigo-700 text-2xl leading-tight">${at.rate.toFixed(0)}%</div>
                             <div class="text-sm md:text-base font-extrabold space-x-1 mt-1.5 leading-relaxed">${attendSummary}</div>
                         </td>
-                        <td class="px-5 py-4 text-center bg-emerald-50/20">
-                            <div class="font-black text-indigo-700 text-2xl leading-tight">${trainingScoreText}</div>
+                        <td class="px-5 py-4 text-center bg-emerald-50/20 whitespace-nowrap">
+                            <div class="font-black text-indigo-700 text-2xl leading-tight tabular-nums">${trainingScoreText}</div>
                             <div class="mt-1">${trainingResultBadge}</div>
                         </td>
                         <td class="px-5 py-4 text-center bg-sky-50/20">
