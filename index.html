@@ -366,7 +366,7 @@
                                 <th class="px-5 py-4 text-center w-24 whitespace-nowrap">หมู่</th>
                                 <th class="px-5 py-4 text-left">ชื่อ - ฉายา</th>
                                 <th class="bg-amber-50 px-5 py-4 text-center">ความเป็นอยู่<br><span class="font-bold text-xs text-amber-700">(% จากวันที่ประเมินจริง)</span></th>
-                                <th class="bg-indigo-50 px-5 py-4 text-center">ประวัติเช็คชื่อ<br><span class="font-bold text-xs text-indigo-700">(มา/สาย/ลาป่วย/ลากิจ)</span></th>
+                                <th class="bg-indigo-50 px-5 py-4 text-center">ประวัติเช็คชื่อ<br><span class="font-bold text-xs text-indigo-700">(% อัตราการเข้าร่วม)</span></th>
                                 <th class="bg-emerald-50 px-5 py-4 text-center whitespace-nowrap min-w-[7.5rem]">คะแนนรวม<br><span class="font-bold text-xs text-emerald-700">(ประเมินช่วงอบรม)</span></th>
                                 <th class="bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย<br><span class="font-bold text-xs text-sky-700">(เทอมแรก)</span></th>
                                 <th class="bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย<br><span class="font-bold text-xs text-sky-700">(เทอมสอง)</span></th>
@@ -1152,7 +1152,17 @@
 
     <!-- Pray (สวดมนต์) Detail Modal -->
     <div id="pray-modal" class="fixed inset-0 bg-slate-950 bg-opacity-60 z-50 flex items-center justify-center p-3 sm:p-4 hidden">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden relative">
+            <!-- Navigation arrows: anchored to modal card center, independent of inner scroll -->
+            <button id="pray-nav-prev" onclick="navigatePrayModal(-1)" title="รายก่อนหน้า"
+                class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-500 hover:text-indigo-600 hover:border-indigo-300 hover:shadow-lg active:scale-90 transition disabled:opacity-0 disabled:pointer-events-none">
+                <i class="fa-solid fa-chevron-left text-base"></i>
+            </button>
+            <button id="pray-nav-next" onclick="navigatePrayModal(1)" title="รายถัดไป"
+                class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-20 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-500 hover:text-indigo-600 hover:border-indigo-300 hover:shadow-lg active:scale-90 transition disabled:opacity-0 disabled:pointer-events-none">
+                <i class="fa-solid fa-chevron-right text-base"></i>
+            </button>
+
             <!-- Header -->
             <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-3 shrink-0 bg-indigo-950 text-white">
                 <div class="min-w-0">
@@ -2783,10 +2793,7 @@
                 const livingPct = activeMaxPossible > 0 ? Math.min((p.activeTotal / activeMaxPossible) * 100, 100) : 0;
                 const scoreSummary = activeMaxPossible > 0 ? `${livingPct.toFixed(1)}%` : 'ไม่มีข้อมูล';
 
-                const sc = p.cumulativeScores;
-                const scoreBreakdown = `<span class="text-indigo-700 font-extrabold">⛺${sc.jumwat}</span> <span class="text-blue-600 font-extrabold">🧺${sc.takra}</span> <span class="text-cyan-600 font-extrabold">🏰${sc.wiman}</span> <span class="text-amber-600 font-extrabold">🧣${sc.raotak}</span> <span class="text-emerald-600 font-extrabold">🧥${sc.homdong}</span>`;
                 const at = p.attendanceSummary;
-                const attendSummary = `<span class="text-emerald-600 font-extrabold">มา ${at.present}</span> <span class="text-amber-500 font-extrabold">สาย ${at.late}</span> <span class="text-blue-500 font-extrabold">ลาป่วย ${at.sickLeave||0}</span> <span class="text-violet-500 font-extrabold">ลากิจ ${at.casualLeave||0}</span>`;
 
                 const trainingEval = p.trainingScores || null;
                 const trainingScoreText = trainingEval ? `${trainingEval.total}\u00A0/\u00A0100` : '-';
@@ -2829,11 +2836,9 @@
                         <td class="px-5 py-4 whitespace-nowrap font-extrabold text-slate-900 text-lg text-left">${p.name}</td>
                         <td class="px-5 py-4 text-center font-bold text-slate-700 bg-amber-50/20">
                             <div class="font-black text-indigo-800 text-2xl leading-tight">${scoreSummary}</div>
-                            <div class="text-sm md:text-base font-mono mt-1.5 leading-relaxed">${scoreBreakdown}</div>
                         </td>
                         <td class="px-5 py-4 text-center bg-indigo-50/10">
                             <div class="font-black text-indigo-700 text-2xl leading-tight">${at.rate.toFixed(0)}%</div>
-                            <div class="text-sm md:text-base font-extrabold space-x-1 mt-1.5 leading-relaxed">${attendSummary}</div>
                         </td>
                         <td class="px-5 py-4 text-center bg-emerald-50/20 whitespace-nowrap">
                             <div class="font-black text-indigo-700 text-2xl leading-tight tabular-nums">${trainingScoreText}</div>
@@ -3625,6 +3630,8 @@
             const isTrainingEvalOpen = trainingEvalModal && !trainingEvalModal.classList.contains('hidden');
             const detailModal = document.getElementById('detail-modal');
             const isDetailOpen = detailModal && !detailModal.classList.contains('hidden');
+            const prayModal = document.getElementById('pray-modal');
+            const isPrayModalOpen = prayModal && !prayModal.classList.contains('hidden');
             const activeTag = document.activeElement ? document.activeElement.tagName : '';
             const isTypingContext = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT';
 
@@ -3645,6 +3652,14 @@
                 } else if (e.key === 'ArrowRight') {
                     e.preventDefault();
                     navigatePersonnelProfile(1);
+                }
+            } else if (isPrayModalOpen) {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    navigatePrayModal(-1);
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    navigatePrayModal(1);
                 }
             }
         });
@@ -3871,6 +3886,9 @@
         // ==================== PRAY (สวดมนต์) TAB ====================
 
         let praySelectedVillage = '';
+        let prayFilteredIds = []; // Ordered list of ids matching the Pray tab's currently applied filters
+        let prayCurrentIndex = -1; // Index of the currently open person within prayFilteredIds
+        let prayModalOpenId = null;
 
         function initPrayFilterOptions() {
             const villageSet = new Set();
@@ -3937,6 +3955,15 @@
             });
 
             list.sort((a, b) => (a.id || 0) - (b.id || 0));
+
+            prayFilteredIds = list.map(p => p.id);
+            if (prayCurrentIndex !== -1) {
+                const modal = document.getElementById('pray-modal');
+                if (modal && !modal.classList.contains('hidden')) {
+                    prayCurrentIndex = prayFilteredIds.indexOf(prayModalOpenId);
+                    updatePrayNavButtons();
+                }
+            }
 
             renderPrayTopicSummary(list);
             renderPrayTable(list);
@@ -4032,6 +4059,11 @@
             if (!person) return;
             const pray = person.prayScores || buildMockPrayScores(id);
 
+            prayModalOpenId = id;
+            if (!prayFilteredIds.length) prayFilteredIds = [id];
+            prayCurrentIndex = prayFilteredIds.indexOf(id);
+            updatePrayNavButtons();
+
             document.getElementById('pray-modal-name').innerText = person.name || '-';
             document.getElementById('pray-modal-sub').innerText = `รหัส ${person.id} • หมู่ ${person.village || '-'}`;
 
@@ -4075,6 +4107,26 @@
         function closePrayModal() {
             const modal = document.getElementById('pray-modal');
             if (modal) modal.classList.add('hidden');
+            prayModalOpenId = null;
+            prayCurrentIndex = -1;
+        }
+
+        function navigatePrayModal(direction) {
+            if (!prayFilteredIds.length || prayCurrentIndex === -1) return;
+            const newIndex = prayCurrentIndex + direction;
+            if (newIndex < 0 || newIndex >= prayFilteredIds.length) return;
+            const nextId = prayFilteredIds[newIndex];
+            if (nextId == null) return;
+            openPrayModal(nextId);
+        }
+
+        function updatePrayNavButtons() {
+            const prevBtn = document.getElementById('pray-nav-prev');
+            const nextBtn = document.getElementById('pray-nav-next');
+            if (!prevBtn || !nextBtn) return;
+            const total = prayFilteredIds.length;
+            prevBtn.disabled = total <= 1 || prayCurrentIndex <= 0;
+            nextBtn.disabled = total <= 1 || prayCurrentIndex === -1 || prayCurrentIndex >= total - 1;
         }
 
         let sourcesCollapsed = true;
