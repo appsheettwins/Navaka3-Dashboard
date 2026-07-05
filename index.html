@@ -243,9 +243,9 @@
                         <thead class="bg-slate-50 font-bold text-slate-500 text-center">
                             <tr>
                                 <th class="px-5 py-4 w-16">รหัส</th>
-                                <th class="px-5 py-4 w-24">หมู่</th>
+                                <th class="px-5 py-4 w-24 whitespace-nowrap">หมู่</th>
                                 <th class="px-5 py-4 text-left">ชื่อ-ฉายา</th>
-                                <th class="px-5 py-4 text-left">(⛺ จำวัด | 🧺 ตะกร้า | 🏰 วิมาน | 🧣 ราวตาก | 🧥 ห่มดอง)</th>
+                                <th class="px-5 py-4 text-left text-sm md:text-base">(จำวัด | ตะกร้า | วิมาน | ราวตาก | ห่มดอง)</th>
                                 <th class="px-5 py-4 w-40 font-bold text-indigo-800" id="analytics-table-header-max">คะแนนรวม</th>
                             </tr>
                         </thead>
@@ -294,7 +294,7 @@
                         <thead class="bg-slate-50 font-bold text-slate-500 text-center">
                             <tr>
                                 <th class="px-5 py-3.5 w-16">รหัส</th>
-                                <th class="px-5 py-3.5 w-24">หมู่</th>
+                                <th class="px-5 py-3.5 w-24 whitespace-nowrap">หมู่</th>
                                 <th class="px-5 py-3.5 text-left">ชื่อ-ฉายา</th>
                                 <th class="px-5 py-3.5 w-32">เช้า</th>
                                 <th class="px-5 py-3.5 w-32">สาย</th>
@@ -360,7 +360,7 @@
                             <tr>
                                 <th class="px-5 py-4 text-left w-14">รหัส</th>
                                 <th class="px-5 py-4 text-left w-16">รูป</th>
-                                <th class="px-5 py-4 text-center w-16">หมู่</th>
+                                <th class="px-5 py-4 text-center w-24 whitespace-nowrap">หมู่</th>
                                 <th class="px-5 py-4 text-left">ชื่อ - ฉายา</th>
                                 <th class="bg-amber-50 px-5 py-4 text-center">ความเป็นอยู่<br><span class="font-bold text-xs text-amber-700">(% จากวันที่ประเมินจริง)</span></th>
                                 <th class="bg-indigo-50 px-5 py-4 text-center">ประวัติเช็คชื่อ<br><span class="font-bold text-xs text-indigo-700">(มา/สาย/ลาป่วย/ลากิจ)</span></th>
@@ -477,7 +477,7 @@
                         <thead class="bg-slate-50 font-extrabold text-slate-500 text-center">
                             <tr id="grades-table-head-row">
                                 <th class="px-5 py-4 text-left w-14">รหัส</th>
-                                <th class="px-5 py-4 text-center w-16">หมู่</th>
+                                <th class="px-5 py-4 text-center w-24 whitespace-nowrap">หมู่</th>
                                 <th class="px-5 py-4 text-left">ชื่อ - ฉายา</th>
                                 <!-- 5 subject columns injected dynamically -->
                                 <th class="bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย (GPA)</th>
@@ -544,7 +544,7 @@
                         <thead class="bg-slate-50 font-bold text-slate-500 text-center">
                             <tr>
                                 <th class="px-5 py-3.5 w-16">รหัส</th>
-                                <th class="px-5 py-3.5 w-24">หมู่</th>
+                                <th class="px-5 py-3.5 w-24 whitespace-nowrap">หมู่</th>
                                 <th class="px-5 py-3.5 text-left">ชื่อ-ฉายา</th>
                                 <th class="px-5 py-3.5 w-40">คะแนนรวม (100)</th>
                                 <th class="px-5 py-3.5 w-52">สรุปผลการประเมิน</th>
@@ -1302,6 +1302,14 @@
             const p = s.split('/');
             if (p.length === 3) return new Date(p[2], p[1] - 1, p[0]);
             return new Date(0);
+        }
+
+        function formatVillageLabel(village) {
+            return village ? `หมู่ ${village}` : '-';
+        }
+
+        function villageBadgeHtml(village) {
+            return `<span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold whitespace-nowrap">${formatVillageLabel(village)}</span>`;
         }
 
         /**
@@ -2345,7 +2353,7 @@
                 const tr = `
                     <tr class="hover:bg-indigo-50/40 transition cursor-pointer text-center text-base font-bold" onclick="openPersonnelProfile(${p.id}, 'attendance')">
                         <td class="px-5 py-4 font-black text-slate-500">${p.id}</td>
-                        <td class="px-5 py-4"><span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold">หมู่ ${p.village}</span></td>
+                        <td class="px-5 py-4 whitespace-nowrap">${villageBadgeHtml(p.village)}</td>
                         <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg">${p.name}</td>
                         <td class="px-5 py-4">${statMorning}</td>
                         <td class="px-5 py-4">${statLateMorning}</td>
@@ -2430,17 +2438,17 @@
                 }
 
                 const breakDownText = `
-                    <span class="text-indigo-700 font-black text-base">⛺ ${entry ? entry.jumwat : 0}</span>&nbsp;&nbsp;&nbsp; 
-                    <span class="text-blue-600 font-black text-base">🧺 ${entry ? entry.takra : 0}</span>&nbsp;&nbsp;&nbsp; 
-                    <span class="text-cyan-600 font-black text-base">🏰 ${entry ? entry.wiman : 0}</span>&nbsp;&nbsp;&nbsp; 
-                    <span class="text-amber-600 font-black text-base">🧣 ${entry ? entry.raotak : 0}</span>&nbsp;&nbsp;&nbsp; 
-                    <span class="text-emerald-600 font-black text-base">🧥 ${entry ? entry.homdong : 0}</span>
+                    <span class="text-indigo-700 font-black text-base md:text-lg">${entry ? entry.jumwat : 0}</span>&nbsp;&nbsp;&nbsp;
+                    <span class="text-blue-600 font-black text-base md:text-lg">${entry ? entry.takra : 0}</span>&nbsp;&nbsp;&nbsp;
+                    <span class="text-cyan-600 font-black text-base md:text-lg">${entry ? entry.wiman : 0}</span>&nbsp;&nbsp;&nbsp;
+                    <span class="text-amber-600 font-black text-base md:text-lg">${entry ? entry.raotak : 0}</span>&nbsp;&nbsp;&nbsp;
+                    <span class="text-emerald-600 font-black text-base md:text-lg">${entry ? entry.homdong : 0}</span>
                 `;
 
                 const tr = `
                     <tr class="hover:bg-indigo-50/40 transition cursor-pointer text-center border-b border-slate-100 text-base font-bold" onclick="openPersonnelProfile(${p.id}, 'analytics')">
                         <td class="px-5 py-4 font-black text-slate-500">${p.id}</td>
-                        <td class="px-5 py-4"><span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold">หมู่ ${p.village}</span></td>
+                        <td class="px-5 py-4 whitespace-nowrap">${villageBadgeHtml(p.village)}</td>
                         <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg">${p.name}</td>
                         <td class="px-5 py-4 text-left font-mono">${breakDownText}</td>
                         <td class="px-5 py-4 font-black text-indigo-800 bg-indigo-50/10 text-2xl">${score} / ${maxCap}</td>
@@ -2508,16 +2516,16 @@
                             </div>
                         </td>
                         <td class="px-5 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold">หมู่ ${p.village}</span>
+                            ${villageBadgeHtml(p.village)}
                         </td>
                         <td class="px-5 py-4 whitespace-nowrap font-extrabold text-slate-900 text-lg text-left">${p.name}</td>
                         <td class="px-5 py-4 text-center font-bold text-slate-700 bg-amber-50/20">
                             <div class="font-black text-indigo-800 text-2xl leading-tight">${scoreSummary}</div>
-                            <div class="text-xs font-mono mt-1">${scoreBreakdown}</div>
+                            <div class="text-sm md:text-base font-mono mt-1.5 leading-relaxed">${scoreBreakdown}</div>
                         </td>
                         <td class="px-5 py-4 text-center bg-indigo-50/10">
                             <div class="font-black text-indigo-700 text-2xl leading-tight">${at.rate.toFixed(0)}%</div>
-                            <div class="text-xs font-extrabold space-x-1 mt-1">${attendSummary}</div>
+                            <div class="text-sm md:text-base font-extrabold space-x-1 mt-1.5 leading-relaxed">${attendSummary}</div>
                         </td>
                         <td class="px-5 py-4 text-center bg-emerald-50/20">
                             <div class="font-black text-indigo-700 text-2xl leading-tight">${trainingScoreText}</div>
@@ -3079,7 +3087,7 @@
                 return `
                     <tr class="hover:bg-indigo-50/40 transition cursor-pointer text-center text-base" onclick="openTrainingEvalForm(${p.id})">
                         <td class="px-5 py-4 font-black text-slate-500">${p.id}</td>
-                        <td class="px-5 py-4"><span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold">หมู่ ${p.village}</span></td>
+                        <td class="px-5 py-4 whitespace-nowrap">${villageBadgeHtml(p.village)}</td>
                         <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg">${p.name || ''}</td>
                         <td class="px-5 py-4 font-mono font-black text-indigo-900 text-2xl">${evalData.total} / 100</td>
                         <td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs md:text-sm font-black ${badgeStyle}">${badgeLabel}</span></td>
@@ -3435,7 +3443,7 @@
             const subjectHeaders = subjects.map(s => `<th class="bg-slate-50 px-4 py-4 text-center font-extrabold">${s.label}</th>`).join('');
             row.innerHTML = `
                 <th class="bg-slate-50 px-5 py-4 text-left w-14 font-extrabold">รหัส</th>
-                <th class="bg-slate-50 px-5 py-4 text-center w-16 font-extrabold">หมู่</th>
+                <th class="bg-slate-50 px-5 py-4 text-center w-24 whitespace-nowrap font-extrabold">หมู่</th>
                 <th class="bg-slate-50 px-5 py-4 text-left font-extrabold">ชื่อ - ฉายา</th>
                 <th class="bg-sky-50 px-5 py-4 text-center font-extrabold">เกรดเฉลี่ยรวม<br><span class="font-bold text-xs text-sky-800">(GPA ทั้งสองเทอม)</span></th>
                 ${subjectHeaders}
@@ -3488,7 +3496,7 @@
                     if (!hasData) return `<td class="px-4 py-4 text-center text-slate-300 font-bold text-base">-</td>`;
                     const score = termData.scores[i];
                     const gp = termData.gradePoints[i];
-                    return `<td class="px-4 py-4 text-center"><span class="font-extrabold text-slate-700 text-base">${score}</span><span class="block text-xs text-slate-400 font-bold">${gp.toFixed(1)}</span></td>`;
+                    return `<td class="px-4 py-4 text-center whitespace-nowrap"><span class="font-extrabold text-slate-700 text-base">${score} / ${gp.toFixed(1)}</span></td>`;
                 }).join('');
 
                 let gpaCell;
@@ -3509,7 +3517,7 @@
                     <tr class="hover:bg-indigo-50/40 transition cursor-pointer text-center text-base" onclick="openPersonnelProfile(${p.id}, 'grades')">
                         <td class="px-5 py-4 whitespace-nowrap text-slate-500 font-bold text-left">${p.id}</td>
                         <td class="px-5 py-4 whitespace-nowrap">
-                            <span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold">หมู่ ${p.village}</span>
+                            ${villageBadgeHtml(p.village)}
                         </td>
                         <td class="px-5 py-4 whitespace-nowrap font-extrabold text-slate-900 text-lg text-left">${p.name}</td>
                         <td class="px-5 py-4 text-center bg-sky-50/20">
