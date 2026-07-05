@@ -142,7 +142,7 @@
 <body class="min-h-screen text-slate-800 flex flex-col text-sm md:text-base">
 
     <!-- Left Sidebar Navigation: desktop-fixed, mobile slide-in drawer -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-60 bg-indigo-950 text-white flex flex-col shadow-2xl -translate-x-full md:translate-x-0 print:hidden">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-56 bg-indigo-950 text-white flex flex-col shadow-2xl -translate-x-full md:translate-x-0 print:hidden">
         <!-- Brand / Title -->
         <div class="flex items-center gap-2.5 px-4 py-4 border-b border-indigo-900/80 shrink-0">
             <div class="p-2 bg-indigo-900 rounded-lg border border-indigo-800 shrink-0">
@@ -160,28 +160,28 @@
         <!-- Navigation links (moved here from the top bar for a calmer, roomier header) -->
         <nav class="flex-1 overflow-y-auto custom-scrollbar px-2.5 py-3 space-y-1">
             <button onclick="switchTab('personnel')" id="tab-personnel-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-address-book w-4 text-center text-sm"></i> สรุปประเมิน
+                <i class="fa-solid fa-address-book w-4 text-center text-sm text-indigo-400"></i> สรุปประเมิน
             </button>
-            <button onclick="switchTab('analytics')" id="tab-analytics-btn" class="w-full text-left bg-indigo-600 text-white shadow-sm px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-chart-pie w-4 text-center text-sm"></i> ความเป็นอยู่
+            <button onclick="switchTab('analytics')" id="tab-analytics-btn" class="w-full text-left bg-blue-600 text-white shadow-sm px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
+                <i class="fa-solid fa-chart-pie w-4 text-center text-sm text-blue-300"></i> ความเป็นอยู่
             </button>
             <button onclick="switchTab('attendance')" id="tab-attendance-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-clipboard-user w-4 text-center text-sm"></i> เช็คชื่อ
+                <i class="fa-solid fa-clipboard-user w-4 text-center text-sm text-emerald-400"></i> เช็คชื่อ
             </button>
             <button onclick="switchTab('grades')" id="tab-grades-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-graduation-cap w-4 text-center text-sm"></i> ผลการเรียน
+                <i class="fa-solid fa-graduation-cap w-4 text-center text-sm text-sky-400"></i> ผลการเรียน
             </button>
             <button onclick="switchTab('pray')" id="tab-pray-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-hands-praying w-4 text-center text-sm"></i> สวดมนต์
+                <i class="fa-solid fa-hands-praying w-4 text-center text-sm text-violet-400"></i> สวดมนต์
             </button>
             <button onclick="switchTab('trainingeval')" id="tab-trainingeval-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-scroll w-4 text-center text-sm"></i> คะแนนอบรม
+                <i class="fa-solid fa-scroll w-4 text-center text-sm text-amber-400"></i> คะแนนอบรม
             </button>
             <button onclick="switchTab('novice')" id="tab-novice-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-id-card w-4 text-center text-sm"></i> ข้อมูลพระนวกะ
+                <i class="fa-solid fa-id-card w-4 text-center text-sm text-rose-400"></i> ข้อมูลพระนวกะ
             </button>
             <button onclick="switchTab('sources')" id="tab-sources-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-circle-nodes w-4 text-center text-sm"></i> แหล่งข้อมูล
+                <i class="fa-solid fa-circle-nodes w-4 text-center text-sm text-cyan-400"></i> แหล่งข้อมูล
             </button>
         </nav>
 
@@ -205,7 +205,7 @@
     <div id="sidebar-overlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden print:hidden"></div>
 
     <!-- Content column, offset by the sidebar's width on desktop -->
-    <div class="flex flex-col min-h-screen w-full md:pl-60">
+    <div class="flex flex-col min-h-screen w-full md:pl-56">
 
         <!-- Slim mobile top bar: only the hamburger + title + quick theme toggle (frees up space on desktop) -->
         <div id="mobile-topbar" class="md:hidden sticky top-0 z-20 bg-indigo-950 text-white h-14 flex items-center gap-3 px-4 shadow-lg print:hidden">
@@ -219,13 +219,13 @@
         </div>
 
     <!-- Main Content Container -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 flex-grow w-full">
 
         <!-- ==================== TAB 1: LIVING SCORE STATS ==================== -->
         <div id="tab-analytics" class="space-y-6">
             
             <!-- Interactive Analytics Filter (Removed Labels as requested) -->
-            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-blue-200 p-3 space-y-2">
                 <!-- Date + Village Selection combined into one row -->
                 <div class="flex flex-col md:flex-row md:items-center gap-3">
                     <div id="analytics-date-container" class="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth flex-shrink-0">
@@ -246,13 +246,12 @@
             </div>
 
             <!-- Full Personnel Evaluation Directory -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-blue-100">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                             <i class="fa-solid fa-address-book text-indigo-600"></i> ทำเนียบข้อมูลบุคลากรและคะแนนประเมินรายวัน
                         </h3>
-                        <p class="text-xs md:text-sm text-slate-500 mt-1">แสดงผลลัพธ์รายชื่อและสรุปคะแนนประเมินความเป็นอยู่รายวัน แยกตามมิติ วันที่ และหมู่คณะที่เลือก</p>
                     </div>
                     <span id="all-leader-count-badge" class="text-sm text-indigo-700 bg-indigo-50 px-3.5 py-1.5 rounded-lg font-bold">
                         - รายการ
@@ -282,7 +281,7 @@
         <div id="tab-attendance" class="hidden space-y-6">
             
             <!-- Attendance Filter panel (Removed Labels as requested) -->
-            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-emerald-200 p-3 space-y-2">
                 <!-- Date + Village Selection combined into one row -->
                 <div class="flex flex-col md:flex-row md:items-center gap-3">
                     <div id="attend-date-container" class="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth flex-shrink-0">
@@ -303,13 +302,12 @@
             </div>
 
             <!-- Attendance Directory Table -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-emerald-100">
                 <div class="flex justify-between items-center mb-4">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                             <i class="fa-solid fa-clipboard-user text-indigo-600"></i> ตารางสถิติและสถานการณ์เช็คชื่อรายหมู่
                         </h3>
-                        <p id="attendance-subtitle-date" class="text-xs md:text-sm text-slate-500 mt-1">ดึงผลรายชื่อบุคลากรจริงและแสดงข้อมูลสอดคล้องตามวันที่ประเมินหลัก</p>
                     </div>
                     <span id="attendance-count-badge" class="text-sm text-indigo-700 bg-indigo-50 px-3.5 py-1.5 rounded-lg font-bold">
                         - รายการ
@@ -342,7 +340,7 @@
         <div id="tab-personnel" class="hidden space-y-6">
 
             <!-- Filters (Labels Removed as requested) -->
-            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-indigo-200 p-3 space-y-2">
                 <div class="flex flex-col md:flex-row md:items-center gap-5">
                     <!-- Village buttons -->
                     <div class="flex-1 min-w-0">
@@ -367,13 +365,12 @@
             <select id="filter-date" class="hidden"></select>
 
             <!-- Full Personnel Summary Directory -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-indigo-100">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                             <i class="fa-solid fa-address-book text-indigo-600"></i> สรุปประเมินผลรวมรายบุคคล
                         </h3>
-                        <p class="text-xs md:text-sm text-slate-500 mt-1">แสดงผลรวมความเป็นอยู่ การเช็คชื่อ คะแนนอบรม และผลการเรียนของแต่ละบุคคล</p>
                     </div>
                     <span id="personnel-count-badge" class="text-sm text-indigo-700 bg-indigo-50 px-3.5 py-1.5 rounded-lg font-bold">
                         - รายการ
@@ -385,16 +382,19 @@
                     <table class="min-w-full divide-y divide-slate-200 text-base">
                         <thead class="bg-slate-50 font-extrabold text-slate-500 text-center">
                             <tr>
-                                <th class="px-5 py-4 text-left w-14">รหัส</th>
-                                <th class="px-5 py-4 text-left w-16">รูป</th>
-                                <th class="px-5 py-4 text-center w-24 whitespace-nowrap">หมู่</th>
-                                <th class="px-5 py-4 text-left">ชื่อ - ฉายา</th>
-                                <th class="bg-amber-50 px-5 py-4 text-center">ความเป็นอยู่<br><span class="font-bold text-xs text-amber-700">(% จากวันที่ประเมินจริง)</span></th>
-                                <th class="bg-indigo-50 px-5 py-4 text-center">ประวัติเช็คชื่อ<br><span class="font-bold text-xs text-indigo-700">(% อัตราการเข้าร่วม)</span></th>
-                                <th class="bg-emerald-50 px-5 py-4 text-center whitespace-nowrap min-w-[7.5rem]">คะแนนรวม<br><span class="font-bold text-xs text-emerald-700">(ประเมินช่วงอบรม)</span></th>
-                                <th class="bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย<br><span class="font-bold text-xs text-sky-700">(เทอมแรก)</span></th>
-                                <th class="bg-sky-50 px-5 py-4 text-center">เกรดเฉลี่ย<br><span class="font-bold text-xs text-sky-700">(เทอมสอง)</span></th>
-                                <th class="bg-violet-50 px-5 py-4 text-center whitespace-nowrap">สรุปบทสวดมนต์<br><span class="font-bold text-xs text-violet-700">(ผ่าน/ทั้งหมด)</span></th>
+                                <th rowspan="2" class="px-5 py-4 text-left w-14 align-middle">รหัส</th>
+                                <th rowspan="2" class="px-5 py-4 text-left w-16 align-middle">รูป</th>
+                                <th rowspan="2" class="px-5 py-4 text-center w-24 whitespace-nowrap align-middle">หมู่</th>
+                                <th rowspan="2" class="px-5 py-4 text-left align-middle">ชื่อ - ฉายา</th>
+                                <th rowspan="2" class="bg-amber-50 px-5 py-4 text-center align-middle">ความเป็นอยู่<br><span class="font-bold text-xs text-amber-700">(% จากวันที่ประเมินจริง)</span></th>
+                                <th rowspan="2" class="bg-indigo-50 px-5 py-4 text-center align-middle">เช็คชื่อ<br><span class="font-bold text-xs text-indigo-700">(% อัตราการเข้าร่วม)</span></th>
+                                <th rowspan="2" class="bg-emerald-50 px-5 py-4 text-center whitespace-nowrap min-w-[7.5rem] align-middle">คะแนนรวม<br><span class="font-bold text-xs text-emerald-700">(ประเมินช่วงอบรม)</span></th>
+                                <th colspan="2" class="bg-sky-50 px-5 py-3 text-center">เกรดเฉลี่ย</th>
+                                <th rowspan="2" class="bg-violet-50 px-5 py-4 text-center whitespace-nowrap align-middle">สวดมนต์<br><span class="font-bold text-xs text-violet-700">(ผ่าน/ทั้งหมด)</span></th>
+                            </tr>
+                            <tr>
+                                <th class="bg-sky-50 px-5 py-2.5 text-center border-t border-sky-100">เทอมแรก</th>
+                                <th class="bg-sky-50 px-5 py-2.5 text-center border-t border-sky-100">เทอมสอง</th>
                             </tr>
                         </thead>
                         <tbody id="table-body" class="bg-white divide-y divide-slate-200 text-slate-700 font-medium">
@@ -417,7 +417,7 @@
         <div id="tab-novice" class="hidden space-y-6">
 
             <!-- Filter / search panel -->
-            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-rose-200 p-3 space-y-2">
                 <div class="flex flex-col md:flex-row md:items-center gap-4">
                     <!-- Village buttons -->
                     <div id="novice-village-container" class="flex gap-2.5 flex-nowrap overflow-x-auto no-scrollbar scroll-smooth flex-1 min-w-0">
@@ -435,13 +435,12 @@
             </div>
 
             <!-- Directory -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-rose-100">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                             <i class="fa-solid fa-id-card text-indigo-600"></i> ทำเนียบข้อมูลพระนวกะ
                         </h3>
-                        <p class="text-xs md:text-sm text-slate-500 mt-1">ข้อมูลประวัติส่วนบุคคล การอุปสมบท การศึกษา และบทสัมภาษณ์ของพระนวกะแต่ละรูป</p>
                     </div>
                     <span id="novice-count-badge" class="text-sm text-indigo-700 bg-indigo-50 px-3.5 py-1.5 rounded-lg font-bold">
                         - รายการ
@@ -465,7 +464,7 @@
         <div id="tab-grades" class="hidden space-y-6">
 
             <!-- Filters + Term toggle -->
-            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-sky-200 p-3 space-y-2">
                 <div class="flex flex-col md:flex-row md:items-center gap-4">
                     <!-- Term toggle -->
                     <div class="flex gap-2.5 flex-shrink-0">
@@ -491,13 +490,12 @@
             </select>
 
             <!-- Table View Content -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-sky-100">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                             <i class="fa-solid fa-graduation-cap text-indigo-600"></i> ตารางผลการเรียนรายบุคคล
                         </h3>
-                        <p class="text-xs md:text-sm text-slate-500 mt-1">แสดงคะแนนรายวิชาและเกรดเฉลี่ยตามเทอมที่เลือก</p>
                     </div>
                 </div>
                 <div id="grades-table-view-container" class="overflow-x-auto rounded-lg border border-slate-100 custom-scrollbar">
@@ -531,7 +529,7 @@
         <div id="tab-pray" class="hidden space-y-6">
 
             <!-- Filters -->
-            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-violet-200 p-3 space-y-2">
                 <div class="flex flex-col md:flex-row md:items-center gap-4">
                     <!-- Village buttons -->
                     <div id="pray-village-container" class="flex gap-2.5 flex-nowrap overflow-x-auto no-scrollbar scroll-smooth flex-1 min-w-0">
@@ -552,12 +550,11 @@
             </select>
 
             <!-- Topic-by-topic pass count summary, grouped by category -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-violet-100">
                 <div class="mb-4">
                     <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-hands-praying text-indigo-600"></i> สรุปจำนวนผู้สอบผ่านรายบทสวดมนต์
                     </h3>
-                    <p class="text-xs md:text-sm text-slate-500 mt-1">นับจำนวนผู้ที่มีข้อความ "ผ่าน" ในแต่ละบทสวดมนต์ (ตามหมู่/รายชื่อที่กรองไว้ด้านบน)</p>
                 </div>
                 <div id="pray-topic-summary" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-6 items-start">
                     <!-- Injected dynamically: 4 group sections -->
@@ -565,13 +562,12 @@
             </div>
 
             <!-- Individual checklist directory -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-violet-100">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                             <i class="fa-solid fa-list-check text-indigo-600"></i> รายบุคคล: ความคืบหน้าการสวดมนต์
                         </h3>
-                        <p class="text-xs md:text-sm text-slate-500 mt-1">แตะที่รายชื่อเพื่อดูรายละเอียดครบทุกบทสวดมนต์</p>
                     </div>
                     <span id="pray-count-badge" class="text-sm text-indigo-700 bg-indigo-50 px-3.5 py-1.5 rounded-lg font-bold">
                         - รายการ
@@ -611,7 +607,7 @@
         <div id="tab-trainingeval" class="hidden space-y-6">
 
             <!-- Filter / search panel (single row, balanced like the ผลการเรียน tab) -->
-            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-amber-200 p-3 space-y-2">
                 <div class="flex flex-col md:flex-row md:items-center gap-4">
                     <!-- Training Eval Status Filter with counts -->
                     <div id="trainingeval-status-container" class="flex gap-2.5 flex-shrink-0">
@@ -634,13 +630,12 @@
             </div>
 
             <!-- Directory of personnel -> table list format as requested -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-amber-100">
                 <div class="flex justify-between items-center mb-4">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                             <i class="fa-solid fa-address-card text-indigo-600"></i> รายชื่อพระนวกะสำหรับประเมินผลช่วงอบรม
                         </h3>
-                        <p class="text-xs md:text-sm text-slate-500 mt-1">แตะที่รายชื่อเพื่อเปิดแบบประเมินฉบับเต็มตามรูปแบบเอกสารต้นฉบับ</p>
                     </div>
                     <span id="trainingeval-count-badge" class="text-sm text-indigo-700 bg-indigo-50 px-3.5 py-1.5 rounded-lg font-bold">
                         - รายการ
@@ -676,7 +671,7 @@
         <div id="tab-sources" class="hidden space-y-6">
             
             <!-- Collapsible Connected Cloud Sources Section -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200">
+            <div class="bg-white rounded-xl shadow-sm border border-cyan-200">
                 <button onclick="toggleSourcesCollapse()" class="w-full flex items-center justify-between p-6 focus:outline-none hover:bg-slate-50 rounded-xl transition">
                     <div class="flex items-center gap-3">
                         <div class="p-3 bg-indigo-50 rounded-lg text-indigo-600">
@@ -2934,23 +2929,23 @@
                             ${villageBadgeHtml(p.village)}
                         </td>
                         <td class="px-5 py-4 whitespace-nowrap font-extrabold text-slate-900 text-lg text-left">${p.name}</td>
-                        <td class="px-5 py-4 text-center font-bold text-slate-700 bg-amber-50/20">
+                        <td class="px-5 py-4 text-center font-bold text-slate-700 bg-amber-50">
                             <div class="font-black text-indigo-800 text-2xl leading-tight">${scoreSummary}</div>
                         </td>
-                        <td class="px-5 py-4 text-center bg-indigo-50/10">
+                        <td class="px-5 py-4 text-center bg-indigo-50">
                             <div class="font-black text-indigo-700 text-2xl leading-tight">${at.rate.toFixed(0)}%</div>
                         </td>
-                        <td class="px-5 py-4 text-center bg-emerald-50/20 whitespace-nowrap">
+                        <td class="px-5 py-4 text-center bg-emerald-50 whitespace-nowrap">
                             <div class="font-black text-indigo-700 text-2xl leading-tight tabular-nums">${trainingScoreText}</div>
                             <div class="mt-1">${trainingResultBadge}</div>
                         </td>
-                        <td class="px-5 py-4 text-center bg-sky-50/20">
+                        <td class="px-5 py-4 text-center bg-sky-50">
                             ${term1Cell}
                         </td>
-                        <td class="px-5 py-4 text-center bg-sky-50/20">
+                        <td class="px-5 py-4 text-center bg-sky-50">
                             ${term2Cell}
                         </td>
-                        <td class="px-5 py-4 text-center bg-violet-50/20 cursor-pointer" onclick="event.stopPropagation(); openPrayModal(${p.id});">
+                        <td class="px-5 py-4 text-center bg-violet-50 cursor-pointer" onclick="event.stopPropagation(); openPrayModal(${p.id});">
                             ${prayCell}
                         </td>
                     </tr>
@@ -3645,12 +3640,22 @@
 
         function switchTab(tabId) {
             const tabs = ['analytics', 'attendance', 'personnel', 'novice', 'grades', 'pray', 'trainingeval', 'sources'];
+            const tabActiveColor = {
+                personnel: 'bg-indigo-600',
+                analytics: 'bg-blue-600',
+                attendance: 'bg-emerald-600',
+                grades: 'bg-sky-600',
+                pray: 'bg-violet-600',
+                trainingeval: 'bg-amber-600',
+                novice: 'bg-rose-600',
+                sources: 'bg-cyan-600'
+            };
             tabs.forEach(t => {
                 const element = document.getElementById(`tab-${t}`);
                 const btn = document.getElementById(`tab-${t}-btn`);
                 if (t === tabId) {
                     element.classList.remove('hidden');
-                    btn.className = "w-full text-left bg-indigo-600 text-white shadow-sm px-4 py-3 rounded-lg text-base font-black flex items-center gap-3 transition";
+                    btn.className = `w-full text-left ${tabActiveColor[t]} text-white shadow-sm px-4 py-3 rounded-lg text-base font-black flex items-center gap-3 transition`;
                 } else {
                     element.classList.add('hidden');
                     btn.className = "w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-4 py-3 rounded-lg text-base font-bold flex items-center gap-3 transition";
