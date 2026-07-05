@@ -39,6 +39,16 @@
             scrollbar-width: none;
         }
 
+        /* Filter panels (village/date/search) stay fixed in place while the page scrolls */
+        .filter-sticky {
+            position: sticky;
+            top: 3.5rem; /* below the mobile top bar (h-14) on small screens */
+            z-index: 10;
+        }
+        @media (min-width: 768px) {
+            .filter-sticky { top: 0; }
+        }
+
         /* Sidebar drawer transition (mobile) */
         #sidebar {
             transition: transform 0.25s ease;
@@ -93,7 +103,7 @@
                 color: black !important;
             }
             /* Hide non-printable items when triggering printer */
-            aside, #sidebar-overlay, #mobile-topbar, footer, .sticky, button, .print\:hidden, #detail-modal, #sandbox-modal {
+            aside, #sidebar-overlay, #mobile-topbar, footer, .sticky, .filter-sticky, button, .print\:hidden, #detail-modal, #sandbox-modal {
                 display: none !important;
             }
             /* Reset modal positioning to print nicely in full screen */
@@ -215,7 +225,7 @@
         <div id="tab-analytics" class="space-y-6">
             
             <!-- Interactive Analytics Filter (Removed Labels as requested) -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
                 <!-- Date + Village Selection combined into one row -->
                 <div class="flex flex-col md:flex-row md:items-center gap-3">
                     <div id="analytics-date-container" class="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth flex-shrink-0">
@@ -224,6 +234,13 @@
                     <div class="hidden md:block w-px self-stretch bg-slate-200 flex-shrink-0"></div>
                     <div id="analytics-village-container" class="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth flex-1 min-w-0">
                         <!-- Villages injected dynamically -->
+                    </div>
+                    <!-- Search -->
+                    <div class="w-full md:w-80 flex-shrink-0">
+                        <div class="relative">
+                            <input type="text" id="analytics-search-input" oninput="applyAnalyticsSearch()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:ring-2 focus:ring-indigo-500 outline-none bg-white font-bold">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-4 text-slate-400 text-base"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -265,7 +282,7 @@
         <div id="tab-attendance" class="hidden space-y-6">
             
             <!-- Attendance Filter panel (Removed Labels as requested) -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
                 <!-- Date + Village Selection combined into one row -->
                 <div class="flex flex-col md:flex-row md:items-center gap-3">
                     <div id="attend-date-container" class="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth flex-shrink-0">
@@ -274,6 +291,13 @@
                     <div class="hidden md:block w-px self-stretch bg-slate-200 flex-shrink-0"></div>
                     <div id="attend-village-container" class="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth flex-1 min-w-0">
                         <!-- Dynamic Villages -->
+                    </div>
+                    <!-- Search -->
+                    <div class="w-full md:w-80 flex-shrink-0">
+                        <div class="relative">
+                            <input type="text" id="attendance-search-input" oninput="applyAttendanceFilters()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:ring-2 focus:ring-indigo-500 outline-none bg-white font-bold">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-4 text-slate-400 text-base"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -318,7 +342,7 @@
         <div id="tab-personnel" class="hidden space-y-6">
 
             <!-- Filters (Labels Removed as requested) -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
                 <div class="flex flex-col md:flex-row md:items-center gap-5">
                     <!-- Village buttons -->
                     <div class="flex-1 min-w-0">
@@ -393,7 +417,7 @@
         <div id="tab-novice" class="hidden space-y-6">
 
             <!-- Filter / search panel -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
                 <div class="flex flex-col md:flex-row md:items-center gap-4">
                     <!-- Village buttons -->
                     <div id="novice-village-container" class="flex gap-2.5 flex-nowrap overflow-x-auto no-scrollbar scroll-smooth flex-1 min-w-0">
@@ -441,7 +465,7 @@
         <div id="tab-grades" class="hidden space-y-6">
 
             <!-- Filters + Term toggle -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
                 <div class="flex flex-col md:flex-row md:items-center gap-4">
                     <!-- Term toggle -->
                     <div class="flex gap-2.5 flex-shrink-0">
@@ -507,7 +531,7 @@
         <div id="tab-pray" class="hidden space-y-6">
 
             <!-- Filters -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
                 <div class="flex flex-col md:flex-row md:items-center gap-4">
                     <!-- Village buttons -->
                     <div id="pray-village-container" class="flex gap-2.5 flex-nowrap overflow-x-auto no-scrollbar scroll-smooth flex-1 min-w-0">
@@ -587,7 +611,7 @@
         <div id="tab-trainingeval" class="hidden space-y-6">
 
             <!-- Filter / search panel (single row, balanced like the ผลการเรียน tab) -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border border-slate-200 p-3 space-y-2">
                 <div class="flex flex-col md:flex-row md:items-center gap-4">
                     <!-- Training Eval Status Filter with counts -->
                     <div id="trainingeval-status-container" class="flex gap-2.5 flex-shrink-0">
@@ -660,30 +684,93 @@
                         </div>
                         <div class="text-left">
                             <h3 class="font-extrabold text-slate-900 text-base md:text-lg uppercase tracking-wider">แหล่งข้อมูลเชื่อมโยงบนคลาวด์และไฟล์อ้างอิงจริง (Connected Cloud Sources)</h3>
-                            <p class="text-xs md:text-sm text-slate-500 mt-1">รายชื่อ ID ของตาราง Google Sheets และชื่อชีตย่อยที่ดึงประเมินผลผ่านระบบออนไลน์</p>
+                            <p class="text-xs md:text-sm text-slate-500 mt-1">รายชื่อ ID ของตาราง Google Sheets และชื่อชีตย่อยที่ดึงประเมินผลผ่านระบบออนไลน์ แยกตามแต่ละเมนูในแถบด้านซ้าย</p>
                         </div>
                     </div>
                     <i id="sources-collapse-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-200 text-lg"></i>
                 </button>
                 
-                <div id="sources-collapse-content" class="hidden p-6 border-t border-slate-100 bg-slate-50/50 rounded-b-xl">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm md:text-base text-slate-700">
-                        <div class="p-5 bg-white rounded-xl border border-slate-100 shadow-sm">
-                            <span class="font-bold block text-slate-900 mb-1">🗂️ 1. ทะเบียนประวัติหลัก & แฟ้ม Estimate:</span>
-                            <p class="text-xs text-slate-400 mb-3">ตารางประวัติหลัก (DATA1: คอลัมน์ A-F) และแผ่นสรุปประเมินช่วงอบรม (Estimate: คอลัมน์ E-S)</p>
-                            <span class="font-mono bg-indigo-100/60 text-indigo-950 px-3 py-1.5 rounded block mt-1 break-all text-xs md:text-sm font-semibold">1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous</span>
-                        </div>
-                        <div class="p-5 bg-white rounded-xl border border-slate-100 shadow-sm">
-                            <span class="font-bold block text-slate-900 mb-1">📝 2. บันทึกผลประเมิน 5 มิติ:</span>
-                            <p class="text-xs text-slate-400 mb-3">ไฟล์ประเมินความประพฤติรายวันแยกมิติ (จำวัด/ตะกร้า/วิมาน/ราวตาก/ห่มดอง)</p>
-                            <span class="font-mono bg-indigo-100/60 text-indigo-950 px-3 py-1.5 rounded block mt-1 break-all text-xs md:text-sm font-semibold">1IEUWnX0dZo1wwN2gwHMVavECEKV9B7auBbnPA4bzusg</span>
-                        </div>
-                        <div class="p-5 bg-white rounded-xl border border-slate-100 shadow-sm">
-                            <span class="font-bold block text-slate-900 mb-1">📋 3. ข้อมูลเช็คชื่อ:</span>
-                            <p class="text-xs text-slate-400 mb-3">ไฟล์บันทึกการเช็คชื่อเข้าอบรมและทำวัตรเช้า-ค่ำ 4 รอบเวลาแยกหมู่ 1-4</p>
-                            <span class="font-mono bg-indigo-100/60 text-indigo-950 px-3 py-1.5 rounded block mt-1 break-all text-xs md:text-sm font-semibold">1sZmC8Z_CVy1AE-L__5IRpnaAMSLOAx4nxv_gslEr3Jw</span>
+                <div id="sources-collapse-content" class="hidden p-6 border-t border-slate-100 bg-slate-50/50 rounded-b-xl space-y-6">
+
+                    <!-- Per-menu source mapping -->
+                    <div>
+                        <h4 class="font-extrabold text-slate-800 text-sm md:text-base mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-table-list text-indigo-500"></i> แหล่งข้อมูลแยกตามเมนู
+                        </h4>
+                        <div class="overflow-x-auto rounded-lg border border-slate-200 custom-scrollbar">
+                            <table class="min-w-full divide-y divide-slate-200 text-sm md:text-base bg-white">
+                                <thead class="bg-slate-100 font-extrabold text-slate-500 text-left">
+                                    <tr>
+                                        <th class="px-4 py-3 whitespace-nowrap">เมนู</th>
+                                        <th class="px-4 py-3">ชีตย่อยที่ใช้</th>
+                                        <th class="px-4 py-3">รหัสสเปรดชีต (Spreadsheet ID)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-slate-700">
+                                    <tr>
+                                        <td class="px-4 py-3 font-bold whitespace-nowrap"><i class="fa-solid fa-address-book text-indigo-600 w-4 text-center"></i> สรุปประเมิน</td>
+                                        <td class="px-4 py-3">DATA1, Estimate, Term1, Term2, Pray <span class="text-slate-400">(รวมผลจากหลายชีต)</span></td>
+                                        <td class="px-4 py-3"><span class="font-mono bg-indigo-100/60 text-indigo-950 px-2.5 py-1 rounded text-xs md:text-sm font-semibold break-all">1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-bold whitespace-nowrap"><i class="fa-solid fa-chart-pie text-indigo-600 w-4 text-center"></i> ความเป็นอยู่</td>
+                                        <td class="px-4 py-3">จุดจำวัด, ตะกร้า, วิมาน, ราวตาก, ห่มดอง <span class="text-slate-400">(แยกชีตตามวันที่ประเมิน)</span></td>
+                                        <td class="px-4 py-3"><span class="font-mono bg-indigo-100/60 text-indigo-950 px-2.5 py-1 rounded text-xs md:text-sm font-semibold break-all">1IEUWnX0dZo1wwN2gwHMVavECEKV9B7auBbnPA4bzusg</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-bold whitespace-nowrap"><i class="fa-solid fa-clipboard-user text-indigo-600 w-4 text-center"></i> เช็คชื่อ</td>
+                                        <td class="px-4 py-3">หมู่ 1, หมู่ 2, หมู่ 3, หมู่ 4</td>
+                                        <td class="px-4 py-3"><span class="font-mono bg-indigo-100/60 text-indigo-950 px-2.5 py-1 rounded text-xs md:text-sm font-semibold break-all">1sZmC8Z_CVy1AE-L__5IRpnaAMSLOAx4nxv_gslEr3Jw</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-bold whitespace-nowrap"><i class="fa-solid fa-graduation-cap text-indigo-600 w-4 text-center"></i> ผลการเรียน</td>
+                                        <td class="px-4 py-3">Term1, Term2</td>
+                                        <td class="px-4 py-3"><span class="font-mono bg-indigo-100/60 text-indigo-950 px-2.5 py-1 rounded text-xs md:text-sm font-semibold break-all">1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-bold whitespace-nowrap"><i class="fa-solid fa-hands-praying text-indigo-600 w-4 text-center"></i> สวดมนต์</td>
+                                        <td class="px-4 py-3">Pray</td>
+                                        <td class="px-4 py-3"><span class="font-mono bg-indigo-100/60 text-indigo-950 px-2.5 py-1 rounded text-xs md:text-sm font-semibold break-all">1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-bold whitespace-nowrap"><i class="fa-solid fa-scroll text-indigo-600 w-4 text-center"></i> คะแนนอบรม</td>
+                                        <td class="px-4 py-3">Estimate <span class="text-slate-400">(คอลัมน์ E-S)</span></td>
+                                        <td class="px-4 py-3"><span class="font-mono bg-indigo-100/60 text-indigo-950 px-2.5 py-1 rounded text-xs md:text-sm font-semibold break-all">1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-bold whitespace-nowrap"><i class="fa-solid fa-id-card text-indigo-600 w-4 text-center"></i> ข้อมูลพระนวกะ</td>
+                                        <td class="px-4 py-3">DATA2</td>
+                                        <td class="px-4 py-3"><span class="font-mono bg-indigo-100/60 text-indigo-950 px-2.5 py-1 rounded text-xs md:text-sm font-semibold break-all">1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+
+                    <!-- Spreadsheet-level summary (original grouping, kept for reference) -->
+                    <div>
+                        <h4 class="font-extrabold text-slate-800 text-sm md:text-base mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-database text-indigo-500"></i> สรุปตามไฟล์สเปรดชีตต้นทาง
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm md:text-base text-slate-700">
+                            <div class="p-5 bg-white rounded-xl border border-slate-100 shadow-sm">
+                                <span class="font-bold block text-slate-900 mb-1">🗂️ 1. ทะเบียนประวัติหลัก, ผลการเรียน, สวดมนต์ & แฟ้ม Estimate:</span>
+                                <p class="text-xs text-slate-400 mb-3">ทะเบียนประวัติหลัก (DATA1: คอลัมน์ A-F), ข้อมูลพระนวกะ (DATA2), ผลการเรียน (Term1/Term2), บทสวดมนต์ (Pray) และแผ่นสรุปประเมินช่วงอบรม (Estimate: คอลัมน์ E-S)</p>
+                                <span class="font-mono bg-indigo-100/60 text-indigo-950 px-3 py-1.5 rounded block mt-1 break-all text-xs md:text-sm font-semibold">1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous</span>
+                            </div>
+                            <div class="p-5 bg-white rounded-xl border border-slate-100 shadow-sm">
+                                <span class="font-bold block text-slate-900 mb-1">📝 2. บันทึกผลประเมิน 5 มิติ:</span>
+                                <p class="text-xs text-slate-400 mb-3">ไฟล์ประเมินความประพฤติรายวันแยกมิติ (จำวัด/ตะกร้า/วิมาน/ราวตาก/ห่มดอง)</p>
+                                <span class="font-mono bg-indigo-100/60 text-indigo-950 px-3 py-1.5 rounded block mt-1 break-all text-xs md:text-sm font-semibold">1IEUWnX0dZo1wwN2gwHMVavECEKV9B7auBbnPA4bzusg</span>
+                            </div>
+                            <div class="p-5 bg-white rounded-xl border border-slate-100 shadow-sm">
+                                <span class="font-bold block text-slate-900 mb-1">📋 3. ข้อมูลเช็คชื่อ:</span>
+                                <p class="text-xs text-slate-400 mb-3">ไฟล์บันทึกการเช็คชื่อเข้าอบรมและทำวัตรเช้า-ค่ำ 4 รอบเวลาแยกหมู่ 1-4</p>
+                                <span class="font-mono bg-indigo-100/60 text-indigo-950 px-3 py-1.5 rounded block mt-1 break-all text-xs md:text-sm font-semibold">1sZmC8Z_CVy1AE-L__5IRpnaAMSLOAx4nxv_gslEr3Jw</span>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -1511,9 +1598,11 @@
         let analyticsSelectedTopic = 'all';      
         let analyticsSelectedDate = '01/07/2026'; // Default selected date
         let analyticsSelectedVillage = '';       
+        let analyticsSearchTerm = '';
 
         // Attendance local filter state
         let attendanceSelectedVillage = '';
+        let attendanceSearchTerm = '';
 
         const TOPIC_METRIC_MAP = {
             all: { name: 'ทั้งหมด', max: 155, field: 'total', emoji: '🌟' },
@@ -2602,8 +2691,11 @@
         }
 
         function applyAttendanceFilters() {
+            attendanceSearchTerm = document.getElementById('attendance-search-input').value.toLowerCase().trim();
             let filteredAttend = compiledPersonnel.filter(p => {
-                return !attendanceSelectedVillage || p.village === attendanceSelectedVillage;
+                const matchVillage = !attendanceSelectedVillage || p.village === attendanceSelectedVillage;
+                const matchSearch = !attendanceSearchTerm || p.name.toLowerCase().includes(attendanceSearchTerm);
+                return matchVillage && matchSearch;
             });
 
             let presentCount = 0;
@@ -2705,12 +2797,19 @@
             return;
         }
 
+        function applyAnalyticsSearch() {
+            analyticsSearchTerm = document.getElementById('analytics-search-input').value.toLowerCase().trim();
+            renderAnalyticsTable();
+        }
+
         function renderAnalyticsTable() {
             const tbody = document.getElementById('leaderboard-tbody');
             tbody.innerHTML = '';
 
             let tableList = compiledPersonnel.filter(p => {
-                return !analyticsSelectedVillage || p.village === analyticsSelectedVillage;
+                const matchVillage = !analyticsSelectedVillage || p.village === analyticsSelectedVillage;
+                const matchSearch = !analyticsSearchTerm || p.name.toLowerCase().includes(analyticsSearchTerm);
+                return matchVillage && matchSearch;
             });
 
             const meta = TOPIC_METRIC_MAP[analyticsSelectedTopic];
@@ -2817,8 +2916,9 @@
                 const prayTotal = pray.total || 0;
                 const prayMax = pray.totalTopics || PRAY_TOTAL_TOPICS;
                 const prayFull = prayMax > 0 && prayTotal === prayMax;
+                const prayPercent = prayMax > 0 ? Math.round((prayTotal / prayMax) * 100) : 0;
                 const prayCell = `
-                    <div class="font-black ${prayFull ? 'text-emerald-600' : 'text-violet-700'} text-2xl leading-tight">${prayTotal}/${prayMax}</div>
+                    <div class="font-black ${prayFull ? 'text-emerald-600' : 'text-violet-700'} text-2xl leading-tight">${prayTotal}/${prayMax}<span class="text-sm font-bold">(${prayPercent}%)</span></div>
                     <div class="text-xs text-slate-400 mt-1 hover:underline">แตะดูรายละเอียด</div>
                 `;
 
