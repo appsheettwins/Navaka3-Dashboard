@@ -142,46 +142,49 @@
 <body class="min-h-screen text-slate-800 flex flex-col text-sm md:text-base">
 
     <!-- Left Sidebar Navigation: desktop-fixed, mobile slide-in drawer -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-56 bg-indigo-950 text-white flex flex-col shadow-2xl -translate-x-full md:translate-x-0 print:hidden">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-56 bg-indigo-950 text-white flex flex-col shadow-2xl -translate-x-full md:translate-x-0 print:hidden transition-all duration-200">
         <!-- Brand / Title -->
         <div class="flex items-center gap-2.5 px-4 py-4 border-b border-indigo-900/80 shrink-0">
             <div class="p-2 bg-indigo-900 rounded-lg border border-indigo-800 shrink-0">
                 <i class="fa-solid fa-medal text-lg text-amber-400"></i>
             </div>
-            <div class="min-w-0">
+            <div class="min-w-0 sidebar-label" id="sidebar-brand-text">
                 <span class="font-extrabold text-sm leading-tight block">ข้อมูลการอบรม</span>
                 <span class="text-[11px] text-indigo-300 block leading-snug mt-0.5">โครงการอบรมพระนวกะ 3 เส้นทางวิสามัญสาขาและพุทธบุตรอาสา</span>
             </div>
             <button onclick="toggleSidebar(false)" class="md:hidden ml-auto text-indigo-300 hover:text-white shrink-0 p-1">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
+            <button onclick="toggleSidebarCollapse()" id="sidebar-collapse-btn" title="ยุบเมนู" class="hidden md:flex ml-auto items-center justify-center text-indigo-300 hover:text-white shrink-0 p-1.5 rounded hover:bg-indigo-900/60 transition">
+                <i class="fa-solid fa-angles-left text-sm" id="sidebar-collapse-icon"></i>
+            </button>
         </div>
 
         <!-- Navigation links (moved here from the top bar for a calmer, roomier header) -->
         <nav class="flex-1 overflow-y-auto custom-scrollbar px-2.5 py-3 space-y-1">
-            <button onclick="switchTab('personnel')" id="tab-personnel-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-address-book w-4 text-center text-sm text-indigo-400"></i> สรุปประเมิน
+            <button onclick="switchTab('personnel')" id="tab-personnel-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition sidebar-nav-btn">
+                <i class="fa-solid fa-address-book w-4 text-center text-sm text-red-400"></i> <span class="sidebar-label">สรุปประเมิน</span>
             </button>
-            <button onclick="switchTab('analytics')" id="tab-analytics-btn" class="w-full text-left bg-blue-600 text-white shadow-sm px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-chart-pie w-4 text-center text-sm text-blue-300"></i> ความเป็นอยู่
+            <button onclick="switchTab('analytics')" id="tab-analytics-btn" class="w-full text-left bg-lime-600 text-white shadow-sm px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition sidebar-nav-btn">
+                <i class="fa-solid fa-chart-pie w-4 text-center text-sm text-lime-300"></i> <span class="sidebar-label">ความเป็นอยู่</span>
             </button>
-            <button onclick="switchTab('attendance')" id="tab-attendance-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-clipboard-user w-4 text-center text-sm text-emerald-400"></i> เช็คชื่อ
+            <button onclick="switchTab('attendance')" id="tab-attendance-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition sidebar-nav-btn">
+                <i class="fa-solid fa-clipboard-user w-4 text-center text-sm text-emerald-400"></i> <span class="sidebar-label">เช็คชื่อ</span>
             </button>
-            <button onclick="switchTab('grades')" id="tab-grades-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-graduation-cap w-4 text-center text-sm text-sky-400"></i> ผลการเรียน
+            <button onclick="switchTab('grades')" id="tab-grades-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition sidebar-nav-btn">
+                <i class="fa-solid fa-graduation-cap w-4 text-center text-sm text-sky-400"></i> <span class="sidebar-label">ผลการเรียน</span>
             </button>
-            <button onclick="switchTab('pray')" id="tab-pray-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-hands-praying w-4 text-center text-sm text-violet-400"></i> สวดมนต์
+            <button onclick="switchTab('pray')" id="tab-pray-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition sidebar-nav-btn">
+                <i class="fa-solid fa-hands-praying w-4 text-center text-sm text-violet-400"></i> <span class="sidebar-label">สวดมนต์</span>
             </button>
-            <button onclick="switchTab('trainingeval')" id="tab-trainingeval-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-scroll w-4 text-center text-sm text-amber-400"></i> คะแนนอบรม
+            <button onclick="switchTab('trainingeval')" id="tab-trainingeval-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition sidebar-nav-btn">
+                <i class="fa-solid fa-scroll w-4 text-center text-sm text-amber-400"></i> <span class="sidebar-label">คะแนนอบรม</span>
             </button>
-            <button onclick="switchTab('novice')" id="tab-novice-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-id-card w-4 text-center text-sm text-rose-400"></i> ข้อมูลพระนวกะ
+            <button onclick="switchTab('novice')" id="tab-novice-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition sidebar-nav-btn">
+                <i class="fa-solid fa-id-card w-4 text-center text-sm text-rose-400"></i> <span class="sidebar-label">ข้อมูลพระนวกะ</span>
             </button>
-            <button onclick="switchTab('sources')" id="tab-sources-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition">
-                <i class="fa-solid fa-circle-nodes w-4 text-center text-sm text-cyan-400"></i> แหล่งข้อมูล
+            <button onclick="switchTab('sources')" id="tab-sources-btn" class="w-full text-left text-indigo-200 hover:bg-indigo-900/70 hover:text-white px-3 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2.5 transition sidebar-nav-btn">
+                <i class="fa-solid fa-circle-nodes w-4 text-center text-sm text-cyan-400"></i> <span class="sidebar-label">แหล่งข้อมูล</span>
             </button>
         </nav>
 
@@ -189,14 +192,14 @@
         <div class="px-3 py-3 border-t border-indigo-900/80 space-y-2.5 shrink-0">
             <span id="sync-status" class="w-full inline-flex items-center justify-center px-3 py-1.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
                 <span class="w-2.5 h-2.5 mr-2 bg-yellow-400 rounded-full animate-ping"></span>
-                กำลังเชื่อมคลาวด์...
+                <span class="sidebar-label">กำลังเชื่อมคลาวด์...</span>
             </span>
             <button onclick="fetchAllData()" class="w-full bg-indigo-800 hover:bg-indigo-700 px-3 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 active:scale-95">
-                <i class="fa-solid fa-rotate-right"></i> ดึงข้อมูล
+                <i class="fa-solid fa-rotate-right"></i> <span class="sidebar-label">ดึงข้อมูล</span>
             </button>
             <button id="theme-toggle-btn" onclick="toggleDarkMode()" class="w-full bg-indigo-900 hover:bg-indigo-800 border border-indigo-800 px-3 py-2.5 rounded-lg text-sm font-bold transition flex items-center justify-center gap-2 active:scale-95">
                 <i id="theme-toggle-icon" class="fa-solid fa-moon text-amber-300"></i>
-                <span id="theme-toggle-label">โหมดกลางคืน</span>
+                <span id="theme-toggle-label" class="sidebar-label">โหมดกลางคืน</span>
             </button>
         </div>
     </aside>
@@ -205,7 +208,7 @@
     <div id="sidebar-overlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden print:hidden"></div>
 
     <!-- Content column, offset by the sidebar's width on desktop -->
-    <div class="flex flex-col min-h-screen w-full md:pl-56">
+    <div id="main-wrapper" class="flex flex-col min-h-screen w-full md:pl-56 transition-all duration-200">
 
         <!-- Slim mobile top bar: only the hamburger + title + quick theme toggle (frees up space on desktop) -->
         <div id="mobile-topbar" class="md:hidden sticky top-0 z-20 bg-indigo-950 text-white h-14 flex items-center gap-3 px-4 shadow-lg print:hidden">
@@ -225,7 +228,7 @@
         <div id="tab-analytics" class="space-y-6">
             
             <!-- Interactive Analytics Filter (Removed Labels as requested) -->
-            <div class="filter-sticky bg-white rounded-xl shadow-sm border-4 border-blue-500 p-3 space-y-2">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border-4 border-lime-500 p-3 space-y-2">
                 <!-- Date + Village Selection combined into one row -->
                 <div class="flex flex-col md:flex-row md:items-center gap-3">
                     <div id="analytics-date-container" class="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar scroll-smooth flex-shrink-0">
@@ -238,7 +241,7 @@
                     <!-- Search -->
                     <div class="w-full md:w-80 flex-shrink-0">
                         <div class="relative">
-                            <input type="text" id="analytics-search-input" oninput="applyAnalyticsSearch()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:ring-2 focus:ring-blue-500 outline-none bg-white font-bold">
+                            <input type="text" id="analytics-search-input" oninput="applyAnalyticsSearch()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:ring-2 focus:ring-lime-500 outline-none bg-white font-bold">
                             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-4 text-slate-400 text-base"></i>
                         </div>
                     </div>
@@ -246,7 +249,7 @@
             </div>
 
             <!-- Full Personnel Evaluation Directory -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border-4 border-blue-500">
+            <div class="bg-white rounded-xl p-6 shadow-sm border-4 border-lime-500">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
@@ -349,7 +352,7 @@
         <div id="tab-personnel" class="hidden space-y-6">
 
             <!-- Filters (Labels Removed as requested) -->
-            <div class="filter-sticky bg-white rounded-xl shadow-sm border-4 border-indigo-500 p-3 space-y-2">
+            <div class="filter-sticky bg-white rounded-xl shadow-sm border-4 border-red-500 p-3 space-y-2">
                 <div class="flex flex-col md:flex-row md:items-center gap-5">
                     <!-- Village buttons -->
                     <div class="flex-1 min-w-0">
@@ -360,7 +363,7 @@
                     <!-- Search -->
                     <div class="w-full md:w-80 flex-shrink-0">
                         <div class="relative">
-                            <input type="text" id="search-input" oninput="applyFilters()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:ring-2 focus:ring-indigo-500 outline-none bg-white font-bold">
+                            <input type="text" id="search-input" oninput="applyFilters()" placeholder="พิมพ์ชื่อสืบค้น..." class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:ring-2 focus:ring-red-500 outline-none bg-white font-bold">
                             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-4 text-slate-400 text-base"></i>
                         </div>
                     </div>
@@ -374,14 +377,14 @@
             <select id="filter-date" class="hidden"></select>
 
             <!-- Full Personnel Summary Directory -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border-4 border-indigo-500">
+            <div class="bg-white rounded-xl p-6 shadow-sm border-4 border-red-500">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-address-book text-indigo-600"></i> สรุปประเมินผลรวมรายบุคคล
+                            <i class="fa-solid fa-address-book text-red-600"></i> สรุปประเมินผลรวมรายบุคคล
                         </h3>
                     </div>
-                    <span id="personnel-count-badge" class="text-sm text-indigo-700 bg-indigo-50 px-3.5 py-1.5 rounded-lg font-bold">
+                    <span id="personnel-count-badge" class="text-sm text-red-700 bg-red-50 px-3.5 py-1.5 rounded-lg font-bold">
                         - รายการ
                     </span>
                 </div>
@@ -2556,7 +2559,7 @@
             latest3Dates.forEach(date => {
                 const isActive = analyticsSelectedDate === date;
                 const btn = `
-                    <button onclick="syncGlobalDate('${date}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-blue-600 text-white border-blue-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
+                    <button onclick="syncGlobalDate('${date}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-lime-600 text-white border-lime-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
                          ${formatDateThaiShort(date)}
                     </button>
                 `;
@@ -2588,7 +2591,7 @@
 
             const isAllActive = analyticsSelectedVillage === '';
             const allBtn = `
-                <button onclick="selectAnalyticsVillage('')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isAllActive ? 'bg-blue-600 text-white border-blue-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
+                <button onclick="selectAnalyticsVillage('')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isAllActive ? 'bg-lime-600 text-white border-lime-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
                     ทั้งหมด
                 </button>
             `;
@@ -2598,7 +2601,7 @@
             sortedVillages.forEach(v => {
                 const isActive = analyticsSelectedVillage === v;
                 const btn = `
-                    <button onclick="selectAnalyticsVillage('${v}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-blue-600 text-white border-blue-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
+                    <button onclick="selectAnalyticsVillage('${v}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-lime-600 text-white border-lime-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">
                         หมู่&nbsp;${v}
                     </button>
                 `;
@@ -2949,7 +2952,7 @@
                         <td class="px-3 py-4 whitespace-nowrap text-center border-r border-slate-200">
                             ${villageBadgeHtml(p.village)}
                         </td>
-                        <td class="px-5 py-4 whitespace-nowrap font-extrabold text-slate-900 text-lg text-left border-r border-slate-200">${p.firstname ? `พระ${p.firstname} ${p.honorific || ''}`.trim() : p.name}</td>
+                        <td class="px-5 py-4 whitespace-nowrap font-extrabold text-slate-900 text-lg text-left border-r border-slate-200">${(p.lastname && p.name.endsWith(p.lastname)) ? p.name.slice(0, p.name.length - p.lastname.length).trim() : p.name}</td>
                         <td class="px-5 py-4 text-center font-bold text-slate-700 bg-amber-50 border-r border-slate-200">
                             <div class="font-black text-indigo-800 text-2xl leading-tight">${scoreSummary}</div>
                         </td>
@@ -3662,8 +3665,8 @@
         function switchTab(tabId) {
             const tabs = ['analytics', 'attendance', 'personnel', 'novice', 'grades', 'pray', 'trainingeval', 'sources'];
             const tabActiveColor = {
-                personnel: 'bg-indigo-600',
-                analytics: 'bg-blue-600',
+                personnel: 'bg-red-600',
+                analytics: 'bg-lime-600',
                 attendance: 'bg-emerald-600',
                 grades: 'bg-sky-600',
                 pray: 'bg-violet-600',
@@ -3696,6 +3699,35 @@
             } else {
                 sidebar.classList.add('-translate-x-full');
                 overlay.classList.add('hidden');
+            }
+        }
+
+        let sidebarCollapsed = false;
+        function toggleSidebarCollapse() {
+            sidebarCollapsed = !sidebarCollapsed;
+            const sidebar = document.getElementById('sidebar');
+            const wrapper = document.getElementById('main-wrapper');
+            const icon = document.getElementById('sidebar-collapse-icon');
+            const labels = document.querySelectorAll('.sidebar-label');
+            const navBtns = document.querySelectorAll('.sidebar-nav-btn');
+            if (!sidebar || !wrapper) return;
+
+            if (sidebarCollapsed) {
+                sidebar.classList.remove('w-56');
+                sidebar.classList.add('w-[68px]');
+                wrapper.classList.remove('md:pl-56');
+                wrapper.classList.add('md:pl-[68px]');
+                labels.forEach(el => el.classList.add('hidden'));
+                navBtns.forEach(b => { b.classList.add('justify-center'); b.title = b.innerText.trim(); });
+                if (icon) { icon.classList.remove('fa-angles-left'); icon.classList.add('fa-angles-right'); }
+            } else {
+                sidebar.classList.add('w-56');
+                sidebar.classList.remove('w-[68px]');
+                wrapper.classList.add('md:pl-56');
+                wrapper.classList.remove('md:pl-[68px]');
+                labels.forEach(el => el.classList.remove('hidden'));
+                navBtns.forEach(b => { b.classList.remove('justify-center'); b.removeAttribute('title'); });
+                if (icon) { icon.classList.add('fa-angles-left'); icon.classList.remove('fa-angles-right'); }
             }
         }
 
@@ -3797,12 +3829,12 @@
             const currentVal = document.getElementById('filter-village').value;
 
             const allActive = currentVal === '';
-            container.innerHTML += `<button onclick="selectPersonnelVillage('')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${allActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">ทั้งหมด</button>`;
+            container.innerHTML += `<button onclick="selectPersonnelVillage('')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${allActive ? 'bg-red-600 text-white border-red-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">ทั้งหมด</button>`;
 
             const sorted = [...villageList].sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
             sorted.forEach(v => {
                 const isActive = currentVal === v;
-                container.innerHTML += `<button onclick="selectPersonnelVillage('${v}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">หมู่&nbsp;${v}</button>`;
+                container.innerHTML += `<button onclick="selectPersonnelVillage('${v}')" class="px-5 py-2.5 border rounded-full text-base font-extrabold transition duration-150 whitespace-nowrap ${isActive ? 'bg-red-600 text-white border-red-600 shadow-sm font-black' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}">หมู่&nbsp;${v}</button>`;
             });
         }
 
