@@ -814,6 +814,7 @@
                             <p id="modal-desc-sub" class="text-xs md:text-sm text-slate-500">-</p>
                             <div class="pt-1 flex flex-wrap gap-2 justify-center sm:justify-start">
                                 <span id="modal-badge-score" class="text-xs md:text-sm font-extrabold px-3 py-1 rounded-lg bg-amber-500 text-white shadow-sm">- คะแนน</span>
+                                <span id="modal-badge-living" class="text-xs md:text-sm font-extrabold px-3 py-1 rounded-lg bg-lime-600 text-white shadow-sm">- % ความเป็นอยู่</span>
                                 <span id="modal-badge-attend" class="text-xs md:text-sm font-extrabold px-3 py-1 rounded-lg bg-indigo-600 text-white shadow-sm">- % เข้าประชุม</span>
                             </div>
                         </div>
@@ -1004,31 +1005,38 @@
                     </div>
                 </div>
 
-                <!-- Term1 grades summary -->
-                <div id="modal-section-term1" class="border-t border-slate-100 pt-5 space-y-4">
-                    <h4 class="text-sm md:text-base font-extrabold text-sky-900 uppercase tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap text-sky-600"></i> ผลการเรียน เทอมแรก
-                    </h4>
-                    <div id="modal-term1-subjects" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-base">
-                        <!-- Injected dynamically -->
-                    </div>
-                    <div class="bg-sky-50 p-4 rounded-lg border border-sky-100 flex items-center justify-between shadow-sm">
-                        <span class="text-xs md:text-sm font-black text-sky-800">เกรดเฉลี่ยเทอมแรก</span>
-                        <span id="modal-term1-gpa" class="text-xl font-black text-sky-700">-</span>
-                    </div>
-                </div>
+                <!-- Term1 & Term2 grades summary (compact two-column layout) -->
+                <div class="border-t border-slate-100 pt-5 space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div id="modal-section-term1" class="space-y-3">
+                            <h4 class="text-sm md:text-base font-extrabold text-sky-900 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-graduation-cap text-sky-600"></i> ผลการเรียน เทอมแรก
+                            </h4>
+                            <div id="modal-term1-subjects" class="grid grid-cols-1 gap-2.5 text-base">
+                                <!-- Injected dynamically -->
+                            </div>
+                            <div class="bg-sky-50 p-3.5 rounded-lg border border-sky-100 flex items-center justify-between shadow-sm">
+                                <span class="text-xs md:text-sm font-black text-sky-800">เกรดเฉลี่ยเทอมแรก</span>
+                                <span id="modal-term1-gpa" class="text-xl font-black text-sky-700">-</span>
+                            </div>
+                        </div>
 
-                <!-- Term2 grades summary -->
-                <div id="modal-section-term2" class="border-t border-slate-100 pt-5 space-y-4">
-                    <h4 class="text-sm md:text-base font-extrabold text-sky-900 uppercase tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap text-sky-600"></i> ผลการเรียน เทอมสอง
-                    </h4>
-                    <div id="modal-term2-subjects" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-base">
-                        <!-- Injected dynamically -->
+                        <div id="modal-section-term2" class="space-y-3">
+                            <h4 class="text-sm md:text-base font-extrabold text-sky-900 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-graduation-cap text-sky-600"></i> ผลการเรียน เทอมสอง
+                            </h4>
+                            <div id="modal-term2-subjects" class="grid grid-cols-1 gap-2.5 text-base">
+                                <!-- Injected dynamically -->
+                            </div>
+                            <div class="bg-sky-50 p-3.5 rounded-lg border border-sky-100 flex items-center justify-between shadow-sm">
+                                <span class="text-xs md:text-sm font-black text-sky-800">เกรดเฉลี่ยเทอมสอง</span>
+                                <span id="modal-term2-gpa" class="text-xl font-black text-sky-700">-</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="bg-sky-50 p-4 rounded-lg border border-sky-100 flex items-center justify-between shadow-sm">
-                        <span class="text-xs md:text-sm font-black text-sky-800">เกรดเฉลี่ยเทอมสอง</span>
-                        <span id="modal-term2-gpa" class="text-xl font-black text-sky-700">-</span>
+                    <div id="modal-section-term-overall" class="bg-sky-100 p-3.5 rounded-lg border border-sky-200 flex items-center justify-between shadow-sm">
+                        <span class="text-xs md:text-sm font-black text-sky-900">เกรดเฉลี่ยรวม 2 เทอม</span>
+                        <span id="modal-term-overall-gpa" class="text-xl font-black text-sky-800">-</span>
                     </div>
                 </div>
             </div>
@@ -1259,8 +1267,8 @@
             <!-- Header -->
             <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-3 shrink-0 bg-indigo-950 text-white rounded-t-2xl">
                 <div class="min-w-0">
-                    <h3 id="pray-modal-name" class="font-extrabold text-base truncate">-</h3>
-                    <p id="pray-modal-sub" class="text-xs text-indigo-300 mt-0.5">-</p>
+                    <h3 id="pray-modal-name" class="font-extrabold text-xl md:text-2xl truncate">-</h3>
+                    <p id="pray-modal-sub" class="text-sm text-indigo-300 mt-0.5">-</p>
                 </div>
                 <button onclick="closePrayModal()" class="shrink-0 text-indigo-300 hover:text-white p-1">
                     <i class="fa-solid fa-xmark text-xl"></i>
@@ -1752,7 +1760,7 @@
 
         async function fetchAllData() {
             const statusEl = document.getElementById('sync-status');
-            statusEl.innerHTML = `<span class="w-2.5 h-2.5 mr-2 bg-yellow-400 rounded-full animate-ping"></span> กำลังดึงข้อมูล Multi-Sheets...`;
+            statusEl.innerHTML = `<span class="w-2.5 h-2.5 mr-2 bg-yellow-400 rounded-full animate-ping"></span> <span class="sidebar-label">กำลังดึงข้อมูล Multi-Sheets...</span>`;
             statusEl.className = "inline-flex items-center px-3.5 py-1 rounded-full text-xs md:text-sm font-bold bg-yellow-100 text-yellow-800";
 
             const urlPersonnel = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_PERSONAL_ID}/gviz/tq?tqx=out:json&sheet=${TARGET_SHEET_NAME_PERSONAL}`;
@@ -1839,7 +1847,7 @@
 
                 compileData(rawPersonnel, evalMaps, rawAttendance, estimateMap, term1Map, term2Map, prayMap, false);
 
-                statusEl.innerHTML = `<span class="w-2.5 h-2.5 mr-2 bg-emerald-500 rounded-full"></span> ดึงข้อมูลสดสำเร็จ`;
+                statusEl.innerHTML = `<span class="w-2.5 h-2.5 mr-2 bg-emerald-500 rounded-full"></span> <span class="sidebar-label">ดึงข้อมูลสดสำเร็จ</span>`;
                 statusEl.className = "inline-flex items-center px-3.5 py-1 rounded-full text-xs md:text-sm font-bold bg-emerald-100 text-emerald-800";
 
             } catch (err) {
@@ -1849,7 +1857,7 @@
                 rawNovice = [];
                 compileData(mockPersonnel, mockEvalSheets, mockAttendanceRecords, {}, {}, {}, {}, true);
 
-                statusEl.innerHTML = `<span class="w-2.5 h-2.5 mr-2 bg-amber-500 rounded-full"></span> โหมดออฟไลน์จำลอง`;
+                statusEl.innerHTML = `<span class="w-2.5 h-2.5 mr-2 bg-amber-500 rounded-full"></span> <span class="sidebar-label">โหมดออฟไลน์จำลอง</span>`;
                 statusEl.className = "inline-flex items-center px-3.5 py-1 rounded-full text-xs md:text-sm font-bold bg-amber-100 text-amber-800";
                 
                 toggleSandboxModal(true);
@@ -2920,12 +2928,8 @@
 
                 const trainingEval = p.trainingScores || null;
                 const trainingScoreText = trainingEval ? `${trainingEval.total}` : '-';
-                const trainingResultBadge = trainingEval
-                    ? (trainingEval.passed
-                        ? `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-700"><i class="fa-solid fa-circle-check"></i> ผ่านเกณฑ์</span>`
-                        : `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black bg-rose-100 text-rose-700"><i class="fa-solid fa-triangle-exclamation"></i> ไม่ผ่านเกณฑ์</span>`)
-                    : `<span class="text-slate-400 text-xs font-bold">ยังไม่มีข้อมูล</span>`;
-
+                const trainingScoreColor = trainingEval ? (trainingEval.passed ? 'text-emerald-700' : 'text-rose-600') : 'text-slate-400';
+                const trainingResultEmoji = trainingEval ? (trainingEval.passed ? '✅' : '❌') : '';
                 const t1 = p.term1Scores || null;
                 const term1Cell = (t1 && t1.hasData)
                     ? `<div class="font-black text-sky-700 text-2xl leading-tight">${t1.gpa.toFixed(2)}</div>`
@@ -2960,8 +2964,9 @@
                             <div class="font-black text-indigo-700 text-2xl leading-tight">${at.rate.toFixed(0)}%</div>
                         </td>
                         <td class="px-5 py-4 text-center bg-emerald-50 whitespace-nowrap border-r border-slate-200">
-                            <div class="font-black text-indigo-700 text-2xl leading-tight tabular-nums">${trainingScoreText}</div>
-                            <div class="mt-1">${trainingResultBadge}</div>
+                            <div class="font-black ${trainingScoreColor} text-2xl leading-tight tabular-nums flex items-center justify-center gap-1.5">
+                                <span>${trainingScoreText}</span><span class="text-2xl leading-none">${trainingResultEmoji}</span>
+                            </div>
                         </td>
                         <td class="px-5 py-4 text-center bg-sky-50 border-r border-slate-200">
                             ${term1Cell}
@@ -3002,6 +3007,8 @@
             document.getElementById('modal-tag-village').innerText = `หมู่ที่ ${p.village}`;
 
             document.getElementById('modal-badge-score').innerText = `คะแนนรวมสะสม: ${scores.total} / ${maxCap} คะแนน`;
+            const livingPctAlways = maxCap > 0 ? Math.min((scores.total / maxCap) * 100, 100) : 0;
+            document.getElementById('modal-badge-living').innerText = `เปอร์เซ็นต์ความเป็นอยู่: ${livingPctAlways.toFixed(0)}%`;
             if (isAnalyticsContext) {
                 const livingPct = maxCap > 0 ? Math.min((scores.total / maxCap) * 100, 100) : 0;
                 document.getElementById('modal-badge-attend').innerText = `เปอร์เซ็นต์ความเป็นอยู่: ${livingPct.toFixed(0)}%`;
@@ -3082,6 +3089,21 @@
                 }
             }
 
+            const termOverallGpaEl = document.getElementById('modal-term-overall-gpa');
+            if (termOverallGpaEl) {
+                const hasT1 = term1 && term1.hasData;
+                const hasT2 = term2 && term2.hasData;
+                if (hasT1 && hasT2) {
+                    termOverallGpaEl.innerText = ((term1.gpa + term2.gpa) / 2).toFixed(2);
+                } else if (hasT1) {
+                    termOverallGpaEl.innerText = term1.gpa.toFixed(2);
+                } else if (hasT2) {
+                    termOverallGpaEl.innerText = term2.gpa.toFixed(2);
+                } else {
+                    termOverallGpaEl.innerText = '-';
+                }
+            }
+
             const scorebreakdownSection = document.getElementById('modal-section-scorebreakdown');
             const calendarSection = document.getElementById('modal-section-calendar');
             const attendanceCalendarSection = document.getElementById('modal-section-attendance-calendar');
@@ -3089,7 +3111,9 @@
             const trainingevalSection = document.getElementById('modal-section-trainingeval');
             const term1Section = document.getElementById('modal-section-term1');
             const term2Section = document.getElementById('modal-section-term2');
+            const termOverallSection = document.getElementById('modal-section-term-overall');
             const badgeScoreEl = document.getElementById('modal-badge-score');
+            const badgeLivingEl = document.getElementById('modal-badge-living');
             const badgeAttendEl = document.getElementById('modal-badge-attend');
 
             if (scorebreakdownSection) scorebreakdownSection.classList.toggle('hidden', isAttendanceContext || isGradesContext);
@@ -3099,8 +3123,10 @@
             if (trainingevalSection) trainingevalSection.classList.toggle('hidden', isAnalyticsContext || isAttendanceContext || isGradesContext);
             if (term1Section) term1Section.classList.toggle('hidden', isAnalyticsContext || isAttendanceContext);
             if (term2Section) term2Section.classList.toggle('hidden', isAnalyticsContext || isAttendanceContext);
+            if (termOverallSection) termOverallSection.classList.toggle('hidden', isAnalyticsContext || isAttendanceContext);
             if (badgeScoreEl) badgeScoreEl.classList.toggle('hidden', isAttendanceContext || isGradesContext);
-            if (badgeAttendEl) badgeAttendEl.classList.toggle('hidden', isGradesContext);
+            if (badgeLivingEl) badgeLivingEl.classList.toggle('hidden', isAttendanceContext || isGradesContext);
+            if (badgeAttendEl) badgeAttendEl.classList.toggle('hidden', isGradesContext || isAnalyticsContext);
 
             if (isAnalyticsContext) {
                 initModalCalendar(p.id);
