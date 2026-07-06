@@ -219,7 +219,7 @@
         </div>
 
     <!-- Main Content Container -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-1 lg:px-8 pb-6 flex-grow w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 flex-grow w-full">
 
         <!-- ==================== TAB 1: LIVING SCORE STATS ==================== -->
         <div id="tab-analytics" class="space-y-6">
@@ -396,9 +396,9 @@
                                 <th rowspan="2" class="px-5 py-4 text-left align-middle border-r border-slate-200">ชื่อ - ฉายา</th>
                                 <th rowspan="2" class="bg-amber-50 px-5 py-4 text-center align-middle whitespace-nowrap min-w-[8rem] border-r border-slate-200">ความเป็นอยู่<br><span class="font-bold text-xs text-amber-700">(% จากวันที่ประเมินจริง)</span></th>
                                 <th rowspan="2" class="bg-indigo-50 px-5 py-4 text-center align-middle whitespace-nowrap min-w-[8rem] border-r border-slate-200">เช็คชื่อ<br><span class="font-bold text-xs text-indigo-700">(% อัตราการเข้าร่วม)</span></th>
-                                <th rowspan="2" class="bg-emerald-50 px-5 py-4 text-center whitespace-nowrap min-w-[7.5rem] align-middle border-r border-slate-200">คะแนนรวม<br><span class="font-bold text-xs text-emerald-700">(ประเมินช่วงอบรม)</span></th>
+                                <th rowspan="2" class="bg-emerald-50 px-5 py-4 text-center whitespace-nowrap min-w-[7.5rem] align-middle border-r border-slate-200">คะแนนอบรม<br><span class="font-bold text-xs text-emerald-700">(100 คะแนน)</span></th>
                                 <th colspan="2" class="bg-sky-50 px-5 py-3 text-center border-r border-slate-200">เกรดเฉลี่ย</th>
-                                <th rowspan="2" class="bg-violet-50 px-5 py-4 text-center whitespace-nowrap align-middle">สวดมนต์<br><span class="font-bold text-xs text-violet-700">(ผ่าน/ทั้งหมด)</span></th>
+                                <th rowspan="2" class="bg-violet-50 px-5 py-4 text-center whitespace-nowrap align-middle">สวดมนต์<br><span class="font-bold text-xs text-violet-700">(54 บท)</span></th>
                             </tr>
                             <tr>
                                 <th class="bg-sky-50 px-5 py-2.5 text-center border-t border-sky-100 border-r border-slate-200">เทอมแรก</th>
@@ -1647,7 +1647,7 @@
         }
 
         function villageBadgeHtml(village) {
-            return `<span class="inline-flex px-3 py-1 rounded bg-indigo-50 text-indigo-700 font-extrabold whitespace-nowrap">${formatVillageLabel(village)}</span>`;
+            return `<span class="text-indigo-700 font-extrabold whitespace-nowrap">${formatVillageLabel(village)}</span>`;
         }
 
         /**
@@ -2878,8 +2878,8 @@
                         <td class="px-5 py-4 font-black text-slate-500 border-r border-slate-100">${p.id}</td>
                         <td class="px-5 py-4 whitespace-nowrap border-r border-slate-100">${villageBadgeHtml(p.village)}</td>
                         <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg border-r border-slate-100">${p.name}</td>
-                        <td class="px-5 py-4 font-mono border-r border-slate-100">${breakDownText}</td>
-                        <td class="px-5 py-4 font-black text-indigo-800 bg-indigo-50/10 text-2xl border-r border-slate-100">${score} / ${maxCap}</td>
+                        <td class="px-5 py-4 border-r border-slate-100">${breakDownText}</td>
+                        <td class="px-5 py-4 font-black text-indigo-800 bg-indigo-50/10 text-xl border-r border-slate-100">${score} / ${maxCap}</td>
                         <td class="px-5 py-4 font-black text-indigo-700 text-xl">${pct.toFixed(0)}%</td>
                     </tr>
                 `;
@@ -2916,7 +2916,7 @@
                 const at = p.attendanceSummary;
 
                 const trainingEval = p.trainingScores || null;
-                const trainingScoreText = trainingEval ? `${trainingEval.total}\u00A0/\u00A0100` : '-';
+                const trainingScoreText = trainingEval ? `${trainingEval.total}` : '-';
                 const trainingResultBadge = trainingEval
                     ? (trainingEval.passed
                         ? `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-700"><i class="fa-solid fa-circle-check"></i> ผ่านเกณฑ์</span>`
@@ -2939,7 +2939,7 @@
                 const prayFull = prayMax > 0 && prayTotal === prayMax;
                 const prayPercent = prayMax > 0 ? Math.round((prayTotal / prayMax) * 100) : 0;
                 const prayCell = `
-                    <div class="font-black ${prayFull ? 'text-emerald-600' : 'text-violet-700'} text-2xl leading-tight">${prayTotal}/${prayMax}<span class="text-sm font-bold">(${prayPercent}%)</span></div>
+                    <div class="font-black ${prayFull ? 'text-emerald-600' : 'text-violet-700'} text-2xl leading-tight">${prayTotal}<span class="text-sm font-bold">(${prayPercent}%)</span></div>
                     <div class="text-xs text-slate-400 mt-1 hover:underline">แตะดูรายละเอียด</div>
                 `;
 
