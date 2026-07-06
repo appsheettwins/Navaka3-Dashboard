@@ -14,9 +14,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome for premium vector icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- html2pdf.js: client-side HTML -> PDF export (used by the "สรุปประเมิน" summary download buttons) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
     
     <style>
         body {
@@ -670,7 +667,6 @@
                                 <th class="px-5 py-3.5 text-left">ชื่อ-ฉายา</th>
                                 <th class="px-5 py-3.5 w-40">คะแนนรวม (100)</th>
                                 <th class="px-5 py-3.5 w-52">สรุปผลการประเมิน</th>
-                                <th class="px-5 py-3.5 w-24 print:hidden">PDF</th>
                             </tr>
                         </thead>
                         <tbody id="trainingeval-tbody" class="bg-white divide-y divide-slate-100 text-center text-slate-700 font-medium">
@@ -1077,10 +1073,6 @@
                     <i class="fa-solid fa-scroll text-indigo-600"></i> แบบประเมินพระนวกะช่วงอบรม
                 </span>
                 <div class="flex items-center gap-2">
-                    <button id="trainingeval-download-pdf-btn" onclick="downloadNoviceSummaryPDF(trainingEvalModalOpenId)" title="ดาวน์โหลดสรุปการอบรม (PDF)"
-                        class="text-white bg-rose-600 hover:bg-rose-700 rounded-lg px-3.5 h-9 flex items-center gap-2 shadow-sm text-xs md:text-sm font-extrabold transition">
-                        <i class="fa-solid fa-file-arrow-down"></i> <span class="hidden sm:inline">ดาวน์โหลดสรุปการอบรม</span>
-                    </button>
                     <button onclick="toggleTrainingEvalModal(false)" class="text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-2 w-9 h-9 flex items-center justify-center shadow-sm">
                         <i class="fa-solid fa-xmark text-xl"></i>
                     </button>
@@ -1358,10 +1350,6 @@
     </footer>
 
     </div> <!-- /content column offset by sidebar -->
-
-    <!-- Hidden render target used to build the "สรุปการอบรม" PDF (per-novice summary sheet) before export.
-         Kept off-screen (not print:hidden / not display:none) so html2pdf/html2canvas can measure & rasterize it. -->
-    <div id="pdf-summary-render-root" style="position:fixed; top:0; left:-99999px; width:794px; background:#ffffff;"></div>
 
     <script>
         const SPREADSHEET_PERSONAL_ID = '1FbmDNCkgfcai78izcN63vWt7x5pjf_2B1Wvwk-vqous';
@@ -3701,12 +3689,6 @@
                         <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg">${p.name || ''}</td>
                         <td class="px-5 py-4 font-mono font-black text-indigo-900 text-2xl">${evalData.total}</td>
                         <td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs md:text-sm font-black ${badgeStyle}">${badgeLabel}</span></td>
-                        <td class="px-5 py-4 print:hidden">
-                            <button onclick="event.stopPropagation(); downloadNoviceSummaryPDF(${p.id})" title="ดาวน์โหลดสรุปการอบรม (PDF)"
-                                class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-600 hover:text-white transition shadow-sm">
-                                <i class="fa-solid fa-file-arrow-down"></i>
-                            </button>
-                        </td>
                     </tr>
                 `;
             }).join('');
@@ -3825,201 +3807,6 @@
             const total = trainingEvalFilteredIds.length;
             prevBtn.disabled = total <= 1 || trainingEvalCurrentIndex <= 0;
             nextBtn.disabled = total <= 1 || trainingEvalCurrentIndex === -1 || trainingEvalCurrentIndex >= total - 1;
-        }
-
-        // ==================== "สรุปการอบรม" PDF EXPORT (หน้าเมนูสรุปประเมิน) ====================
-        // Builds a printable summary sheet (grades เทอม1/เทอม2, ความเป็นอยู่, สอบสวดมนต์, บทฝึกทักษะพัฒนานิสัย)
-        // modeled after the reference document "สรุปการอบรม69" and exports it client-side as a PDF using html2pdf.js.
-
-        // Grade cut-off legend shown on the summary sheet (matches the reference document exactly).
-        const GRADE_CUTOFF_LEGEND = [
-            ['0 - 50', '0'], ['51 - 55', '1.0'], ['56 - 60', '1.5'], ['61 - 65', '2.0'],
-            ['66 - 70', '2.5'], ['71 - 75', '3.0'], ['76 - 80', '3.5'], ['81 - 100', '4.0']
-        ];
-
-        // Living-quality topics (from EVAL_TABS / TOPIC_METRIC_MAP) shown as one combined table,
-        // since the app currently tracks these cumulatively rather than split by เทอม1/เทอม2.
-        const LIVING_TOPIC_KEYS = ['homdong', 'jumwat', 'raotak', 'wiman'];
-
-        // NOTE: "บทฝึกทักษะพัฒนานิสัย" is not yet wired to a live data source in this app.
-        // Placeholder copy is shown below (per instruction) until that integration is added.
-        const HABIT_DEVELOPMENT_PLACEHOLDER = [
-            { title: '1. ความเคารพ', body: 'ยังไม่มีข้อมูล (รอเชื่อมต่อข้อมูลจากระบบในภายหลัง)' },
-            { title: '2. รู้จักประคับประคอง', body: 'ยังไม่มีข้อมูล (รอเชื่อมต่อข้อมูลจากระบบในภายหลัง)' },
-            { title: '3. การรับบุญ', body: 'ยังไม่มีข้อมูล (รอเชื่อมต่อข้อมูลจากระบบในภายหลัง)' },
-            { title: '4. การศึกษาเพื่อพัฒนานิสัย', body: 'ยังไม่มีข้อมูล (รอเชื่อมต่อข้อมูลจากระบบในภายหลัง)' },
-            { title: '5. ผลตรวจสุขภาพบุญรักษา', body: 'ยังไม่มีข้อมูล (รอเชื่อมต่อข้อมูลจากระบบในภายหลัง)' }
-        ];
-
-        function buildGradesTableHtml(title, subjects, termObj) {
-            const rows = subjects.map((subj, i) => {
-                const score = termObj && termObj.hasData ? termObj.scores[i] : '-';
-                const gp = termObj && termObj.hasData ? termObj.gradePoints[i].toFixed(1) : '-';
-                return `<tr>
-                    <td style="border:1px solid #cbd5e1;padding:5px 8px;text-align:left;">${i + 1}.${subj.label}</td>
-                    <td style="border:1px solid #cbd5e1;padding:5px 8px;text-align:center;">${score}</td>
-                    <td style="border:1px solid #cbd5e1;padding:5px 8px;text-align:center;">${gp}</td>
-                </tr>`;
-            }).join('');
-            return `
-                <div style="flex:1;min-width:0;">
-                    <table style="width:100%;border-collapse:collapse;font-size:12px;">
-                        <thead>
-                            <tr style="background:#eef2ff;font-weight:800;">
-                                <th colspan="3" style="border:1px solid #cbd5e1;padding:6px 8px;">${title}</th>
-                            </tr>
-                            <tr style="background:#f8fafc;font-weight:700;">
-                                <th style="border:1px solid #cbd5e1;padding:5px 8px;">วิชา</th>
-                                <th style="border:1px solid #cbd5e1;padding:5px 8px;width:60px;">คะแนน</th>
-                                <th style="border:1px solid #cbd5e1;padding:5px 8px;width:50px;">เกรด</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>`;
-        }
-
-        function buildLivingTableHtml(cumulativeScores) {
-            const rows = LIVING_TOPIC_KEYS.map((key, i) => {
-                const meta = TOPIC_METRIC_MAP[key];
-                const score = cumulativeScores ? (cumulativeScores[key] || 0) : 0;
-                const max = cumulativeScores && cumulativeScores.maxByTopic && cumulativeScores.maxByTopic[key]
-                    ? cumulativeScores.maxByTopic[key] : meta.max;
-                const pct = max > 0 ? Math.min((score / max) * 100, 100) : 0;
-                const result = pct >= 70 ? 'ผ่าน' : 'ไม่ผ่าน';
-                return `<tr>
-                    <td style="border:1px solid #cbd5e1;padding:5px 8px;text-align:left;">${i + 1}.${meta.name}</td>
-                    <td style="border:1px solid #cbd5e1;padding:5px 8px;text-align:center;">${pct.toFixed(0)}%</td>
-                    <td style="border:1px solid #cbd5e1;padding:5px 8px;text-align:center;font-weight:800;color:${pct >= 70 ? '#059669' : '#e11d48'};">${result}</td>
-                </tr>`;
-            }).join('');
-            return `
-                <table style="width:100%;border-collapse:collapse;font-size:12px;">
-                    <thead>
-                        <tr style="background:#ecfccb;font-weight:800;">
-                            <th colspan="3" style="border:1px solid #cbd5e1;padding:6px 8px;">ความเป็นอยู่</th>
-                        </tr>
-                        <tr style="background:#f8fafc;font-weight:700;">
-                            <th style="border:1px solid #cbd5e1;padding:5px 8px;">วิชา</th>
-                            <th style="border:1px solid #cbd5e1;padding:5px 8px;width:60px;">100 %</th>
-                            <th style="border:1px solid #cbd5e1;padding:5px 8px;width:60px;">ผล</th>
-                        </tr>
-                    </thead>
-                    <tbody>${rows}</tbody>
-                </table>`;
-        }
-
-        function buildPrayTableHtml(prayObj) {
-            const rows = PRAY_GROUPS.map((g, i) => {
-                const passedCount = prayObj && prayObj.counts ? (prayObj.counts[g.key] || 0) : 0;
-                const pct = g.items.length > 0 ? (passedCount / g.items.length) * 100 : 0;
-                const result = (prayObj && prayObj.hasData) ? (pct >= 70 ? 'ผ่าน' : 'ไม่ผ่าน') : '-';
-                const resultColor = result === 'ผ่าน' ? '#059669' : (result === 'ไม่ผ่าน' ? '#e11d48' : '#64748b');
-                return `<tr>
-                    <td style="border:1px solid #cbd5e1;padding:5px 8px;text-align:left;">${i + 1}.${g.label}</td>
-                    <td style="border:1px solid #cbd5e1;padding:5px 8px;text-align:center;font-weight:800;color:${resultColor};">${result}</td>
-                </tr>`;
-            }).join('');
-            return `
-                <table style="width:100%;border-collapse:collapse;font-size:12px;">
-                    <thead>
-                        <tr style="background:#fef3c7;font-weight:800;">
-                            <th colspan="2" style="border:1px solid #cbd5e1;padding:6px 8px;">สอบสวดมนต์</th>
-                        </tr>
-                        <tr style="background:#f8fafc;font-weight:700;">
-                            <th style="border:1px solid #cbd5e1;padding:5px 8px;">บท</th>
-                            <th style="border:1px solid #cbd5e1;padding:5px 8px;width:70px;">ผล</th>
-                        </tr>
-                    </thead>
-                    <tbody>${rows}</tbody>
-                </table>`;
-        }
-
-        function buildNoviceSummaryHTML(p) {
-            const gradesRow = `
-                <div style="display:flex;gap:14px;">
-                    ${buildGradesTableHtml('ภาคเรียนที่ 1', TERM1_SUBJECTS, p.term1Scores)}
-                    ${buildGradesTableHtml('ภาคเรียนที่ 2', TERM2_SUBJECTS, p.term2Scores)}
-                </div>`;
-
-            const legendRow = `
-                <div style="font-size:11px;color:#334155;line-height:1.9;margin-top:6px;">
-                    <strong>เกณฑ์การตัดเกรด</strong><br>
-                    ${GRADE_CUTOFF_LEGEND.map(([range, gp]) => `คะแนน ${range} = ${gp}`).join('&nbsp;&nbsp;&nbsp;&nbsp;')}
-                </div>`;
-
-            const livingPrayRow = `
-                <div style="display:flex;gap:14px;margin-top:14px;">
-                    <div style="flex:1;min-width:0;">${buildLivingTableHtml(p.cumulativeScores)}</div>
-                    <div style="flex:1;min-width:0;">${buildPrayTableHtml(p.prayScores)}</div>
-                </div>
-                <div style="font-size:11px;color:#334155;margin-top:6px;">
-                    <strong>เกณฑ์การประเมินความเป็นอยู่</strong>&nbsp; คะแนน 0-69 = ไม่ผ่าน &nbsp;&nbsp; คะแนน 70-100 = ผ่าน
-                </div>`;
-
-            const habitRows = HABIT_DEVELOPMENT_PLACEHOLDER.map(item => `
-                <tr>
-                    <td style="border:1px solid #cbd5e1;padding:6px 8px;font-weight:700;width:200px;vertical-align:top;">${item.title}</td>
-                    <td style="border:1px solid #cbd5e1;padding:6px 8px;color:#64748b;font-style:italic;">${item.body}</td>
-                </tr>`).join('');
-
-            const habitTable = `
-                <table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:14px;">
-                    <thead>
-                        <tr style="background:#dbeafe;font-weight:800;">
-                            <th colspan="2" style="border:1px solid #cbd5e1;padding:6px 8px;">บทฝึกทักษะพัฒนานิสัย</th>
-                        </tr>
-                    </thead>
-                    <tbody>${habitRows}</tbody>
-                </table>`;
-
-            return `
-                <div style="font-family:'Sarabun',sans-serif;color:#1e293b;padding:28px;width:794px;box-sizing:border-box;">
-                    <div style="text-align:center;font-weight:800;font-size:15px;margin-bottom:6px;">
-                        โครงการอบรมพระนวกะ 3 เส้นทางวิสามัญสาขาและพุทธบุตรอาสา ประจำปี 2569
-                    </div>
-                    <div style="text-align:center;font-size:13px;margin-bottom:16px;">
-                        ชื่อ <strong>${p.firstname || '-'}</strong> &nbsp; ฉายา <strong>${p.honorific || '-'}</strong> &nbsp; นามสกุล <strong>${p.lastname || '-'}</strong>
-                        &nbsp;&nbsp; เลขที่ ${p.id != null ? p.id : '-'} &nbsp; หมู่ ${p.village || '-'}
-                    </div>
-                    ${gradesRow}
-                    ${legendRow}
-                    ${livingPrayRow}
-                    ${habitTable}
-                    <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:20px;">
-                        พิมพ์เมื่อ ${new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}
-                    </div>
-                </div>`;
-        }
-
-        function downloadNoviceSummaryPDF(id) {
-            if (id == null) return;
-            const source = (compiledPersonnel && compiledPersonnel.length) ? compiledPersonnel : rawPersonnel;
-            const p = source.find(x => x.id === id);
-            if (!p) return;
-
-            const root = document.getElementById('pdf-summary-render-root');
-            if (!root || typeof html2pdf === 'undefined') {
-                alert('ไม่สามารถสร้างไฟล์ PDF ได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง');
-                return;
-            }
-            root.innerHTML = buildNoviceSummaryHTML(p);
-
-            const fileName = `สรุปการอบรม_${p.firstname || p.name || p.id}.pdf`;
-            const btn = document.getElementById('trainingeval-download-pdf-btn');
-            const originalBtnHtml = btn ? btn.innerHTML : null;
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังสร้างไฟล์...'; }
-
-            html2pdf().set({
-                margin: 0,
-                filename: fileName,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-                jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
-            }).from(root).save().finally(() => {
-                root.innerHTML = '';
-                if (btn) { btn.disabled = false; btn.innerHTML = originalBtnHtml; }
-            });
         }
 
         function parseDriveImageUrl(driveUrl) {
