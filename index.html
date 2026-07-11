@@ -2460,29 +2460,17 @@
                     };
                 }
 
-                // Bind Term1
-                let term1Obj = {};
-                if (term1Map && term1Map[person.id] && term1Map[person.id].hasData) {
-                    term1Obj = term1Map[person.id];
-                } else {
-                    const base = 55 + ((person.id * 7) % 40);
-                    const mockScores = TERM1_SUBJECTS.map((s, i) => Math.min(100, Math.max(40, base + ((person.id + i * 3) % 15) - 7)));
-                    const mockGradePoints = mockScores.map(scoreToGradePoint);
-                    const mockGpa = mockGradePoints.reduce((s, x) => s + x, 0) / mockGradePoints.length;
-                    term1Obj = { scores: mockScores, gradePoints: mockGradePoints, gpa: mockGpa, hasData: true };
-                }
+                // Bind Term1 — ใช้ข้อมูลจริงจากชีต Term1 เท่านั้น
+                // ถ้าไม่พบข้อมูลจริงของคนนี้ ให้ถือว่า "ยังไม่มีข้อมูล" (hasData: false)
+                // แทนที่จะสร้างคะแนนสุ่ม/ปลอมขึ้นมาแสดงแทน
+                let term1Obj = (term1Map && term1Map[person.id] && term1Map[person.id].hasData)
+                    ? term1Map[person.id]
+                    : { scores: [], gradePoints: [], gpa: null, hasData: false };
 
-                // Bind Term2
-                let term2Obj = {};
-                if (term2Map && term2Map[person.id] && term2Map[person.id].hasData) {
-                    term2Obj = term2Map[person.id];
-                } else {
-                    const base2 = 58 + ((person.id * 11) % 35);
-                    const mockScores2 = TERM2_SUBJECTS.map((s, i) => Math.min(100, Math.max(40, base2 + ((person.id + i * 5) % 13) - 6)));
-                    const mockGradePoints2 = mockScores2.map(scoreToGradePoint);
-                    const mockGpa2 = mockGradePoints2.reduce((s, x) => s + x, 0) / mockGradePoints2.length;
-                    term2Obj = { scores: mockScores2, gradePoints: mockGradePoints2, gpa: mockGpa2, hasData: true };
-                }
+                // Bind Term2 — เช่นเดียวกับ Term1 ด้านบน
+                let term2Obj = (term2Map && term2Map[person.id] && term2Map[person.id].hasData)
+                    ? term2Map[person.id]
+                    : { scores: [], gradePoints: [], gpa: null, hasData: false };
 
                 // Bind Pray (สวดมนต์)
                 let prayObj;
