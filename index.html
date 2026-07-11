@@ -1698,6 +1698,18 @@
         }
 
         /**
+         * Percentage helper for "ความเป็นอยู่" (living-score) figures.
+         * Some days a topic simply isn't graded (score comes back as 0 across
+         * the board), which would otherwise drag the percentage down unfairly.
+         * Returns null when there's nothing to calculate from (score <= 0),
+         * so callers can show "ไม่มีข้อมูล" instead of a misleading 0%.
+         */
+        function computeLivingPct(score, maxCap) {
+            if (!maxCap || maxCap <= 0 || !score || score <= 0) return null;
+            return Math.min((score / maxCap) * 100, 100);
+        }
+
+        /**
          * Robust parser to normalize dates as Gregorian DD/MM/YYYY.
          */
         function normalizeDateStr(dateStr) {
@@ -2473,7 +2485,7 @@
                 }
 
                 // Bind Term1 — ใช้ข้อมูลจริงจากชีต Term1 เท่านั้น
-                // ถ้าไม่พบข้อมูลจริงของคนนี้ ให้ถือว่า "ไม่มีข้อมูล" (hasData: false)
+                // ถ้าไม่พบข้อมูลจริงของคนนี้ ให้ถือว่า "ยังไม่มีข้อมูล" (hasData: false)
                 // แทนที่จะสร้างคะแนนสุ่ม/ปลอมขึ้นมาแสดงแทน
                 let term1Obj = (term1Map && term1Map[person.id] && term1Map[person.id].hasData)
                     ? term1Map[person.id]
@@ -2896,7 +2908,7 @@
                 if (entry) {
                     score = analyticsSelectedTopic === 'all' ? entry.total : (entry[analyticsSelectedTopic] || 0);
                 }
-                const pct = maxCap > 0 ? Math.min((score / maxCap) * 100, 100) : 0;
+                const pct = computeLivingPct(score, maxCap);
 
                 const breakDownText = `
                     <div class="grid grid-cols-5 gap-1 text-center">
@@ -2915,7 +2927,7 @@
                         <td class="px-5 py-4 text-left font-extrabold text-slate-900 text-lg border-r border-slate-100">${shortDisplayName(p)}</td>
                         <td class="px-5 py-4 border-r border-slate-100">${breakDownText}</td>
                         <td class="px-5 py-4 font-black text-indigo-800 bg-indigo-50/10 text-xl border-r border-slate-100">${score} / ${maxCap}</td>
-                        <td class="px-5 py-4 font-black text-indigo-700 text-xl">${pct.toFixed(0)}%</td>
+                        <td class="px-5 py-4 font-black text-indigo-700 text-xl">${pct !== null ? pct.toFixed(0) + '%' : '<span class="text-slate-400 text-sm font-semibold">ไม่มีข้อมูล</span>'}</td>
                     </tr>
                 `;
                 tbody.innerHTML += tr;
@@ -3007,7 +3019,7 @@
 
             tableList.forEach(p => {
                 const s = getScoreSet(p);
-                const pct = s.maxCap > 0 ? Math.min((s.total / s.maxCap) * 100, 100) : 0;
+                const pct = computeLivingPct(s.total, s.maxCap);
                 rows.push([
                     p.id,
                     `หมู่ ${p.village}`,
@@ -3019,7 +3031,7 @@
                     s.homdong,
                     s.total,
                     s.maxCap,
-                    pct.toFixed(0)
+                    pct !== null ? pct.toFixed(0) : ''
                 ]);
             });
 
@@ -3059,8 +3071,8 @@
                 const imgUrl = parseDriveImageUrl(p.image);
 
                 const activeMaxPossible = p.activeMaxPossible || 0;
-                const livingPct = activeMaxPossible > 0 ? Math.min((p.activeTotal / activeMaxPossible) * 100, 100) : 0;
-                const scoreSummary = activeMaxPossible > 0 ? `${livingPct.toFixed(1)}%` : 'ไม่มีข้อมูล';
+                const livingPct = computeLivingPct(p.activeTotal, activeMaxPossible);
+                const scoreSummary = livingPct !== null ? `${livingPct.toFixed(1)}%` : 'ไม่มีข้อมูล';
 
                 const at = p.attendanceSummary;
 
@@ -3071,12 +3083,12 @@
                 const t1 = p.term1Scores || null;
                 const term1Cell = (t1 && t1.hasData)
                     ? `<div class="font-black text-sky-700 text-2xl leading-tight">${t1.gpa.toFixed(2)}</div>`
-                    : `<span class="text-slate-400 text-sm font-semibold">ไม่มีข้อมูล</span>`;
+                    : `<span class="text-slate-400 text-sm font-semibold">ยังไม่มีข้อมูล</span>`;
 
                 const t2 = p.term2Scores || null;
                 const term2Cell = (t2 && t2.hasData)
                     ? `<div class="font-black text-sky-700 text-2xl leading-tight">${t2.gpa.toFixed(2)}</div>`
-                    : `<span class="text-slate-400 text-sm font-semibold">ไม่มีข้อมูล</span>`;
+                    : `<span class="text-slate-400 text-sm font-semibold">ยังไม่มีข้อมูล</span>`;
 
                 const pray = p.prayScores || { total: 0, totalTopics: PRAY_TOTAL_TOPICS };
                 const prayTotal = pray.total || 0;
@@ -3144,11 +3156,11 @@
             document.getElementById('modal-tag-village').innerText = `หมู่ที่ ${p.village}`;
 
             document.getElementById('modal-badge-score').innerText = `คะแนนรวม: ${scores.total} / ${maxCap}`;
-            const livingPctAlways = maxCap > 0 ? Math.min((scores.total / maxCap) * 100, 100) : 0;
-            document.getElementById('modal-badge-living').innerText = `คิดเป็น: ${livingPctAlways.toFixed(0)}%`;
+            const livingPctAlways = computeLivingPct(scores.total, maxCap);
+            document.getElementById('modal-badge-living').innerText = `คิดเป็น: ${livingPctAlways !== null ? livingPctAlways.toFixed(0) + '%' : 'ไม่มีข้อมูล'}`;
             if (isAnalyticsContext) {
-                const livingPct = maxCap > 0 ? Math.min((scores.total / maxCap) * 100, 100) : 0;
-                document.getElementById('modal-badge-attend').innerText = `เปอร์เซ็นต์ความเป็นอยู่: ${livingPct.toFixed(0)}%`;
+                const livingPct = computeLivingPct(scores.total, maxCap);
+                document.getElementById('modal-badge-attend').innerText = `เปอร์เซ็นต์ความเป็นอยู่: ${livingPct !== null ? livingPct.toFixed(0) + '%' : 'ไม่มีข้อมูล'}`;
             } else {
                 document.getElementById('modal-badge-attend').innerText = `เช็คชื่อ: ${p.attendanceSummary.rate.toFixed(0)}%`;
             }
@@ -3185,9 +3197,9 @@
                 if (notesEl) notesEl.innerText = trainingEval.notes || 'ความประพฤติสม่ำเสมอดีงาม เรียบร้อยเป็นที่น่าพึงใจ';
             } else {
                 scoreEl.innerText = '- / 100';
-                resultEl.innerText = 'ไม่มีข้อมูล';
+                resultEl.innerText = 'ยังไม่มีข้อมูล';
                 resultEl.className = 'font-bold text-slate-400 text-xl';
-                if (notesEl) notesEl.innerText = 'ไม่มีข้อมูล';
+                if (notesEl) notesEl.innerText = 'ยังไม่มีข้อมูล';
             }
 
             const term1 = p.term1Scores || null;
@@ -3203,7 +3215,7 @@
                     `).join('');
                     term1GpaEl.innerText = term1.gpa.toFixed(2);
                 } else {
-                    term1Container.innerHTML = `<span class="text-slate-400 text-sm font-bold sm:col-span-2">ไม่มีข้อมูล</span>`;
+                    term1Container.innerHTML = `<span class="text-slate-400 text-sm font-bold sm:col-span-2">ยังไม่มีข้อมูล</span>`;
                     term1GpaEl.innerText = '-';
                 }
             }
@@ -3221,7 +3233,7 @@
                     `).join('');
                     term2GpaEl.innerText = term2.gpa.toFixed(2);
                 } else {
-                    term2Container.innerHTML = `<span class="text-slate-400 text-sm font-bold sm:col-span-2">ไม่มีข้อมูล</span>`;
+                    term2Container.innerHTML = `<span class="text-slate-400 text-sm font-bold sm:col-span-2">ยังไม่มีข้อมูล</span>`;
                     term2GpaEl.innerText = '-';
                 }
             }
@@ -4153,13 +4165,13 @@
                     const gpaColor = termData.gpa >= 3.0 ? 'text-emerald-600' : (termData.gpa >= 2.0 ? 'text-sky-700' : 'text-rose-600');
                     gpaCell = `<div class="font-black ${gpaColor} text-2xl leading-tight">${termData.gpa.toFixed(2)}</div>`;
                 } else {
-                    gpaCell = `<span class="text-slate-400 text-sm font-semibold">ไม่มีข้อมูล</span>`;
+                    gpaCell = `<span class="text-slate-400 text-sm font-semibold">ยังไม่มีข้อมูล</span>`;
                 }
 
                 const combinedGpa = computeCombinedGpa(p);
                 const combinedGpaCell = combinedGpa != null
                     ? `<div class="font-black text-sky-700 text-2xl leading-tight">${combinedGpa.toFixed(2)}</div>`
-                    : `<span class="text-slate-400 text-sm font-semibold">ไม่มีข้อมูล</span>`;
+                    : `<span class="text-slate-400 text-sm font-semibold">ยังไม่มีข้อมูล</span>`;
 
                 const tr = `
                     <tr class="hover:bg-indigo-50/40 transition cursor-pointer text-center text-base" onclick="openPersonnelProfile(${p.id}, 'grades')">
